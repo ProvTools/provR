@@ -56,9 +56,7 @@ before_script:
   - sleep 3
 
 script:
-  - R CMD build .
-  - R CMD check *tar.gz
-  - R CMD INSTALL *tar.gz
+  - prepare.sh
   - ant -file tests.xml test-travis
 
 notifications:

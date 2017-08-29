@@ -21,40 +21,40 @@
 
 .ddg.checkpoint.file.node <- function(fname, dname, checkpoint.name) {
 	# Increment data counter.
-	RDataTracker:::.ddg.inc("ddg.dnum")
+	provR:::.ddg.inc("ddg.dnum")
 
 	# Get checkpoint file location.
 	file.name <- basename(fname)
 	file.loc <- dirname(normalizePath(fname, winslash="/", mustWork = FALSE))
 
 	# Add number to file name.
-	ddg.dnum <- RDataTracker:::.ddg.dnum()
+	ddg.dnum <- provR:::.ddg.dnum()
 	dfile <- paste(ddg.dnum, "-", file.name, sep="")
 
 	# Get path plus file name.
-	dpfile.out <- paste(RDataTracker:::.ddg.path(), "/", dfile, sep="")
+	dpfile.out <- paste(provR:::.ddg.path(), "/", dfile, sep="")
 
-	if (RDataTracker:::.ddg.debug()) print(paste("Saving checkpoint in", dpfile.out))
+	if (provR:::.ddg.debug()) print(paste("Saving checkpoint in", dpfile.out))
 
 	# Create checkpoint.
 	toSave <- c (ls(envir = .GlobalEnv, all.names = TRUE))
-	if (RDataTracker:::.ddg.debug()) { print("Saving"); print(toSave) }
+	if (provR:::.ddg.debug()) { print("Saving"); print(toSave) }
 
 	# toSave <- ls(envir=.GlobalEnv)
 	# save (list = toSave, file = dpfile.out, envir = parent.frame(3))
 	save (list = toSave, file = dpfile.out)
 	ddg.dpfile.out <- paste(dpfile.out, "ddg", sep=".")
-	if (RDataTracker:::.ddg.debug()) { print("Saving"); print(ls(RDataTracker:::.ddg.env, all.names=TRUE)) }
-	save (list = ls(RDataTracker:::.ddg.env, all.names=TRUE), file=ddg.dpfile.out, envir=RDataTracker:::.ddg.env)
+	if (provR:::.ddg.debug()) { print("Saving"); print(ls(provR:::.ddg.env, all.names=TRUE)) }
+	save (list = ls(provR:::.ddg.env, all.names=TRUE), file=ddg.dpfile.out, envir=provR:::.ddg.env)
 
 	# Create the node.
-	dtime <- RDataTracker:::.ddg.timestamp()
-	RDataTracker:::.ddg.append("CheckpointFile", " d", ddg.dnum, " \"", ddg.dnum, "-", file.name, "\" Value=\"", dpfile.out, "\" Time=\"", dtime, "\";\n", sep="")
+	dtime <- provR:::.ddg.timestamp()
+	provR:::.ddg.append("CheckpointFile", " d", ddg.dnum, " \"", ddg.dnum, "-", file.name, "\" Value=\"", dpfile.out, "\" Time=\"", dtime, "\";\n", sep="")
 
 	# Record data node information.
-	RDataTracker:::.ddg.record.data("Checkpoint", file.name, dfile, "undefined", dtime, file.loc)
+	provR:::.ddg.record.data("Checkpoint", file.name, dfile, "undefined", dtime, file.loc)
 
-	if (RDataTracker:::.ddg.debug()) print(paste("file.copy: Checkpoint", fname))
+	if (provR:::.ddg.debug()) print(paste("file.copy: Checkpoint", fname))
 	return (dpfile.out)
 }
 
@@ -67,7 +67,7 @@
 	saved.file <- .ddg.checkpoint.file.node(filename, dname, checkpoint.name)
 
 	# Create data flow edge from operation node to file node.
-	RDataTracker:::.ddg.proc2data(checkpoint.name, dname)
+	provR:::.ddg.proc2data(checkpoint.name, dname)
 
 	return (saved.file)
 }
@@ -76,11 +76,11 @@
 # a checkpoint.
 
 .ddg.record.checkpoint <- function(filename, checkpoint.name) {
-	ddg.checkpoint.num <- RDataTracker:::.ddg.get("ddg.checkpoint.num")
-	ddg.checkpoints <- RDataTracker:::.ddg.get("ddg.checkpoints")
+	ddg.checkpoint.num <- provR:::.ddg.get("ddg.checkpoint.num")
+	ddg.checkpoints <- provR:::.ddg.get("ddg.checkpoints")
 	ddg.checkpoints$filename[ddg.checkpoint.num] <- filename
 	ddg.checkpoints$checkpoint.name[ddg.checkpoint.num] <- checkpoint.name
-	RDataTracker:::.ddg.set("ddg.checkpoints", ddg.checkpoints)
+	provR:::.ddg.set("ddg.checkpoints", ddg.checkpoints)
 }
 
 # ddg.checkpoint saves the current R state in a file and adds a
@@ -92,19 +92,19 @@
 #   checkpoint procedure node.
 
 ddg.checkpoint <- function(checkpoint.name=NULL) {
-	if (!RDataTracker:::.ddg.is.init()) return(invisible())
+	if (!provR:::.ddg.is.init()) return(invisible())
 
-	if (RDataTracker:::.ddg.debug()) print("Creating checkpoint")
-	ddg.checkpoint.num <- RDataTracker:::.ddg.get("ddg.checkpoint.num")
+	if (provR:::.ddg.debug()) print("Creating checkpoint")
+	ddg.checkpoint.num <- provR:::.ddg.get("ddg.checkpoint.num")
 	file.name <- paste(ddg.checkpoint.num, ".RData", sep="")
-	file.path <- paste(RDataTracker:::.ddg.path(), "/", file.name, sep="")
+	file.path <- paste(provR:::.ddg.path(), "/", file.name, sep="")
 	if (is.null(checkpoint.name)) checkpoint.name <- file.name
-	RDataTracker:::.ddg.proc.node("Checkpoint", checkpoint.name)
+	provR:::.ddg.proc.node("Checkpoint", checkpoint.name)
 
 	# Create control flow edge from preceding procedure node.
-	RDataTracker:::.ddg.proc2proc()
+	provR:::.ddg.proc2proc()
 	checkpoint.file <- .ddg.checkpoint.out(checkpoint.name, file.path)
-	RDataTracker:::.ddg.set("ddg.checkpoint.num", (ddg.checkpoint.num + 1) %% RDataTracker:::ddg.MAX_CHECKPOINTS)
+	provR:::.ddg.set("ddg.checkpoint.num", (ddg.checkpoint.num + 1) %% provR:::ddg.MAX_CHECKPOINTS)
 	.ddg.record.checkpoint(file.name, checkpoint.name)
 	return (checkpoint.file)
 }
@@ -112,7 +112,7 @@ ddg.checkpoint <- function(checkpoint.name=NULL) {
 # .ddg.lookup.checkpoint.name looks up the name of a checkpoint.
 
 .ddg.lookup.checkpoint.name <- function(filename) {
-	ddg.checkpoints <- RDataTracker:::.ddg.get("ddg.checkpoints")
+	ddg.checkpoints <- provR:::.ddg.get("ddg.checkpoints")
 	nRow<-which(ddg.checkpoints$filename == filename)
 	return(ddg.checkpoints$checkpoint.name[nRow])
 }
@@ -176,7 +176,7 @@ ddg.checkpoint <- function(checkpoint.name=NULL) {
 	# checkpoint.
 	num.files.to.restore <- nrow(ddg.files.to.restore)
 	if (num.files.to.restore > 0) {
-		# ddg.path <- RDataTracker:::.ddg.path()
+		# ddg.path <- provR:::.ddg.path()
 		ddg.path <- saved.env[["ddg.path"]]
 		for (i in 1:num.files.to.restore) {
 			original <- ddg.files.to.restore[i, 2]
@@ -233,7 +233,7 @@ ddg.checkpoint <- function(checkpoint.name=NULL) {
 # file to restore.
 
 ddg.restore <- function(file.path) {
-	if (!RDataTracker:::.ddg.is.init()) return(invisible())
+	if (!provR:::.ddg.is.init()) return(invisible())
 
 	# Remove the directories.
 	file.name <- basename(file.path)
@@ -243,28 +243,28 @@ ddg.restore <- function(file.path) {
 	file.name.end <- nchar(file.name)
 	file.name <- substr(file.name, file.name.start, file.name.end)
 	checkpoint.name <- .ddg.lookup.checkpoint.name(file.name)
-	RDataTracker:::.ddg.proc.node("Restore", checkpoint.name)
+	provR:::.ddg.proc.node("Restore", checkpoint.name)
 
 	# Create control flow edge from preceding procedure node.
-	RDataTracker:::.ddg.proc2proc()
-	RDataTracker:::.ddg.data2proc(file.name, "undefined", checkpoint.name)
+	provR:::.ddg.proc2proc()
+	provR:::.ddg.data2proc(file.name, "undefined", checkpoint.name)
 
-	if (RDataTracker:::.ddg.debug()) print(paste("Restoring from", file.path))
+	if (provR:::.ddg.debug()) print(paste("Restoring from", file.path))
 
 	# Update the ddg tables so that the ddg will get extended to
   # include the actions between the checkpoint and restore, but
   # the data edges will link to the data that existed at the time
   # the checkpoint was made.
 
-	saved.ddg.env <- RDataTracker:::.ddg.env
-	if (RDataTracker:::.ddg.debug()) load (file.path, .GlobalEnv, verbose=TRUE)
+	saved.ddg.env <- provR:::.ddg.env
+	if (provR:::.ddg.debug()) load (file.path, .GlobalEnv, verbose=TRUE)
 	else load (file.path, .GlobalEnv)
 	ddg.file.path <- paste(file.path, "ddg", sep=".")
 	checkpointed.ddg.env <- new.env()
-	if (RDataTracker:::.ddg.debug()) load(ddg.file.path, checkpointed.ddg.env, verbose=TRUE)
+	if (provR:::.ddg.debug()) load(ddg.file.path, checkpointed.ddg.env, verbose=TRUE)
 	else load(ddg.file.path, checkpointed.ddg.env)
 	.ddg.mark.stale.data(saved.ddg.env, checkpointed.ddg.env)
-	assign("RDataTracker:::.ddg.env", .ddg.restore.ddg.state(saved.ddg.env, checkpointed.ddg.env))
+	assign("provR:::.ddg.env", .ddg.restore.ddg.state(saved.ddg.env, checkpointed.ddg.env))
 
 	invisible()
 }
