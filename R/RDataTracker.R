@@ -619,7 +619,7 @@ library(jsonlite)
 
 .ddg.json.prefix <- function(){
   # add json prefix
-  prefix <- "\"prefix\" : {\n\"prov\" : \"http://www.w3.org/ns/prov#\",\n\"rdt\" : \"http://rdatatracker.org/\"\n},\n"
+  prefix <- "\"prefix\" : {\n\"prov\" : \"http://www.w3.org/ns/prov#\",\n\"rdt\" : \"http://provtools.org/\"\n},\n"
   return (prefix)
 }
 
@@ -673,8 +673,8 @@ library(jsonlite)
   ddg.timestamp <- .ddg.get("ddg.start.time")
   environ <- paste(environ, .ddg.json.nv("rdt:ddgTimeStamp", ddg.timestamp), sep="")
 
-  lib.version <- packageVersion("RDataTracker")
-  environ <- paste(environ, .ddg.json.nv("rdt:rdatatrackerVersion", lib.version), sep="")
+  lib.version <- packageVersion("provR")
+  environ <- paste(environ, .ddg.json.nv("rdt:provRVersion", lib.version), sep="")
 
   environ <- paste(environ, .ddg.installedpackages.json(), sep = "")
   environ <- paste(environ, "\n}", sep = "")
@@ -6312,7 +6312,7 @@ ddg.source <- function (file,  ddgdir = NULL, local = FALSE, echo = verbose, pri
   }
 
   # Ignore calculation of certain execution steps.
-  ignores <- c("^library[(]RDataTracker[)]$",
+  ignores <- c("^library[(]provR[)]$",
       if(ignore.ddg.calls) "^ddg."
           else if (ignore.init) c("^ddg.init", "^ddg.run")
           else "a^")
