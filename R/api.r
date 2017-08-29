@@ -65,9 +65,3 @@ prov.json <- function(){
   ddg.json <- .ddg.json.current()
   return(ddg.json)
 }
-
-# prov.display display the provenance corresponding to latest captured script.
-#' @export
-prov.display <- function(){
-  ddg.display()
-}
