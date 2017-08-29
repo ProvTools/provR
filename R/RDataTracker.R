@@ -1,11 +1,4 @@
-#################### DDG LIBRARY FOR R ####################
-
-# The functions in this library may be used to annotate an R script
-# in order to collect provenance in the form of a data derivation
-# graph (DDG) as the script executes. The DDG is saved as a text file
-# (ddg.txt) that may be viewed and queried using DDG Explorer.
-
-# Copyright (C) 2014 Emery R. Boose & Barbara S. Lerner & Luis Perez
+# Copyright (C) 2017 T. Pasquier M. Lau
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
@@ -16,9 +9,12 @@
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #   GNU General Public License for more details.
 #
-#   You should have received a copy of the GNU General Public
+#   You should have received a copy of the GNU General Public v2
 #   License along with this program.  If not, see
-#   <http://www.gnu.org/licenses/>.
+#   <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>.
+#
+# This package was forked from
+# <https://github.com/End-to-end-provenance/RDataTracker>
 
 # Create DDG environment variable.
 
