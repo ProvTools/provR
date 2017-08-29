@@ -1,13 +1,7 @@
-## RDataTracker v2.25.1
+## RDataTracker v0.1.0
 
 ```
-- Adds support for special operators (#240)
-- Adds additional tests
-- Links error node to error operation
-- Adds more control statement tracking
-- Adjusts file snapshot method
-- Adds test for empty vectors
-- Fixes bug in tracking nested statements
+-  Initial release.
 ```
 
 
