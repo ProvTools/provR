@@ -142,7 +142,7 @@ library(jsonlite)
 
 .ddg.json.prefix <- function(){
   # add json prefix
-  prefix <- "\"prefix\" : {\n\"prov\" : \"http://www.w3.org/ns/prov#\",\n\"rdt\" : \"http://provtools.org/\"\n},\n"
+  prefix <- "\"prefix\" : {\n\"prov\" : \"http://www.w3.org/ns/prov#\",\n\"rdt\" : \"http://rdatatracker.org/\"\n},\n"
   return (prefix)
 }
 
