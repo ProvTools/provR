@@ -686,17 +686,6 @@ library(jsonlite)
   write(ddg.txt, fileout)
 }
 
-# .ddg.txt.increment returns the current incremental change to the
-# ddg.txt string.
-
-.ddg.txt.increment <- function() {
-  # Get current increment.
-  dtxt <- .ddg.get("ddg.increment")
-  # Reset for next increment.
-  .ddg.set("ddg.increment", "")
-  return(dtxt)
-}
-
 # .ddg.json.nv returns a name-value pair for the ddg.json string.
 
 .ddg.json.nv <- function(name, value) {
