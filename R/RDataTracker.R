@@ -2969,7 +2969,7 @@ library(jsonlite)
 .ddg.process.breakpoint <- function(command, inside.function) {
   # Display prompt if we are reaching a breakpoint (i.e., not single-stepping)
   if (!.ddg.get("ddg.break")) {
-    writeLines("\nEnter = next command, C = next breakpoint, D = display DDG, Q = quit debugging\n")
+    writeLines("\nEnter = next command, C = next breakpoint, Q = quit debugging\n")
   }
 
   # Abbreviate command.
@@ -3007,8 +3007,7 @@ library(jsonlite)
   line <- "D"
   while (line == "D") {
     line <- toupper(readline())
-    if (line == "D") ddg.display()
-    else if (line == "") .ddg.set("ddg.break", TRUE)
+    if (line == "") .ddg.set("ddg.break", TRUE)
     else if (line == "C") .ddg.set("ddg.break", FALSE)
     else if (line == "Q") .ddg.set("ddg.break.ignore", TRUE)
   }
@@ -6125,7 +6124,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
 # save.debug (optional) - If TRUE, save debug files to debug directory.
 # save.hashtable (optional) - If TRUE, save ddg information to hashtable.csv.
 
-ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL, enable.console = TRUE, annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10, debug = FALSE, save.debug = FALSE, display = FALSE, save.hashtable = TRUE) {
+ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL, enable.console = TRUE, annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10, debug = FALSE, save.debug = FALSE, save.hashtable = TRUE) {
 
   # Initiate ddg.
   ddg.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions, first.loop, max.loops, max.snapshot.size)
@@ -6152,9 +6151,6 @@ ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = N
           else stop("r.script.path and f cannot both be NULL"),
       finally={
         ddg.save(r.script.path, save.hashtable = save.hashtable)
-        if(display==TRUE){
-          ddg.display()
-        }
       }
   )
 
@@ -6482,51 +6478,6 @@ ddg.source <- function (file,  ddgdir = NULL, local = FALSE, echo = verbose, pri
   invisible()
 }
 
-.ddg.start.ddg.explorer <- function () {
-  jar.path<- "/RDataTracker/java/DDGExplorer.jar"
-  check.library.paths<- file.exists(paste(.libPaths(),jar.path,sep = ""))
-  index<- min(which(check.library.paths == TRUE))
-  ddgexplorer_path<- paste(.libPaths()[index],jar.path,sep = "")
-  ddgjson.path<- paste(getwd(), .ddg.path() ,"ddg.json",sep = "/")
-
-  # -s flag starts DDG Explorer as a server.  This allows each new ddg to show
-  # up in a new tab of an existing running DDG Explorer.
-  # print("Starting DDG Explorer server")
-  systemResult <- system2("java", c("-jar", ddgexplorer_path, ddgjson.path, "-port", .ddg.get(".ddg.explorer.port")), wait = FALSE)
-  # print(paste("Starting java server return code:", systemResult))
-}
-
-# ddg.display loads & displays the current DDG.
-
-ddg.display <- function () {
-
-  # See if the server is already running
-  # print("Opening socket connection")
-  tryCatch ({
-        con <- socketConnection(host= "localhost", port = .ddg.get(".ddg.explorer.port"), blocking = FALSE,
-            server=FALSE, open="w", timeout=1)
-        ddgjson.path<- paste(getwd(), .ddg.path() ,"ddg.json",sep = "/")
-        # print ("Socket open; writing to socket")
-        writeLines(ddgjson.path, con)
-        # print ("Wrote to socket")
-        close(con)
-      },
-      warning = function(e) {
-        .ddg.start.ddg.explorer()
-      }
-  )
-
-  tryCatch(
-    if(is.element('CamFlow', installed.packages()[,1])){ # did we install the CamFlow visualiser?
-      json <- .ddg.json.current()
-      CamFlowVisualiser(json)
-    },
-    error = function(e) {}
-  )
-
-  invisible()
-}
-
 # ddg.debug.lib.on turns on debugging of DDG construction.
 
 ddg.debug.lib.on <- function () {
@@ -6544,7 +6495,7 @@ ddg.debug.lib.off <- function () {
 
 ddg.breakpoint <- function() {
   if (!.ddg.break.ignore()) {
-    writeLines("\nEnter = next command, C = next breakpoint, D = display DDG, Q = quit debugging\n")
+    writeLines("\nEnter = next command, C = next breakpoint, Q = quit debugging\n")
     .ddg.set("ddg.break", TRUE)
   }
 }
