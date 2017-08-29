@@ -62,4 +62,4 @@ script:
   - ant -file tests.xml test-travis
 
 notifications:
-  slack: endtoendprovenance:WxevOs6n66eZRbCn9HcW2mGD
+  slack: endtoendprovenance:DNYqXZWhV1c3eRhkjGYyjCEv
