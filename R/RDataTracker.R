@@ -20,10 +20,6 @@
 
 .ddg.env <- new.env(parent=emptyenv())
 
-# Set maximum number of checkpoints in DDG.
-
-ddg.MAX_CHECKPOINTS <- 10
-
 # Set the number of lines the history file keeps (and therefore
 # can be analyzed). Note: this setting has no effect on some
 # systems.
@@ -1036,7 +1032,6 @@ library(jsonlite)
 
 .ddg.is.proc.node <- function(type) {
   return(type == "Operation" |
-          type == "Checkpoint" |
           type == "Restore" |
           type == "Start" |
           type == "Finish" |
@@ -1060,7 +1055,7 @@ library(jsonlite)
 }
 
 # .ddg.proc.number gets the number of the nearest preceding
-# matching Operation, Checkpoint, or Restore node. It returns
+# matching Operation, or Restore node. It returns
 # zero if no match is found.
 
 # pname - name of procedure node.
@@ -2244,7 +2239,7 @@ library(jsonlite)
 # cmd.str - command string.
 
 .ddg.is.procedure.cmd <- function(cmd) {
-  return(grepl("^ddg.(procedure|start|finish|restore|checkpoint)", cmd@text))
+  return(grepl("^ddg.(procedure|start|finish|restore)", cmd@text))
 }
 
 # .ddg.parse.lines takes as input a set of lines corresponding to
@@ -6015,21 +6010,4 @@ ddg.flush.ddg <- function(ddg.path=NULL) {
   }
 
   invisible()
-}
-
-# ddg.checkpoint prompts the user to source DDGCheckpoint.R.
-
-# checkpoint.name (optional) - the value associated with the checkpoint
-#   procedure node.
-
-ddg.checkpoint <- function(checkpoint.name=NULL) {
-  stop("Call source(DDGCheckpoint.R) to load ddg.checkpoint and ddg.restore")
-}
-
-# ddg.restore prompts the user to source DDGCheckpoint.R.
-
-# file.path - the name of the checkpoint file to restore.
-
-ddg.restore <- function(file.path) {
-  stop("Call source(DDGCheckpoint.R) to load ddg.checkpoint and ddg.restore")
 }
