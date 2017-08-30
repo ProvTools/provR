@@ -782,18 +782,8 @@ library(jsonlite)
 
   #print(".ddg.record.data: adding file MD5 hash info")
   if (dtype == "File") {
-    infiles <- .ddg.get("ddg.infilenodes")
     dhash <- md5sum(dname)
     ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
-    if (length(infiles) != 0 && dname == infiles[length(infiles)]) {
-      drw <- "read"
-      ddg.data.nodes$ddg.rw[ddg.dnum] <- drw
-      .ddg.set("ddg.infilenodes", list())
-    } else {
-      drw <- "write"
-      ddg.data.nodes$ddg.rw[ddg.dnum] <- drw
-      .ddg.set("ddg.outfilenodes", list())
-    }
     longpath <- paste0(getwd(), substring(.ddg.path(),2))
   }
 
@@ -1721,11 +1711,6 @@ library(jsonlite)
   # This may include files that are not actually read if the
   # read are within an if-statement, for example.
   files.read <- .ddg.find.files.read(cmd, env)
-  # Adds the files read to ddg.infilenodes for use in determining reads
-  # and writes in the hashtable.
-  .ddg.set("ddg.infilenodes", c(.ddg.get("ddg.infilenodes"), files.read))
-  #print (".ddg.create.file.read.nodes.and.edges: Files read:")
-  # print (files.read)
 
   for (file in files.read) {
 
@@ -1762,11 +1747,6 @@ library(jsonlite)
   # This may include files that are not actually written if the
   # write calls are within an if-statement, for example.
   files.written <- .ddg.find.files.written(cmd, env)
-  # Adds the files written to ddg.outfilenodes for use in determining reads
-  # and writes in the hashtable.
-  .ddg.set("ddg.outfilenodes", c(.ddg.get("ddg.outfilenodes"), files.written))
-  #print (".ddg.create.file.read.nodes.and.edges: Files written:")
-  #print (files.written)
 
   for (file in files.written) {
     # Check that the file exists.  If it does, we will assume that
