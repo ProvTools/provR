@@ -1,4 +1,4 @@
-# Tests of ddg functions using ddg.source command.  This is a template file 
+# Tests of ddg functions using ddg.source command.  This is a template file
 # which is copied to examples/TEST/local directory, changed in format, and then
 # executed. The expected output template for each test should be found in
 # examples/TEST/EXPECTED_SOURCE_OUPUT
@@ -23,7 +23,7 @@ invisible(force(startTime))
 
 # Run the script
 #ddg.run("[SCRIPT]", "[DIR_DDG]", ignore.ddg.calls = F)
-ddg.run("[SCRIPT]", "[DIR_DDG]", save.hashtable = FALSE)
+ddg.run("[SCRIPT]", "[DIR_DDG]")
 
 # Calculate total time of execution
 endTime <- Sys.time()
