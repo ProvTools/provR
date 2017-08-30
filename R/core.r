@@ -423,8 +423,6 @@ library(jsonlite)
 .ddg.elapsed.time <- function(){
   time <- proc.time()
   elapsed <- time[1] +time[2] - .ddg.start.proc.time()
-  # time[4] and time[5] are NA under Windows
-  # elapsed <- time[1] +time[2] +time[4] +time[5]
   return(elapsed)
 }
 
@@ -567,11 +565,9 @@ library(jsonlite)
   tryCatch({
     .ddg.snapshot.node(name, fext, NULL, dscope=scope, from.env=from.env)
   }, error = function(e) {
-    # warning(paste("Attempted to write", name, "as", fext, "snapshot. Trying jpeg", ".", e))
     tryCatch({
       .ddg.snapshot.node(name, "jpeg", NULL, dscope=scope, from.env=from.env)
     }, error = function(e) {
-       # warning(paste("Attempted to write", name, "as jpeg snapshot. Failed.", e, "Defaulting to saving RObject and .txt file."))
       .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope=scope, from.env=from.env)
     })
   })
@@ -590,7 +586,6 @@ library(jsonlite)
   tryCatch({
     .ddg.snapshot.node(name, "csv", value, dscope=scope, from.env=from.env)
   }, error = function(e) {
-    # warning(paste("Attempted to write", name, "as .csv snapshot but failed. Out as RDataObject.", e))
     .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope=scope, from.env=from.env)
   })
 }
@@ -1877,14 +1872,6 @@ library(jsonlite)
       .ddg.get(".ddg.history.file") == hist.file) {
       savehistory(hist.file)
   }
-
-  # USED TO STORE ENTIRE HISTORY IN SEP. FILE.
-  # Read in changes and writ eout to extended file.
-
-  # newlines <- .ddg.loadhistory(ddg.tmp.history.file,ddg.grab.timestamp)
-  # write(newlines, file=hist.file, append=TRUE)
-  # insert timestamp to history
-  # .ddg.write.timestamp.to.history(var=".ddg.grab.timestamp.history")
 }
 
 
@@ -4032,10 +4019,6 @@ ddg.procedure <- function(pname, ins=NULL, outs.graphic=NULL, outs.data=NULL, ou
 
   # Create the input edges if ins list provided.
   if (!is.null(ins)) {
-    # Get scope.  Cannot use lapply because that results in the
-    # creation of a new stack, while .ddg.get.scope assumes that
-    # it is called.
-    # scope <- .ddg.get.scope(ins[[1]], for.caller = TRUE)
     stack <- sys.calls()
     function.scope <- parent.frame()
 
@@ -4080,18 +4063,6 @@ ddg.procedure <- function(pname, ins=NULL, outs.graphic=NULL, outs.data=NULL, ou
             }
 
             else {
-              # Attempt to allow names, not strings. This does not
-              # work as written because what we get when we call
-              # substitute is the parameter provided by lapply, not
-              # the one provided to ddg.procedure.  We will have
-              # the same problem dealing with outs.
-
-              # arg <- substitute(param)
-              # if (!is.character(arg) && .ddg.data.node.exists(arg)) {
-              # .ddg.data2proc(deparse(arg), pname)
-              # if (.ddg.debug.lib()) print(paste("param:", deparse(arg)))
-              #   else {warning}
-              # }
               error.msg <- paste("No data node found for", param)
               .ddg.insert.error.message(error.msg)
             }
@@ -5161,9 +5132,6 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
     tryCatch (.ddg.capture.graphics(basename(.ddg.get("ddg.r.script.path")), called.from.save = TRUE),
         error = function (e) print(e))
   }
-
-  # Delete temporary files.
-  # .ddg.delete.temp()
 
   # Save ddg.json to file.
   .ddg.json.write()
