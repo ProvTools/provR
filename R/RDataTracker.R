@@ -795,7 +795,6 @@ library(jsonlite)
       .ddg.set("ddg.outfilenodes", list())
     }
     longpath <- paste0(getwd(), substring(.ddg.path(),2))
-    .ddg.set("ddg.hashtable", rbind(.ddg.get("ddg.hashtable"), c(dscriptpath, dloc, longpath, paste(.ddg.path(), dvalue, sep="/"), ddg.dnum, dhash, drw, dtime, dvalue2), stringsAsFactors = FALSE))
   }
 
   ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
@@ -812,70 +811,6 @@ library(jsonlite)
       print(paste("Adding data node", ddg.dnum, "named", dname, "with scope", dscope, " and value ", ddg.data.nodes$ddg.value[ddg.dnum], " that hashes to ", dhash, " and performs a file ", drw))
     }
   }
-}
-
-# .ddg.hashtable.write writes relevant information about the ddg
-# to the .ddg directory in the user's home directory. If the
-# function is unable to access or create this directory, then
-# it will write to the working directory.
-
-.ddg.hashtable.write <- function() {
-  # if (interactive()) print(paste("Saving DDG in ", fileout))
-  writedir <- paste0(path.expand("~"),"/.ddg/")
-  if (!dir.exists(writedir)) {
-    tryCatch({
-      dir.create(writedir)
-    },
-    error = function(c){
-      writedir <- paste0(getwd(),"/.ddg/")
-      if (!dir.exists(writedir)) {
-        dir.create(writedir)
-      }
-    })
-  }
-  writefile <- paste0(writedir,"/hashtable.csv")
-  new_hashtable.csv <- .ddg.get("ddg.hashtable")
-  if (nrow(new_hashtable.csv) > 0) {
-    colnames(new_hashtable.csv) <- c("ScriptPath", "FilePath","DDGPath","NodePath","NodeNumber","MD5Hash","ReadWrite","Timestamp","Value")
-
-    if (file.exists(writefile)) {
-      old_hashtable.csv <- .ddg.hashtable.cleanup(writefile)
-      new_hashtable.csv <- rbind(old_hashtable.csv,new_hashtable.csv)
-    }
-    write.table(new_hashtable.csv, writefile, append = FALSE, col.names = TRUE, row.names = FALSE, sep = ",")
-
-
-    # JSON TABLE WORK GOES HERE
-
-    writejsonfile <- paste0(writedir,"/hashtable.json")
-    new_hashtable.json <- .ddg.get("ddg.hashtable")
-    colnames(new_hashtable.json) <- c("ScriptPath", "FilePath","DDGPath","NodePath","NodeNumber","MD5Hash","ReadWrite","Timestamp","Value")
-
-    if (file.exists(writejsonfile)) {
-      old_hashtable.json <- .ddg.hashtable.json.cleanup(writejsonfile)
-      new_hashtable.json <- rbind(old_hashtable.json, new_hashtable.json)
-    }
-    write_json(new_hashtable.json, writejsonfile)
-  }
-  }
-
-# .ddg.hashtable.cleanup cleans the previous hashtable.csv of entries containing
-# ddg data that has been overwritten. Ddg data is considered to be overwritten if
-# it has an identical ddg path to the new elements being written to the file.
-
-.ddg.hashtable.cleanup <- function(writefile) {
-  # if (interactive()) print(paste("Cleaning ddg of entries with DDGPath ", .ddg.path()))
-  old_hashtable.csv <- read.csv(file = writefile)
-  longpath <- paste0(getwd(), substring(.ddg.path(),2))
-  old_hashtable.csv <- subset(old_hashtable.csv, DDGPath != longpath)
-  return(old_hashtable.csv)
-}
-
-.ddg.hashtable.json.cleanup <- function(writejsonfile) {
-  old_hashtable.json <- read_json(writejsonfile, simplifyVector = TRUE)
-  longpath <- paste0(getwd(), substring(.ddg.path(),2))
-  old_hashtable.json <- subset(old_hashtable.json, DDGPath != longpath)
-  return(old_hashtable.json)
 }
 
 # Returns a string representation of the type information of the given value.
@@ -5450,9 +5385,8 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
 # debug (optional) - If TRUE, enable script debugging. This has the
 #   same effect as inserting ddg.breakpoint() at the top of the script.
 # save.debug (optional) - If TRUE, save debug files to debug directory.
-# save.hashtable (optional) - If TRUE, save ddg information to hashtable.csv.
 
-ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL, enable.console = TRUE, annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10, debug = FALSE, save.debug = FALSE, save.hashtable = TRUE) {
+ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL, enable.console = TRUE, annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10, debug = FALSE, save.debug = FALSE) {
 
   # Initiate ddg.
   ddg.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions, first.loop, max.loops, max.snapshot.size)
@@ -5478,7 +5412,7 @@ ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = N
                 force.console = FALSE)
           else stop("r.script.path and f cannot both be NULL"),
       finally={
-        ddg.save(r.script.path, save.hashtable = save.hashtable)
+        ddg.save(r.script.path)
       }
   )
 
@@ -5494,11 +5428,10 @@ ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = N
 # save.debug (optional) - If TRUE, save debug files to debug directory.
 #   Used in console mode.
 # quit (optional) - If TRUE, remove all DDG files from memory.
-# save.hashtable (optional) - If TRUE, save DDG information to hashtable.csv.
 #   Unlike ddg.run, this is set to false as default since it will generally
 #   be called internally and by tests, as opposed to by the user.
 
-ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE, save.hashtable = FALSE) {
+ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
   if (!.ddg.is.init()) return(invisible())
 
   if (interactive() && .ddg.enable.console()) {
@@ -5519,18 +5452,6 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE, sav
   # Save ddg.json to file.
   .ddg.json.write()
   if (interactive()) print(paste("Saving ddg.json in ", .ddg.path(), sep=""))
-
-  # Save hashtable.csv to file.
-  if (save.hashtable) {
-    if (interactive()) {
-      if (dir.exists(paste0(path.expand("~"),"/.ddg/"))) {
-        print("Saving hashtable.csv in .ddg directory.")
-      } else {
-        print("No .ddg directory found in home directory, saving hashtable.csv in local directory.")
-      }
-    }
-    .ddg.hashtable.write()
-  }
 
   # Save sourced scripts (if any). First row is main script.
   ddg.sourced.scripts <- .ddg.get(".ddg.sourced.scripts")
