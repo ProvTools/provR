@@ -388,12 +388,6 @@
   # Set current number of checkpoints.
   .ddg.set("ddg.checkpoint.num", 0)
 
-  # Create table for checkpoints.
-  .ddg.set("ddg.checkpoints",
-          data.frame(filename=character(ddg.MAX_CHECKPOINTS),
-          checkpoint.name=character(ddg.MAX_CHECKPOINTS),
-          stringsAsFactors=FALSE))
-
   # Record last command from the preceding console block.
   .ddg.set(".ddg.last.cmd", NULL)
 
