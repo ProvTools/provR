@@ -46,14 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.enum <- function() {
-    return(.ddg.get("ddg.enum"))
-}
-
-.ddg.data.nodes <- function() {
-    return(.ddg.get("ddg.data.nodes"))
-}
-
 .ddg.proc.nodes <- function() {
     return(.ddg.get("ddg.proc.nodes"))
 }

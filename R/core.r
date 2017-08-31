@@ -370,7 +370,7 @@ library(jsonlite)
 
 .ddg.data.objects <- function() {
     # Get data node, procedure node, and edge tables.
-    dnodes <- .ddg.data.nodes()
+    dnodes <- .ddg.get("ddg.data.nodes")
     pnodes <- .ddg.proc.nodes()
     edges <- .ddg.edges()
 
@@ -688,7 +688,7 @@ library(jsonlite)
     }
 
     # If the table is full, make it bigger.
-    ddg.data.nodes <- .ddg.data.nodes()
+    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
     if (nrow(ddg.data.nodes) < ddg.dnum) {
         size = 100
         new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
@@ -697,7 +697,7 @@ library(jsonlite)
             ddg.time = character(size), ddg.hash = character(size), ddg.rw = character(size),
             ddg.loc = character(size), ddg.current = logical(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.data.nodes", new.rows)
-        ddg.data.nodes <- .ddg.data.nodes()
+        ddg.data.nodes <- .ddg.get("ddg.data.nodes")
     }
 
     if (length(dvalue) > 1 || !is.atomic(dvalue))
@@ -973,7 +973,7 @@ library(jsonlite)
         dscope <- .ddg.get.scope(dname)
 
     # Search data nodes table.
-    ddg.data.nodes <- .ddg.data.nodes()
+    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
     rows <- nrow(ddg.data.nodes)
     for (i in rows:1) {
         if (ddg.data.nodes$ddg.current[i]) {
@@ -1008,7 +1008,7 @@ library(jsonlite)
 .ddg.data.number <- function(dname, dscope = NULL) {
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
-    ddg.data.nodes <- .ddg.data.nodes()
+    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
     rows <- nrow(ddg.data.nodes)
     for (i in rows:1) {
         if (ddg.data.nodes$ddg.current[i]) {
@@ -3732,7 +3732,7 @@ library(jsonlite)
 
     # Save data nodes table to file.
     fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/data-nodes.csv", sep = "")
-    ddg.data.nodes <- .ddg.data.nodes()
+    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
     ddg.data.nodes2 <- ddg.data.nodes[ddg.data.nodes$ddg.num > 0, ]
     write.csv(ddg.data.nodes2, fileout, row.names = FALSE)
 
