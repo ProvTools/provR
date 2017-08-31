@@ -372,7 +372,7 @@ library(jsonlite)
     # Get data node, procedure node, and edge tables.
     dnodes <- .ddg.get("ddg.data.nodes")
     pnodes <- .ddg.get("ddg.proc.nodes")
-    edges <- .ddg.edges()
+    edges <- .ddg.get("ddg.edges")
 
     # Subset data node table
     dnum <- .ddg.get("ddg.dnum")
@@ -858,13 +858,13 @@ library(jsonlite)
     ddg.enum <- .ddg.get("ddg.enum")
 
     # If the table is full, make it bigger.
-    ddg.edges <- .ddg.edges()
+    ddg.edges <- .ddg.get("ddg.edges")
     if (nrow(ddg.edges) < ddg.enum) {
         size = 100
         new.rows <- data.frame(ddg.num = numeric(size), ddg.type = character(size),
             ddg.from = character(size), ddg.to = character(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.edges", new.rows)
-        ddg.edges <- .ddg.edges()
+        ddg.edges <- .ddg.get("ddg.edges")
     }
 
     ddg.edges$ddg.num[ddg.enum] <- ddg.enum
@@ -3738,7 +3738,7 @@ library(jsonlite)
 
     # Save edges table to file.
     fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/edges.csv", sep = "")
-    ddg.edges <- .ddg.edges()
+    ddg.edges <- .ddg.get("ddg.edges")
     ddg.edges2 <- ddg.edges[ddg.edges$ddg.num > 0, ]
     write.csv(ddg.edges2, fileout, row.names = FALSE)
 
