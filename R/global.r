@@ -77,10 +77,6 @@
     .ddg.set(".ddg.warning", w)
 }
 
-.ddg.warning.occurred <- function() {
-    return(.ddg.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))
-}
-
 ##### Mutators for specific common actions
 
 .ddg.inc <- function(var) {

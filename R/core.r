@@ -2535,7 +2535,7 @@ library(jsonlite)
 
           # If a warning occurred when cmd was evaluated,
           # attach a warning node
-          if (.ddg.warning.occurred()) {
+          if ((.ddg.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))) {
             .ddg.record.warning()
           }
           # Store information on the last procedure node in this
