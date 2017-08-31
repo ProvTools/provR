@@ -47,10 +47,6 @@
 
 ##### Getters for specific variables
 
-.ddg.enable.source <- function() {
-    return(.ddg.is.set("from.source") && .ddg.get("from.source"))
-}
-
 .ddg.start.proc.time <- function() {
     if (.ddg.is.set(".ddg.proc.start.time"))
         return(.ddg.get(".ddg.proc.start.time")) else return(0)
