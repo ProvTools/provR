@@ -46,18 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.enable.console <- function() {
-    return(.ddg.get(".ddg.enable.console"))
-}
-
-.ddg.annotate.on <- function() {
-    return(.ddg.get("ddg.annotate.on"))
-}
-
-.ddg.annotate.off <- function() {
-    return(.ddg.get("ddg.annotate.off"))
-}
-
 .ddg.is.sourced <- function() {
     return(.ddg.get(".ddg.is.sourced"))
 }
