@@ -47,10 +47,6 @@
 
 ##### Getters for specific variables
 
-.ddg.script.num.stack <- function() {
-    return(.ddg.get(".ddg.script.num.stack"))
-}
-
 .ddg.enable.source <- function() {
     return(.ddg.is.set("from.source") && .ddg.get("from.source"))
 }
@@ -313,9 +309,6 @@
 
     # Number of first sourced script (main script).
     .ddg.set(".ddg.next.script.num", 0)
-
-    # Stack for sourced files
-    .ddg.set(".ddg.script.num.stack", 0)
 
     # Table of sourced scripts
     .ddg.set(".ddg.sourced.scripts", NULL)
