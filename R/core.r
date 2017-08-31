@@ -38,7 +38,7 @@ library(jsonlite)
     dir.create(paste(.ddg.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), showWarnings = FALSE)
 
-    if (interactive() && .ddg.enable.console()) {
+    if (interactive() && .ddg.get(".ddg.enable.console")) {
         .ddg.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
         .ddg.set.history()
     }
@@ -2253,7 +2253,7 @@ library(jsonlite)
       }
 
       # print("Checking whether to set last.cmd")
-      if (.ddg.enable.source() && grepl("^ddg.eval", cmd@text) && .ddg.enable.console()) {
+      if (.ddg.enable.source() && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
         }
@@ -2286,8 +2286,8 @@ library(jsonlite)
       # block, so there is no need to create additional nodes for the
       # control statement itself.
 
-      create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.enable.console() && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
-      # create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.enable.console()
+      create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
+      # create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.get(".ddg.enable.console")
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
 
@@ -2682,7 +2682,7 @@ library(jsonlite)
     }
 
     # We're not in a console node but we're capturing data automatically.
-    if (.ddg.enable.console()) {
+    if (.ddg.get(".ddg.enable.console")) {
 
         # Capture graphic output of previous procedure node.  Comment out this
         # function??? .ddg.auto.graphic.node()
@@ -3789,7 +3789,7 @@ ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception =
     pname <- NULL
     .ddg.lookup.function.name(pname)
 
-    if (interactive() && .ddg.enable.console())
+    if (interactive() && .ddg.get(".ddg.enable.console"))
         .ddg.console.node()
 
     # Look up input parameters from calling environment.
@@ -4277,7 +4277,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
         return(eval(parsed.statement, env))
     }
 
-    if (interactive() && .ddg.enable.console() && !.ddg.enable.source()) {
+    if (interactive() && .ddg.get(".ddg.enable.console") && !.ddg.enable.source()) {
         .ddg.console.node()
     }
 
@@ -4773,7 +4773,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     .ddg.set("possible.graphics.files.open", NULL)
     .ddg.set("ddg.open.devices", vector())
 
-    if (interactive() && .ddg.enable.console() && save.to.disk) {
+    if (interactive() && .ddg.get(".ddg.enable.console") && save.to.disk) {
         ddg.history.file <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/.ddghistory", sep = "")
         .ddg.set(".ddg.history.file", ddg.history.file)
 
@@ -4892,7 +4892,7 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
     if (!.ddg.is.init())
         return(invisible())
 
-    if (interactive() && .ddg.enable.console()) {
+    if (interactive() && .ddg.get(".ddg.enable.console")) {
         # Get the final commands
         .ddg.console.node()
     }
@@ -5128,7 +5128,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
 
         # Turn on the console if forced to, keep track of previous setting, parse
         # previous commands if necessary.
-        prev.on <- .ddg.is.init() && .ddg.enable.console()
+        prev.on <- .ddg.is.init() && .ddg.get(".ddg.enable.console")
         if (prev.on && interactive())
             .ddg.console.node()
         if (force.console)
@@ -5216,7 +5216,7 @@ ddg.console.off <- function() {
         return(invisible())
 
     # Capture history if console was on up to this point.
-    if (interactive() && .ddg.enable.console()) {
+    if (interactive() && .ddg.get(".ddg.enable.console")) {
         .ddg.console.node()
     }
 
@@ -5232,7 +5232,7 @@ ddg.console.on <- function() {
 
     # Write a new timestamp if we're turning on the console so we only capture
     # history from this point forward.
-    if (!.ddg.enable.console())
+    if (!.ddg.get(".ddg.enable.console"))
         .ddg.write.timestamp.to.history()
     .ddg.set(".ddg.enable.console", TRUE)
 }
