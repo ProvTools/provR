@@ -46,9 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.next.script.num <- function() {
-    return(.ddg.get(".ddg.next.script.num"))
-}
 
 .ddg.script.num.stack <- function() {
     return(.ddg.get(".ddg.script.num.stack"))
