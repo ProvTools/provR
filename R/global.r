@@ -46,14 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.source.parsed <- function() {
-    return(.ddg.get(".ddg.source.parsed"))
-}
-
-.ddg.parsed.num <- function() {
-    return(.ddg.get(".ddg.parsed.num"))
-}
-
 .ddg.sourced.scripts <- function() {
     return(.ddg.get(".ddg.sourced.scripts"))
 }
@@ -329,17 +321,11 @@
     # Number of first sourced script (main script).
     .ddg.set(".ddg.next.script.num", 0)
 
-    # Number of first parsed command.
-    .ddg.set(".ddg.parsed.num", 1)
-
     # Stack for sourced files
     .ddg.set(".ddg.script.num.stack", 0)
 
     # Table of sourced scripts
     .ddg.set(".ddg.sourced.scripts", NULL)
-
-    # Table of script, line & parsed command numbers
-    .ddg.set(".ddg.source.parsed", NULL)
 
     # Save debug files on debug directory
     .ddg.set("ddg.save.debug", FALSE)
