@@ -41,11 +41,10 @@ setMethod ("initialize",
         .Object@startCol <- -1
         .Object@endLine <- -1
         .Object@endCol<- -1
-      }
-
+      }     else {
       # If we have parseData, we extract the information into oure
       # object.
-      else {
+
         .Object@startLine <- parseData$line1
         .Object@startCol <- parseData$col1
         .Object@endLine <- parseData$line2
@@ -58,45 +57,65 @@ setMethod ("initialize",
 # This class contains all the information that we need when building a ddg.
 # We create this when we parse the statement so that it is only done once
 # and then look up the information we need when the statement executes.
+
+
+## text = "character",     # The original text in the file
+## parsed = "expression",  # The parse tree for the statement
+## abbrev = "character",   # A shortened version of the text to use in node names
+## annotated = "expression",  # An annotated version of the statement.  This is
+##                            # what we actually execute.
+
+## # Note that vars.used through has.dev.off do not apply to a situation where
+## # the statement is a function declaration, since declaring the statement
+## # does not read from files, etc.  That happens when the function is called,
+## # at which point we will refer to the information in the contained statements.
+
+## vars.used = "character", # A list of the variables that are used in the statement
+## vars.set = "character",  # If this is an assignment statement, this is the variable assigned
+## vars.possibly.set = "character",  # If this contains any internal assignment statements,
+##                                   # like an if-statement might, for example, these are the
+##                                   # variables assigned within the statement.
+## isDdgFunc = "logical",   # True if this is a call to a ddg function
+## readsFile = "logical",   # True if this statement contains a call to a function that
+##                          # reads from a file
+## writesFile = "logical",  # True if this statement contains a call to a function that
+##                          # writes to a file
+## createsGraphics = "logical",  # True if this is a function that creates a graphics
+##                               # object, like a call to pdf, for example
+## updatesGraphics = "logical",  # True if this is a function that updates a graphics
+##                               # object, like a call to a function in the graphics package, for example
+## has.dev.off = "logical",  # True if this statement contains a call to dev.off
+## pos = "DDGStatementPos",  # The location of this statement in the source code.
+##                           # Has the value null.pos() if it is not available.
+## script.num = "numeric",   # The number for the script this statement comes from.
+##                           # Has the value -1 if it is not available
+## is.breakpoint = "logical", # True if a breakpoint has been set for this statement
+## contained = "list"         # If this is a function declaration, this will be a list of
+##                            # DDGStatement objects for the statements it contains.
+
 setClass("DDGStatement",
     slots = list(
-        text = "character",     # The original text in the file
-        parsed = "expression",  # The parse tree for the statement
-        abbrev = "character",   # A shortened version of the text to use in node names
-        annotated = "expression",  # An annotated version of the statement.  This is
-                                   # what we actually execute.
+        text = "character",     
+        parsed = "expression",  
+        abbrev = "character",   
+        annotated = "expression",  
+        vars.used = "character", 
+        vars.set = "character",  
+        vars.possibly.set = "character",  
+        isDdgFunc = "logical",   
+        readsFile = "logical",   
+        writesFile = "logical",  
+        createsGraphics = "logical",  
+        updatesGraphics = "logical",  
+        has.dev.off = "logical",  
+        pos = "DDGStatementPos",  
+        script.num = "numeric",   
+        is.breakpoint = "logical", 
+        contained = "list"         
+        )
+         )
 
-        # Note that vars.used through has.dev.off do not apply to a situation where
-        # the statement is a function declaration, since declaring the statement
-        # does not read from files, etc.  That happens when the function is called,
-        # at which point we will refer to the information in the contained statements.
-
-        vars.used = "character", # A list of the variables that are used in the statement
-        vars.set = "character",  # If this is an assignment statement, this is the variable assigned
-        vars.possibly.set = "character",  # If this contains any internal assignment statements,
-                                          # like an if-statement might, for example, these are the
-                                          # variables assigned within the statement.
-        isDdgFunc = "logical",   # True if this is a call to a ddg function
-        readsFile = "logical",   # True if this statement contains a call to a function that
-                                 # reads from a file
-        writesFile = "logical",  # True if this statement contains a call to a function that
-                                 # writes to a file
-        createsGraphics = "logical",  # True if this is a function that creates a graphics
-                                      # object, like a call to pdf, for example
-        updatesGraphics = "logical",  # True if this is a function that updates a graphics
-                                      # object, like a call to a function in the graphics package, for example
-        has.dev.off = "logical",  # True if this statement contains a call to dev.off
-        pos = "DDGStatementPos",  # The location of this statement in the source code.
-                                  # Has the value null.pos() if it is not available.
-        script.num = "numeric",   # The number for the script this statement comes from.
-                                  # Has the value -1 if it is not available
-        is.breakpoint = "logical", # True if a breakpoint has been set for this statement
-        contained = "list"         # If this is a function declaration, this will be a list of
-                                   # DDGStatement objects for the statements it contains.
-      )
-)
-
-# This is called when a new DDG Statement is created.  It initializes all of the slots.
+## This is called when a new DDG Statement is created.  It initializes all of the slots.
 setMethod ("initialize",
   "DDGStatement",
     function(.Object, parsed, pos, script.name, script.num, breakpoints, parseData){
@@ -159,17 +178,13 @@ setMethod ("initialize",
             # want the breakpoint to be on one of the contained lines.
             if (.ddg.is.assign(.Object@parsed[[1]]) && .ddg.is.functiondecl(.Object@parsed[[1]][[3]])) {
               is.breakpoint <- any(breakpoints$lnum == .Object@pos@startLine)
-            }
-
+            } else {
             # If this is not a function declaration, then set a breakpoint if it is on any line
             # within the statement.
-            else {
               is.breakpoint <- any(breakpoints$lnum >= .Object@pos@startLine & breakpoints$lnum <= .Object@pos@endLine)
             }
-          }
-
+          } else {
           # No breakpoints are set in the script.
-          else {
             is.breakpoint <- FALSE
           }
 
@@ -274,12 +289,13 @@ null.pos <- function() {
             unique(unlist(.ddg.find.var.uses.rec(obj[[3]])))
           }
 
+          else if (is.call(obj[[2]])) {
           # If assigning to an expression (like a[b]), recurse on the
           # indexing part of the lvalue as well as on the expression.
           # covers cases:
           # storage.mode(z)
           # a[1] <- 2, a[b] <- 3
-          else if (is.call(obj[[2]])) {
+
             variables <- c( .ddg.find.var.uses.rec(obj[[2]][[2]]) , unlist(.ddg.find.var.uses.rec(obj[[3]])) )
 
             # for array index cases like a[b] <- 3,
@@ -290,21 +306,24 @@ null.pos <- function() {
             unique( variables )
           }
 
+          else if (is.character(obj[[2]])) {
           # covers cases where there is a string literal.
           # for assign function
-          else if (is.character(obj[[2]])) {
+
             unique( c(unlist(.ddg.find.var.uses.rec(parse(text = obj[[2]])[[1]])) , unlist(.ddg.find.var.uses.rec(parse(text = obj[[3]])[[1]]))) )
           }
 
-          # not entirely sure what this catches
+
           else {
+          # not entirely sure what this catches
             unique(c (.ddg.find.var.uses.rec(obj[[2]]), unlist(.ddg.find.var.uses.rec(obj[[3]]))))
           }
         }
 
+        else {
         # Not an assignment.  Recurse on all parts of the expression
         # except the operator.
-        else {
+
           unique(unlist(lapply(obj[1:length(obj)], .ddg.find.var.uses.rec)))
         }
       },
@@ -326,14 +345,12 @@ null.pos <- function() {
 
 # obj - input expression.
 
-.ddg.find.simple.assign <- function(obj)
-{
-  if (.ddg.is.assign(obj)) {
-    .ddg.get.var(obj[[2]])
-  }
-  else {
-    ""
-  }
+.ddg.find.simple.assign <- function(obj){
+    if (.ddg.is.assign(obj)) {
+        .ddg.get.var(obj[[2]])
+    }else {
+        ""
+    }
 }
 
 
@@ -341,27 +358,21 @@ null.pos <- function() {
 # object containing an assignment statement.
 
 # expr - a parsed expression.
+# This also finds uses of ->.
+# This also finds uses of ->>.
 
-.ddg.is.assign <- function (expr)
-{
-  if (is.call(expr))
-  {
-    # This also finds uses of ->.
-    if (identical(expr[[1]], as.name("<-")))
-      return (TRUE)
-
-    # This also finds uses of ->>.
-    else if (identical(expr[[1]], as.name("<<-")))
-      return (TRUE)
-
-    else if (identical(expr[[1]], as.name("=")))
-      return (TRUE)
-
-    else if (identical(expr[[1]], as.name("assign")))
-      return (TRUE)
-  }
-
-  return (FALSE)
+.ddg.is.assign <- function (expr){
+    if (is.call(expr)){
+        if (identical(expr[[1]], as.name("<-")))
+            return (TRUE)
+        else if (identical(expr[[1]], as.name("<<-")))
+            return (TRUE)
+        else if (identical(expr[[1]], as.name("=")))
+            return (TRUE)
+        else if (identical(expr[[1]], as.name("assign")))
+            return (TRUE)
+    }
+    return (FALSE)
 }
 
 
@@ -373,16 +384,15 @@ null.pos <- function() {
 
 # lvalue - a parsed expression.
 
-.ddg.get.var <- function(lvalue)
-{
-  if (is.symbol(lvalue))
-    deparse(lvalue)
-
   # for string literals
   # e.g. when the assign function is used
+
+
+.ddg.get.var <- function(lvalue){
+  if (is.symbol(lvalue))
+    deparse(lvalue)
   else if ( is.character(lvalue) )
     .ddg.get.var( parse(text = lvalue)[[1]] )
-
   else
     .ddg.get.var(lvalue[[2]])
 }
@@ -396,27 +406,27 @@ null.pos <- function() {
 
 # obj - a parsed expression.
 
-.ddg.find.assign <- function(obj) {
-  # Base case.
-  if (!is.recursive(obj)) return(character())
+# Assignment statement.  Add the variable being assigned to the
+# vector and recurse on the expression being assigned.
 
-  # Assignment statement.  Add the variable being assigned to the
-  # vector and recurse on the expression being assigned.
+# Don't look for assignments in the body of a function as those
+# won't happen until the function is called.
+# Don't recurse on NULL.
+
+# Not an assignment statement.  Recurse on the parts of the
+# expression.
+# Base case.
+
+.ddg.find.assign <- function(obj) {
+  if (!is.recursive(obj)) return(character())
   if (.ddg.is.assign(obj)) {
     var <- .ddg.get.var(obj[[2]])
-
-    # Don't look for assignments in the body of a function as those
-    # won't happen until the function is called.
-    # Don't recurse on NULL.
     if (!(is.null(obj[[3]]))) {
       if (.ddg.is.functiondecl(obj[[3]])) var
       else c(var, unlist(lapply(obj[[3]], .ddg.find.assign)))
     }
     else var
   }
-
-  # Not an assignment statement.  Recurse on the parts of the
-  # expression.
   else {
     unique(unlist(lapply(obj, .ddg.find.assign)))
   }
@@ -444,45 +454,42 @@ null.pos <- function() {
 
 # .ddg.add.annotations accepts a DDGStatement and returns an expression.
 # The returned expression is annotated as needed.
+  # Return if statement is empty.
+  # Replace source with ddg.source.
+  # Annotate user-defined functions.
+  # Note that this will not annotate anonymous functions, like ones that might be passed to lapply, for example
+  # Is that what we want?
 
 .ddg.add.annotations <- function(command) {
   parsed.command <- command@parsed[[1]]
 
-  # Return if statement is empty.
+
   if (length(parsed.command) == 0) return(command@parsed)
 
-  # Replace source with ddg.source.
+
   if (is.call(parsed.command) && parsed.command[[1]] == "source") {
     return(.ddg.add.ddg.source(parsed.command))
   }
 
-  # Annotate user-defined functions.
-  # Note that this will not annotate anonymous functions, like ones that might be passed to lapply, for example
-  # Is that what we want?
   if (.ddg.is.assign(parsed.command) && .ddg.is.functiondecl(parsed.command[[3]])) {
       return(.ddg.add.function.annotations(command))
     }
 
   statement.type <- as.character(.ddg.get.statement.type(parsed.command))
   loop.types <- list("for", "while", "repeat")
-  if (length(statement.type > 0) && !is.null(statement.type)) { # Move into funcs below && ddg.max.loops() > 0) {
-
+  if (length(statement.type > 0) && !is.null(statement.type)) { 
+    # Move into funcs below && ddg.max.loops() > 0) {
     # Annotate if statement.
-    if (statement.type == "if"){
-      return(.ddg.annotate.if.statement(command))
-    }
-
-    # Annotate for, while, repeat statement.
-    else if (statement.type %in% loop.types) {
-      return(.ddg.annotate.loop.statement(command, statement.type))
-    }
-
+      if (statement.type == "if"){
+          return(.ddg.annotate.if.statement(command))
+      } else if (statement.type %in% loop.types) {
+                                        # Annotate for, while, repeat statement.
+          return(.ddg.annotate.loop.statement(command, statement.type))
+      }  else if (statement.type == "{") {
     # Annotate simple block.
-    else if (statement.type == "{") {
       return(.ddg.annotate.simple.block(command))
     }
   }
-
   # Not a function or control construct.  No annotation required.
   return(command@parsed)
 }
@@ -505,10 +512,8 @@ null.pos <- function() {
   if (.ddg.is.assign(parsed.cmd) && .ddg.is.functiondecl(parsed.cmd[[3]])) {
       # Create the DDGStatement objects for the statements in the function
       return (.ddg.parse.contained.function(cmd, script.name, parseData, parsed.cmd[[3]][[3]]))
-  }
-
+  }  else if (ddg.max.loops() == 0) {
   # Check if we want to go inside loop and if-statements
-  else if (ddg.max.loops() == 0) {
     return (list())
   }
 
@@ -518,10 +523,8 @@ null.pos <- function() {
   # If statement.
   if (st.type == "if") {
     return (.ddg.parse.contained.if(cmd, script.name, parseData, parsed.cmd))
-  }
-
+  }  else {
   # Other control statements
-  else {
     control.types <- list("for", "while", "repeat", "{")
     if (length(st.type) > 0 && !is.null(st.type) && (st.type %in% control.types)) {
       return (.ddg.parse.contained.control(cmd, script.name, parseData, parsed.cmd, st.type))
@@ -533,13 +536,12 @@ null.pos <- function() {
 }
 
 .ddg.parse.contained.function <- function (cmd, script.name, parseData, func.body) {
-  # The function body is a block.  Extract the statements inside the block
-  if (func.body[[1]] == "{") {
-    func.stmts <- func.body[2:length(func.body)]
-  }
 
+  if (func.body[[1]] == "{") {
+  # The function body is a block.  Extract the statements inside the block
+    func.stmts <- func.body[2:length(func.body)]
+  }  else {
   # The function body is a single statement.
-  else {
     func.stmts <- list(func.body)
   }
 
@@ -1070,10 +1072,8 @@ null.pos <- function() {
   if (pos == 2) {
     new.statements <- c(as.list(block[[1]]),  inserted.statement, as.list(block[2]))
     return(as.call(new.statements))
-  }
-
+  }  else {
   # Block with multiple statements.
-  else {
     new.statements <- c(as.list(block[[1]]), inserted.statement, as.list(block[2:pos]))
     return(as.call(new.statements))
   }
