@@ -1092,7 +1092,7 @@ null.pos <- function() {
         # Add new loop & get loop number.
         .ddg.add.loop()
         .ddg.inc("ddg.loop.num")
-        ddg.loop.num <- .ddg.loop.num()
+        ddg.loop.num <- .ddg.get("ddg.loop.num")
 
         # Get statements in block.
         if (loop.type == "for") {
