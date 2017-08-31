@@ -152,7 +152,7 @@
 }
 
 .ddg.start.proc.time <- function() {
-    if (.ddg.is.set(".ddg.proc.start.time")) 
+    if (.ddg.is.set(".ddg.proc.start.time"))
         return(.ddg.get(".ddg.proc.start.time")) else return(0)
 }
 
@@ -295,16 +295,16 @@
 .ddg.get.initial.env <- function() {
     e <- globalenv()
     e.ls <- ls(e, all.names = TRUE)
-    
+
     not.ddg.func <- function(name) {
         return(!grepl("ddg", name) && name != ".onLoad")
     }
-    
+
     x <- Filter(not.ddg.func, e.ls)
-    
+
     ddg.initial.env <- data.frame(x)
     colnames(ddg.initial.env) <- "ddg.name"
-    
+
     .ddg.set("ddg.initial.env", ddg.initial.env)
 }
 
@@ -316,139 +316,139 @@
 
 .ddg.init.tables <- function() {
     size <- 100
-    
+
     .ddg.get.initial.env()
-    
-    .ddg.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size), 
-        ddg.name = character(size), ddg.value = character(size), ddg.return.linked = logical(size), 
-        ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size), 
-        ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size), 
+
+    .ddg.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
+        ddg.name = character(size), ddg.value = character(size), ddg.return.linked = logical(size),
+        ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
+        ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
         ddg.endCol = numeric(size), stringsAsFactors = FALSE))
-    
-    .ddg.set("ddg.data.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size), 
-        ddg.name = character(size), ddg.value = character(size), ddg.val.type = character(size), 
-        ddg.scope = character(size), ddg.from.env = logical(size), ddg.time = character(size), 
+
+    .ddg.set("ddg.data.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
+        ddg.name = character(size), ddg.value = character(size), ddg.val.type = character(size),
+        ddg.scope = character(size), ddg.from.env = logical(size), ddg.time = character(size),
         ddg.loc = character(size), ddg.current = logical(size), stringsAsFactors = FALSE))
-    
-    .ddg.set("ddg.edges", data.frame(ddg.num = numeric(size), ddg.type = character(size), 
+
+    .ddg.set("ddg.edges", data.frame(ddg.num = numeric(size), ddg.type = character(size),
         ddg.from = character(size), ddg.to = character(size), stringsAsFactors = FALSE))
-    
+
     # Create procedure and data node counters.
     .ddg.set("ddg.pnum", 0)
     .ddg.set("ddg.dnum", 0)
     .ddg.set("ddg.enum", 0)
-    
+
     # Create strings used to generate the JSON file.
     .ddg.set("ddg.activity", "")
     .ddg.set("ddg.entity", "")
     .ddg.set("ddg.wasInformedBy", "")
     .ddg.set("ddg.wasGeneratedBy", "")
     .ddg.set("ddg.used", "")
-    
+
     # Used to control debugging output.  If already defined, don't change its value.
-    if (!.ddg.is.set("ddg.debug.lib")) 
+    if (!.ddg.is.set("ddg.debug.lib"))
         .ddg.set("ddg.debug.lib", FALSE)
-    
+
     # Used to control script debugging.
     .ddg.set("ddg.break", FALSE)
     .ddg.set("ddg.break.ignore", FALSE)
-    
+
     # Used to control sourcing. If already defined, don't change its value.
-    if (!.ddg.is.set("from.source")) 
+    if (!.ddg.is.set("from.source"))
         .ddg.set("from.source", FALSE)
-    
+
     # Set current number of checkpoints.
     .ddg.set("ddg.checkpoint.num", 0)
-    
+
     # Record last command from the preceding console block.
     .ddg.set(".ddg.last.cmd", NULL)
-    
+
     # Record value returned by calls to ddg.return.  ddg.call - the string
     # representing the call, like 'f(a)'.  line - the line where the function is
     # called that is now returning return.used - remembers if this function return
     # value has been linked to the caller.  return.node.id - the id of the data node
     # that holds the return value.
-    .ddg.set(".ddg.return.values", data.frame(ddg.call = character(size), line = integer(size), 
+    .ddg.set(".ddg.return.values", data.frame(ddg.call = character(size), line = integer(size),
         return.used = logical(size), return.node.id = integer(size), stringsAsFactors = FALSE))
-    
+
     .ddg.set(".ddg.num.returns", 0)
-    
+
     # Record the current command to be opened during console execution (used when
     # executing a script using ddg.source).
     .ddg.set(".ddg.possible.last.cmd", NULL)
-    
+
     # Keep track of history.
     .ddg.set(".ddg.history.timestamp", NULL)
-    
+
     # Keep track of the last device seen (0 implies NULL).
     .ddg.set("prev.device", 0)
-    
+
     # Store path of current script.
     .ddg.set("ddg.r.script.path", NULL)
-    
+
     # Store path of current ddg.
     .ddg.set("ddg.path", NULL)
-    
+
     # No ddg initialized.
     .ddg.set(".ddg.initialized", FALSE)
-    
+
     # No history file.
     .ddg.set(".ddg.history.file", NULL)
-    
+
     # Console is disabled.
     .ddg.set(".ddg.enable.console", FALSE)
-    
+
     # Functions to be annotated.
     .ddg.set("ddg.annotate.on", NULL)
-    
+
     # Functions not to be annotated.
     .ddg.set("ddg.annotate.off", NULL)
-    
+
     # Script sourced with ddg.source
     .ddg.set(".ddg.is.sourced", FALSE)
-    
+
     # Number of first sourced script (main script).
     .ddg.set(".ddg.next.script.num", 0)
-    
+
     # Number of first parsed command.
     .ddg.set(".ddg.parsed.num", 1)
-    
+
     # Stack for sourced files
     .ddg.set(".ddg.script.num.stack", 0)
-    
+
     # Table of sourced scripts
     .ddg.set(".ddg.sourced.scripts", NULL)
-    
+
     # Table of script, line & parsed command numbers
     .ddg.set(".ddg.source.parsed", NULL)
-    
+
     # Save debug files on debug directory
     .ddg.set("ddg.save.debug", FALSE)
-    
+
     # DDGStatement number
     .ddg.set("ddg.statement.num", 0)
-    
+
     # DDGStatements list
     .ddg.set("ddg.statements", list())
-    
+
     # Control loop number
     .ddg.set("ddg.loop.num", 0)
-    
+
     # Control loop list
     .ddg.set("ddg.loops", list())
-    
+
     # Loop annotation
     .ddg.set("ddg.loop.annotate", TRUE)
-    
+
     # Set max.snapshot.size for console mode.
     if (!.ddg.is.set("ddg.max.snapshot.size")) {
         .ddg.set("ddg.max.snapshot.size", 100)
     }
-    
+
     # List of files read and written
     .ddg.set("ddg.infilenodes", list())
     .ddg.set("ddg.outfilenodes", list())
-    
+
     # Data frame containing file reads and writes
     .ddg.set("ddg.hashtable", data.frame())
 }
@@ -456,16 +456,16 @@
 # Initialize the information about functions that read from files
 .ddg.create.file.read.functions.df <- function() {
     # Functions that read files
-    function.names <- c("source", "read.csv", "read.csv2", "read.delim", "read.delim2", 
+    function.names <- c("source", "read.csv", "read.csv2", "read.delim", "read.delim2",
         "read.table", "read.xls", "file", "readLines")
-    
+
     # The argument that represents the file name
-    param.names <- c("file", "file", "file", "file", "file", "file", "xls", "description", 
+    param.names <- c("file", "file", "file", "file", "file", "file", "xls", "description",
         "con")
-    
+
     # Position of the file parameter if it is passed by position
     param.pos <- c(1, 1, 1, 1, 1, 1, 1, 1, 1)
-    
+
     return(data.frame(function.names, param.names, param.pos, stringsAsFactors = FALSE))
 }
 
@@ -475,13 +475,13 @@
 .ddg.create.file.write.functions.df <- function() {
     # Functions that read files
     function.names <- c("write.csv", "write.csv2", "write.table", "ggsave")
-    
+
     # The argument that represents the file name
     param.names <- c("file", "file", "file", "filename")
-    
+
     # Position of the file parameter if it is passed by position
     param.pos <- c(2, 2, 2, 1)
-    
+
     return(data.frame(function.names, param.names, param.pos, stringsAsFactors = FALSE))
 }
 
@@ -491,14 +491,14 @@
 .ddg.create.graphics.functions.df <- function() {
     # Functions that read files
     function.names <- c("pdf", "postscript", "bmp", "jpeg", "png", "tiff", "X11")
-    
+
     # The argument that represents the file name
-    param.names <- c("file", "file", "filename", "filename", "filename", "filename", 
+    param.names <- c("file", "file", "filename", "filename", "filename", "filename",
         NA)
-    
+
     # Position of the file parameter if it is passed by position
     param.pos <- c(1, 1, 1, 1, 1, 1, NA)
-    
+
     return(data.frame(function.names, param.names, param.pos, stringsAsFactors = FALSE))
 }
 
