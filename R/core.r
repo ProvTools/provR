@@ -4232,7 +4232,7 @@ ddg.should.run.annotated <- function(func.name) {
 
     # Not annotating functions in general check if this specific function should be
     # annotated
-    if (!is.null(.ddg.annotate.on()) & func.name %in% .ddg.annotate.on())
+    if (!is.null(.ddg.get("ddg.annotate.on")) & func.name %in% .ddg.get("ddg.annotate.on"))
         return(TRUE)
 
     # If we do not know anything specific about this function, follow the general
