@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.path.scripts <- function() {
-    return(paste(.ddg.get("ddg.path"), "/scripts", sep = ""))
-}
-
 .ddg.save.debug <- function() {
     return(.ddg.get("ddg.save.debug"))
 }

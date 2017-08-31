@@ -36,7 +36,7 @@ library(jsonlite)
     dir.create(.ddg.get("ddg.path"), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
-    dir.create(.ddg.path.scripts(), showWarnings = FALSE)
+    dir.create(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), showWarnings = FALSE)
 
     if (interactive() && .ddg.enable.console()) {
         .ddg.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
@@ -4733,7 +4733,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
         .ddg.init.environ()
 
         # Save copy of original script.
-        file.copy(r.script.path, paste(.ddg.path.scripts(), "/", basename(r.script.path),
+        file.copy(r.script.path, paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(r.script.path),
             sep = ""))
     } else {
         .ddg.set("ddg.save.to.disk", FALSE)
@@ -4742,7 +4742,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     # Reset r.script.path if RMarkdown file
 
     if (!is.null(r.script.path) && tools::file_ext(r.script.path) == "Rmd") {
-        output.path <- paste(.ddg.path.scripts(), "/", basename(tools::file_path_sans_ext(r.script.path)),
+        output.path <- paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
             ".R", sep = "")
         .ddg.markdown(r.script.path, output.path)
         .ddg.set("ddg.r.script.path", output.path)
@@ -4915,7 +4915,7 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
             for (i in 1:nrow(ddg.sourced.scripts)) {
                 sname <- ddg.sourced.scripts[i, "sname"]
                 if (.ddg.get("ddg.save.to.disk")) {
-                  file.copy(sname, paste(.ddg.path.scripts(), basename(sname), sep = "/"))
+                  file.copy(sname, paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), basename(sname), sep = "/"))
                 }
             }
         }
@@ -5297,7 +5297,7 @@ ddg.flush.ddg <- function(ddg.path = NULL) {
         ddg.path <- .ddg.get("ddg.path")
         ddg.path.data <- paste(.ddg.get("ddg.path"), "/data", sep = "")
         ddg.path.debug <- paste(.ddg.get("ddg.path"), "/debug", sep = "")
-        ddg.path.scripts <- .ddg.path.scripts()
+        ddg.path.scripts <- paste(.ddg.get("ddg.path"), "/scripts", sep = "")
     }
 
     # Remove files unless the DDG directory is the working directory.
