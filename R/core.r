@@ -2492,7 +2492,7 @@ library(jsonlite)
               if (loop.statement && .ddg.were.details.omitted()) {
                 vars.set2 <- .ddg.add.to.vars.set(vars.set, cmd, i)
                 .ddg.create.data.node.for.possible.writes(vars.set2, cmd, environ)
-                .ddg.set.details.omitted(FALSE)
+                .ddg.set("details.omitted", FALSE)
               }
             }
 
@@ -4214,7 +4214,7 @@ ddg.details.omitted <- function() {
     pnode.name <- "Details Omitted"
     .ddg.proc.node("Incomplete", pnode.name, pnode.name)
     .ddg.proc2proc()
-    .ddg.set.details.omitted(TRUE)
+    .ddg.set("details.omitted", TRUE)
 
     if (.ddg.get("ddg.debug.lib")) {
         print("Adding Details Omitted node")
@@ -4760,7 +4760,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     .ddg.set(".ddg.enable.console", enable.console)
     .ddg.set(".ddg.func.depth", 0)
     .ddg.set(".ddg.explorer.port", 6096)
-    .ddg.set.details.omitted(FALSE)
+    .ddg.set("details.omitted", FALSE)
 
     # Initialize the information about the open start-finish blocks
     .ddg.set(".ddg.starts.open", vector())

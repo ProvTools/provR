@@ -45,20 +45,8 @@
     .ddg.init.tables()
 }
 
-##### Getters for specific variables
-.ddg.loop.num <- function() {
-    return(.ddg.get("ddg.loop.num"))
-}
-
-.ddg.loops <- function() {
-    return(.ddg.get("ddg.loops"))
-}
-
 # value should be TRUE or FALSE Keeps track of whether the last loop has all
 # iterations recorded or not.
-.ddg.set.details.omitted <- function(value) {
-    .ddg.set("details.omitted", value)
-}
 
 .ddg.were.details.omitted <- function() {
     .ddg.get("details.omitted")
@@ -67,7 +55,6 @@
 
 # Functions that allow us to save warnings when they occur so that we can create
 # the warning node after the node that caused the warning is created.
-
 # .ddg.set.warning is attached as a handler when we evaluate expressions.  It
 # saves the warning so that a warning node can be created after the procedural
 # node that corresponds to the expression that caused the warning w - the
