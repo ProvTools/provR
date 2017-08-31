@@ -1344,9 +1344,7 @@ library(jsonlite)
         
         if (.ddg.data.node.exists(var, scope)) {
             nRow <- which(vars.set$variable == var)
-            
-            # 
-eck if the node is written in the console block.
+            # check if the node is written in the console block.
             if (length(nRow) > 0) {
                 first.writer <- min(vars.set$first.writer[nRow], vars.set$possible.first.writer[nRow])
                 last.writer <- max(vars.set$last.writer[nRow], vars.set$possible.last.writer[nRow])
@@ -1561,7 +1559,7 @@ eck if the node is written in the console block.
     
     for (file in files.read) {
         
-        # Only create the node and edge if there actually is a file Even if the file
+        # Only create the node and edge if there actually is a file then if the file
         # exists, it is possible that it was not read here
         if (file.exists(file)) {
             # Create the file node and edge
@@ -1592,8 +1590,7 @@ eck if the node is written in the console block.
     files.written <- .ddg.find.files.written(cmd, env)
     
     for (file in files.written) {
-        # 
-eck that the file exists.  If it does, we will assume that it was created by
+        # check that the file exists.  If it does, we will assume that it was created by
         # the write call that we just found.
         if (file.exists(file)) {
             # Create the file node and edge
@@ -1670,8 +1667,7 @@ eck that the file exists.  If it does, we will assume that it was created by
         graphics.file.info <- file.info(possible.graphics.files.open)
         latest.file.date.row <- which.max(graphics.file.info$mtime)
         
-        # 
-eck if the device is still open and close it if it is We need to do this so
+        # check if the device is still open and close it if it is We need to do this so
         # that the file.out call can copy the file.
         if (dev.number %in% dev.list()) 
             dev.off(dev.number)
@@ -2234,8 +2230,7 @@ eck if the device is still open and close it if it is We need to do this so
 ## if( identical(d.environ,'undefined') ) d.environ <- globalenv() }
 
 
-## # 
-eck for control & loop statements.  st.type <-
+## # check for control & loop statements.  st.type <-
 ## .ddg.get.statement.type(cmd@parsed[[1]])
 
 ## control.statement <- (st.type == 'if' || st.type == 'for' || st.type == 'while'
@@ -2295,7 +2290,7 @@ eck for control & loop statements.  st.type <-
 
 ## # EVALUATE.
 
-## if (.ddg.debug.lib()) print (paste ('.ddg.parse.commands: Evaluating ',
+## if (.ddg.debug.lib()) print (paste ('.ddg.parse.commands: evaluating ',
 ## cmd@annotated))
 
 ## result <- withCallingHandlers(
@@ -2801,8 +2796,7 @@ eck for control & loop statements.  st.type <-
         return(NULL)
     }
     
-    # 
-eck to see if we want to save the object.
+    # check to see if we want to save the object.
     if (save.object && full.snapshot) 
         save(data, file = paste(.ddg.path.data(), "/", .ddg.dnum() + 1, "-", snapname, 
             ".RObject", sep = ""), ascii = TRUE)
@@ -3782,8 +3776,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     
     # Prints the call & arguments.  expr forces evaluation of the function early.  I
     # think that causes some examples to work with debugging on but not off.
-    # 
-ecking.  (6/26/2015 - Barb).  Yes, ReturnTest.R fails on the recursive f5
+    # checking.  (6/26/2015 - Barb).  Yes, ReturnTest.R fails on the recursive f5
     # function
     
     ddg.return.values <- .ddg.get(".ddg.return.values")
@@ -3835,8 +3828,7 @@ ecking.  (6/26/2015 - Barb).  Yes, ReturnTest.R fails on the recursive f5
     
     caller.env = sys.frame(caller.frame)
     
-    # 
-eck if there is a return call within this call to ddg.return.
+    # check if there is a return call within this call to ddg.return.
     if (.ddg.has.call.to(parsed.stmt, "return")) {
         .ddg.proc.node("Operation", return.stmt@abbrev, return.stmt@abbrev, console = TRUE, 
             env = caller.env, cmd = return.stmt)
@@ -3889,8 +3881,7 @@ eck if there is a return call within this call to ddg.return.
                 # Create output data node.
                 dvalue <- eval(as.symbol(var), envir = env)
                 
-                # 
-eck for non-local assignment
+                # check for non-local assignment
                 if (.ddg.is.nonlocal.assign(return.stmt@parsed[[1]])) {
                   env <- .ddg.where(var, env = parent.env(parent.frame()), warning = FALSE)
                   
@@ -4044,8 +4035,7 @@ ddg.details.omitted <- function() {
 
 ddg.should.run.annotated <- function(func.name) {
     
-    # 
-eck if we are in a loop and loop annotations are off
+    # check if we are in a loop and loop annotations are off
     if (!.ddg.loop.annotate() && .ddg.inside.loop() > 0) 
         return(FALSE)
     
@@ -4053,8 +4043,7 @@ eck if we are in a loop and loop annotations are off
     if (!is.null(.ddg.annotate.off()) & func.name %in% .ddg.annotate.off()) 
         return(FALSE)
     
-    # Not annotating functions in general 
-eck if this specific function should be
+    # Not annotating functions in general check if this specific function should be
     # annotated
     if (!is.null(.ddg.annotate.on()) & func.name %in% .ddg.annotate.on()) 
         return(TRUE)
@@ -4447,8 +4436,7 @@ ddg.start <- function(pname = NULL) {
     
     .ddg.lookup.function.name(pname)
     
-    # 
-eck for NULL.
+    # check for NULL.
     if (is.null(pname)) {
         msg <- "Cannot call ddg.start with NULL value from top-level."
         .ddg.insert.error.message(msg)
@@ -4483,8 +4471,7 @@ ddg.finish <- function(pname = NULL) {
     
     .ddg.lookup.function.name(pname)
     
-    # 
-eck for NULL.
+    # check for NULL.
     if (is.null(pname)) {
         msg <- "Cannot call ddg.finish with NULL value from top-level."
         .ddg.insert.error.message(msg)
@@ -4852,7 +4839,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     if (is.character(file)) {
         if (identical(encoding, "unknown")) {
             enc <- utils::localeTo
-arset()
+            arset()
             encoding <- enc[length(enc)]
         } else enc <- encoding
         if (length(enc) > 1L) {
@@ -4892,7 +4879,7 @@ arset()
                 isFile = TRUE)
         }
         loc <- utils::localeTo
-arset()[1L]
+        arset()[1L]
         encoding <- if (have_encoding) 
             switch(loc, `UTF-8` = "UTF-8", `ISO8859-1` = "latin1", "unknown") else "unknown"
     } else {
