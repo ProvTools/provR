@@ -47,10 +47,6 @@
 
 ##### Getters for specific variables
 
-.ddg.statement.num <- function() {
-    return(.ddg.get("ddg.statement.num"))
-}
-
 .ddg.statements <- function() {
     return(.ddg.get("ddg.statements"))
 }
