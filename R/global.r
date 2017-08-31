@@ -46,16 +46,6 @@
 }
 
 ##### Getters for specific variables
-
-.ddg.statements <- function() {
-    return(.ddg.get("ddg.statements"))
-}
-
-.ddg.statement <- function(i) {
-    ddg.statements <- .ddg.statements()
-    return(ddg.statements[[i]])
-}
-
 .ddg.loop.num <- function() {
     return(.ddg.get("ddg.loop.num"))
 }
@@ -165,7 +155,7 @@
 }
 
 .ddg.add.ddgstatement <- function(parsed.stmt) {
-    ddg.statements <- c(.ddg.statements(), parsed.stmt)
+    ddg.statements <- c(.ddg.get("ddg.statements"), parsed.stmt)
     .ddg.set("ddg.statements", ddg.statements)
 }
 
