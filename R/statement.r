@@ -709,7 +709,7 @@ null.pos <- function() {
                 if (.ddg.has.call.to(ret.params, "return")) {
                   ret.params <- .ddg.wrap.return.parameters(ret.params, parsed.stmt)
                 }
-                
+
                 new.ret.params <- .ddg.create.ddg.return.call(ret.params, parsed.stmt)
                 new.statement <- call("return", new.ret.params)
                 block[[i]] <- new.statement
