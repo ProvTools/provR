@@ -420,7 +420,11 @@ library(jsonlite)
 
 .ddg.elapsed.time <- function() {
     time <- proc.time()
-    elapsed <- time[1] + time[2] - .ddg.start.proc.time()
+    if (.ddg.is.set(".ddg.proc.start.time"))
+      start <- .ddg.get(".ddg.proc.start.time")
+    else
+      start <- 0
+    elapsed <- time[1] + time[2] - start
     return(elapsed)
 }
 

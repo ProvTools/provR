@@ -47,11 +47,6 @@
 
 ##### Getters for specific variables
 
-.ddg.start.proc.time <- function() {
-    if (.ddg.is.set(".ddg.proc.start.time"))
-        return(.ddg.get(".ddg.proc.start.time")) else return(0)
-}
-
 .ddg.statement.num <- function() {
     return(.ddg.get("ddg.statement.num"))
 }
