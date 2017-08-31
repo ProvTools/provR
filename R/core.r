@@ -34,7 +34,7 @@ library(jsonlite)
 
 .ddg.init.environ <- function() {
     dir.create(.ddg.get("ddg.path"), showWarnings = FALSE)
-    dir.create(.ddg.path.data(), showWarnings = FALSE)
+    dir.create(paste(.ddg.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
     dir.create(.ddg.path.debug(), showWarnings = FALSE)
     dir.create(.ddg.path.scripts(), showWarnings = FALSE)
 
@@ -2954,7 +2954,7 @@ library(jsonlite)
         paste(.ddg.dnum() + 1, "-", snapname, sep = "") else paste(.ddg.dnum() + 1, "-", snapname, ".", fext, sep = "")
 
     # Get path plus file name.
-    dpfile <- paste(.ddg.path.data(), "/", dfile, sep = "")
+    dpfile <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
     if (.ddg.get("ddg.debug.lib"))
         print(paste("Saving snapshot in ", dpfile))
 
@@ -2965,7 +2965,7 @@ library(jsonlite)
         # Capture graphic.  Write out RData (this is old code, not sure if we need it).
         .ddg.graphic.snapshot(fext, dpfile)
     } else if (fext == "RData")
-        file.rename(paste(.ddg.path.data(), "/", dname, sep = ""), dpfile) else if (fext == "txt" || fext == "") {
+        file.rename(paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dname, sep = ""), dpfile) else if (fext == "txt" || fext == "") {
         # Write out text file for txt or empty fext.
         file.create(dpfile, showWarnings = FALSE)
         if (is.list(data) && length(data) > 0) {
@@ -2985,7 +2985,7 @@ library(jsonlite)
 
     # check to see if we want to save the object.
     if (save.object && full.snapshot)
-        save(data, file = paste(.ddg.path.data(), "/", .ddg.dnum() + 1, "-", snapname,
+        save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.dnum() + 1, "-", snapname,
             ".RObject", sep = ""), ascii = TRUE)
 
     dtime <- .ddg.timestamp()
@@ -2995,7 +2995,7 @@ library(jsonlite)
         dscope <- .ddg.get.scope(dname)
 
     # Record in data node table
-    .ddg.record.data(dtype, dname, paste(.ddg.data.dir(), dfile, sep = "/"), orig.data,
+    .ddg.record.data(dtype, dname, paste("data", dfile, sep = "/"), orig.data,
         dscope, from.env = from.env, dtime)
 
     if (.ddg.get("ddg.debug.lib"))
@@ -3025,7 +3025,7 @@ library(jsonlite)
 
     # Calculate the path to the file relative to the ddg directory.  This is the
     # value stored in the node.
-    dpfile <- paste(.ddg.data.dir(), dfile, sep = "/")
+    dpfile <- paste("data", dfile, sep = "/")
 
     dtime <- .ddg.timestamp()
 
@@ -3045,7 +3045,7 @@ library(jsonlite)
         file.loc)
 
     # Get path plus file name to where the file will be copied
-    dpath <- paste(.ddg.path.data(), "/", dfile, sep = "")
+    dpath <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
     return(dpath)
 }
 
@@ -4774,7 +4774,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     .ddg.set("ddg.open.devices", vector())
 
     if (interactive() && .ddg.enable.console() && save.to.disk) {
-        ddg.history.file <- paste(.ddg.path.data(), "/.ddghistory", sep = "")
+        ddg.history.file <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/.ddghistory", sep = "")
         .ddg.set(".ddg.history.file", ddg.history.file)
 
         # Empty file if it already exists, do the same with tmp file.
@@ -5295,7 +5295,7 @@ ddg.flush.ddg <- function(ddg.path = NULL) {
     # Use current DDG directories if no directory is specified.
     if (is.null(ddg.path)) {
         ddg.path <- .ddg.get("ddg.path")
-        ddg.path.data <- .ddg.path.data()
+        ddg.path.data <- paste(.ddg.get("ddg.path"), "/data", sep = "")
         ddg.path.debug <- .ddg.path.debug()
         ddg.path.scripts <- .ddg.path.scripts()
     }
