@@ -35,7 +35,7 @@ library(jsonlite)
 .ddg.init.environ <- function() {
     dir.create(.ddg.get("ddg.path"), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
-    dir.create(.ddg.path.debug(), showWarnings = FALSE)
+    dir.create(paste(.ddg.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
     dir.create(.ddg.path.scripts(), showWarnings = FALSE)
 
     if (interactive() && .ddg.enable.console()) {
@@ -2116,7 +2116,7 @@ library(jsonlite)
         }
     }
 
-    fileout <- file(paste(.ddg.path.debug(), "/annotated-", script.name, sep = ""))
+    fileout <- file(paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/annotated-", script.name, sep = ""))
     write(script, fileout)
     close(fileout)
 }
@@ -3720,30 +3720,30 @@ library(jsonlite)
 
 .ddg.save.debug.files <- function() {
     # Save initial environment table to file.
-    fileout <- paste(.ddg.path.debug(), "/initial-environment.csv", sep = "")
+    fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/initial-environment.csv", sep = "")
     ddg.initial.env <- .ddg.initial.env()
     write.csv(ddg.initial.env, fileout, row.names = FALSE)
 
     # Save procedure nodes table to file.
-    fileout <- paste(.ddg.path.debug(), "/procedure-nodes.csv", sep = "")
+    fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/procedure-nodes.csv", sep = "")
     ddg.proc.nodes <- .ddg.proc.nodes()
     ddg.proc.nodes <- ddg.proc.nodes[ddg.proc.nodes$ddg.num > 0, ]
     write.csv(ddg.proc.nodes, fileout, row.names = FALSE)
 
     # Save data nodes table to file.
-    fileout <- paste(.ddg.path.debug(), "/data-nodes.csv", sep = "")
+    fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/data-nodes.csv", sep = "")
     ddg.data.nodes <- .ddg.data.nodes()
     ddg.data.nodes2 <- ddg.data.nodes[ddg.data.nodes$ddg.num > 0, ]
     write.csv(ddg.data.nodes2, fileout, row.names = FALSE)
 
     # Save edges table to file.
-    fileout <- paste(.ddg.path.debug(), "/edges.csv", sep = "")
+    fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/edges.csv", sep = "")
     ddg.edges <- .ddg.edges()
     ddg.edges2 <- ddg.edges[ddg.edges$ddg.num > 0, ]
     write.csv(ddg.edges2, fileout, row.names = FALSE)
 
     # Save function return table to file.
-    fileout <- paste(.ddg.path.debug(), "/function-returns.csv", sep = "")
+    fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/function-returns.csv", sep = "")
     ddg.returns <- .ddg.get(".ddg.return.values")
     ddg.returns2 <- ddg.returns[ddg.returns$return.node.id > 0, ]
     write.csv(ddg.returns2, fileout, row.names = FALSE)
@@ -3751,14 +3751,14 @@ library(jsonlite)
     # Save if script is sourced.
     if (.ddg.is.sourced()) {
         # Save sourced script table to file.
-        fileout <- paste(.ddg.path.debug(), "/sourced-scripts.csv", sep = "")
+        fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/sourced-scripts.csv", sep = "")
         ddg.sourced.scripts <- .ddg.get(".ddg.sourced.scripts")
         ddg.sourced.scripts2 <- ddg.sourced.scripts[ddg.sourced.scripts$snum >= 0,
             ]
         write.csv(ddg.sourced.scripts2, fileout, row.names = FALSE)
 
         # Save data object table to file.
-        fileout <- paste(.ddg.path.debug(), "/data-objects.csv", sep = "")
+        fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/data-objects.csv", sep = "")
         ddg.data.objects <- .ddg.data.objects()
         write.csv(ddg.data.objects, fileout, row.names = FALSE)
     }
@@ -5296,7 +5296,7 @@ ddg.flush.ddg <- function(ddg.path = NULL) {
     if (is.null(ddg.path)) {
         ddg.path <- .ddg.get("ddg.path")
         ddg.path.data <- paste(.ddg.get("ddg.path"), "/data", sep = "")
-        ddg.path.debug <- .ddg.path.debug()
+        ddg.path.debug <- paste(.ddg.get("ddg.path"), "/debug", sep = "")
         ddg.path.scripts <- .ddg.path.scripts()
     }
 
