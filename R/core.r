@@ -663,7 +663,7 @@ library(jsonlite)
     # Output procedure node.
     .ddg.output.procedure.node(ptype, pname, pvalue, auto.created, ptime, snum, pos)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         print(paste("Adding procedure node", ddg.pnum, "named", pname))
     }
 }
@@ -733,7 +733,7 @@ library(jsonlite)
     .ddg.output.data.node(dscriptpath, dtype, dname, dvalue2, val.type, dscope, from.env,
         dhash, drw, dtime, dloc)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         if (dtype != "File") {
             print(paste("Adding data node", ddg.dnum, "named", dname, "with scope",
                 dscope, " and value ", ddg.data.nodes$ddg.value[ddg.dnum]))
@@ -876,7 +876,7 @@ library(jsonlite)
     # Output control flow or data flow edge.
     .ddg.output.edge(etype, node1, node2)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         if (etype == "cf")
             etype.long <- "control flow" else if (etype == "df.in")
             etype.long <- "data flow in" else etype.long <- "data flow out"
@@ -937,7 +937,7 @@ library(jsonlite)
 
     # Error message if no match is found.
     error.msg <- paste("No procedure node found for", pname)
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(sys.calls())
     .ddg.insert.error.message(error.msg)
     return(0)
@@ -1054,7 +1054,7 @@ library(jsonlite)
         node2 <- paste("p", ddg.pnum, sep = "")
         .ddg.record.edge(etype, node1, node2)
 
-        if (.ddg.debug.lib()) {
+        if (.ddg.get("ddg.debug.lib")) {
             pname1 <- .ddg.proc.name(ddg.pnum - 1)
             pname2 <- .ddg.proc.name(ddg.pnum)
             print(paste("proc2proc: ", pname1, " ", pname2))
@@ -1081,7 +1081,7 @@ library(jsonlite)
     node2 <- paste("p", pn, sep = "")
     .ddg.record.edge(etype, node1, node2)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         print(paste("data2proc: ", dname, " ", pname, sep = ""))
         print(paste("DF ", node1, " ", node2, sep = ""))
     }
@@ -1121,7 +1121,7 @@ library(jsonlite)
             .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
         }
 
-        if (.ddg.debug.lib()) {
+        if (.ddg.get("ddg.debug.lib")) {
             print(paste("proc2data: ", pname, " ", dname, sep = ""))
             print(paste("DF ", node1, " ", node2, sep = ""))
         }
@@ -1149,7 +1149,7 @@ library(jsonlite)
     node2 <- paste("d", dn, sep = "")
     .ddg.record.edge(etype, node1, node2)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         print(paste("lastproc2data:", dname))
         print(paste("DF ", node1, " ", node2, sep = ""))
     }
@@ -1825,7 +1825,7 @@ library(jsonlite)
         node2 <- paste("p", proc.num, sep = "")
         .ddg.record.edge(etype, node1, node2)
 
-        if (.ddg.debug.lib()) {
+        if (.ddg.get("ddg.debug.lib")) {
             print(paste(".ddg.link.function.returns:", command@abbrev))
             print(paste("DF ", node1, " ", node2, sep = ""))
         }
@@ -1851,7 +1851,7 @@ library(jsonlite)
             node.name <- cmd@abbrev
         }
     }
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste(called, ":  Adding", node.name, type, "node"))
     .ddg.proc.node(type, node.name, node.name, TRUE, env = env, cmd = cmd)
     .ddg.proc2proc()
@@ -2244,7 +2244,7 @@ library(jsonlite)
     for (i in 1:length(cmds)) {
       cmd <- cmds[[i]]
 
-      if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
+      if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
 
       # Process breakpoint. We stop if there is a breakpoint set on this line or we are single-stepping.
       # print("Checking for breakpoints")
@@ -2361,7 +2361,7 @@ library(jsonlite)
 
           # EVALUATE.
 
-          if (.ddg.debug.lib()) print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
+          if (.ddg.get("ddg.debug.lib")) print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
           #print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
           #print (paste ("length(cmd@annotated) =", length(cmd@annotated)))
 
@@ -2393,7 +2393,7 @@ library(jsonlite)
 
               # create input edges by adding variables to set
               vars.set <- .ddg.add.to.vars.set(vars.set,cmd,i)
-              if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set, for an error"))
+              if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set, for an error"))
               .ddg.create.data.use.edges.for.console.cmd(vars.set, cmd, i, for.caller=FALSE)
 
               # check for factors
@@ -2425,7 +2425,7 @@ library(jsonlite)
             }
           )
 
-          if (.ddg.debug.lib()) print (paste (".ddg.parse.commands: Done evaluating ", cmd@annotated))
+          if (.ddg.get("ddg.debug.lib")) print (paste (".ddg.parse.commands: Done evaluating ", cmd@annotated))
 
           # After evaluating
           # Check changes to variable type for common variables between vars.set and vars.used
@@ -2524,7 +2524,7 @@ library(jsonlite)
 
           # Create the procedure node.
 
-          if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding operation node for", cmd@abbrev))
+          if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding operation node for", cmd@abbrev))
 
           .ddg.proc.node("Operation", cmd@abbrev, cmd@abbrev, env=environ, console=TRUE, cmd=cmd)
           .ddg.proc2proc()
@@ -2544,7 +2544,7 @@ library(jsonlite)
             # Add variables to set.
             vars.set <- .ddg.add.to.vars.set(vars.set,cmd,i)
 
-            if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set"))
+            if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set"))
           }
 
           .ddg.create.data.use.edges.for.console.cmd(vars.set, cmd, i, for.caller=FALSE)
@@ -2552,11 +2552,11 @@ library(jsonlite)
           if (cmd@readsFile) .ddg.create.file.read.nodes.and.edges(cmd, environ)
           .ddg.link.function.returns(cmd)
 
-          if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding input data nodes for", cmd@abbrev))
+          if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding input data nodes for", cmd@abbrev))
 
           .ddg.create.data.set.edges.for.cmd(vars.set, cmd, i, d.environ)
 
-          if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding output data nodes for", cmd@abbrev))
+          if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding output data nodes for", cmd@abbrev))
 
           if (cmd@writesFile) .ddg.create.file.write.nodes.and.edges (cmd, environ)
           if (cmd@createsGraphics) .ddg.set.graphics.files (cmd, environ)
@@ -2576,7 +2576,7 @@ library(jsonlite)
           if (execute) {
             # Add variables to set.
             vars.set <- .ddg.add.to.vars.set(vars.set,cmd, i)
-            if (.ddg.debug.lib()) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set"))
+            if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set"))
             .ddg.create.data.set.edges.for.cmd(vars.set, cmd, i, environ)
           }
         }
@@ -2675,7 +2675,7 @@ library(jsonlite)
 # CHECK!  Looks like env parameter is not needed!
 .ddg.proc.node <- function(ptype, pname, pvalue = "", console = FALSE, auto.created = FALSE,
     env = sys.frame(.ddg.get.frame.number(sys.calls())), cmd = NULL) {
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         if (length(pname) > 1) {
             print(sys.calls())
         }
@@ -2731,7 +2731,7 @@ library(jsonlite)
     .ddg.record.proc(ptype, pname, pvalue, auto.created, ptime, snum, pos)
 
     # if (ptype == 'Finish') print(sys.calls())
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste("proc.node:", ptype, pname))
 }
 
@@ -2833,7 +2833,7 @@ library(jsonlite)
         # Record in data node table
         .ddg.record.data(dtype, dname, val, val, dscope, from.env = from.env)
 
-        if (.ddg.debug.lib())
+        if (.ddg.get("ddg.debug.lib"))
             print(paste("data.node:", dtype, dname))
     }
 
@@ -2955,7 +2955,7 @@ library(jsonlite)
 
     # Get path plus file name.
     dpfile <- paste(.ddg.path.data(), "/", dfile, sep = "")
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste("Saving snapshot in ", dpfile))
 
     # Write to file .
@@ -2998,7 +2998,7 @@ library(jsonlite)
     .ddg.record.data(dtype, dname, paste(.ddg.data.dir(), dfile, sep = "/"), orig.data,
         dscope, from.env = from.env, dtime)
 
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste("snapshot.node: ", dname))
     return(dpfile)
 }
@@ -3072,7 +3072,7 @@ library(jsonlite)
         return(NULL)
     }
 
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste("file.copy: ", dtype, " ", file.loc))
     return(dpfile.out)
 }
@@ -3329,7 +3329,7 @@ library(jsonlite)
                 param.scope <- .ddg.get.scope(var, for.caller = TRUE, calls = stack)
                 if (.ddg.data.node.exists(var, param.scope)) {
                   .ddg.data2proc(as.character(var), param.scope, binding.node.name)
-                  if (.ddg.debug.lib())
+                  if (.ddg.get("ddg.debug.lib"))
                     print(paste("param:", var))
                 }
             }
@@ -3852,7 +3852,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
             if (.ddg.is.local(param, function.scope)) {
                 if (.ddg.data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
-                  if (.ddg.debug.lib())
+                  if (.ddg.get("ddg.debug.lib"))
                     print(paste("param:", param))
                 } else {
                   error.msg <- paste("No data node found for local", param)
@@ -3860,19 +3860,19 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
                 }
             } else if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
                 .ddg.data2proc(param, scope, pname)
-                if (.ddg.debug.lib())
+                if (.ddg.get("ddg.debug.lib"))
                   print(paste("param:", param))
             } else {
                 scope <- .ddg.get.scope(param, for.caller = TRUE, calls = stack)
                 if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
-                  if (.ddg.debug.lib())
+                  if (.ddg.get("ddg.debug.lib"))
                     print(paste("param:", param))
                 } else if (.ddg.data.node.exists(param, "undefined")) {
                   # This could be the case if the parameter is the name of a file rather than a
                   # variable in the program.
                   .ddg.data2proc(param, "undefined", pname)
-                  if (.ddg.debug.lib())
+                  if (.ddg.get("ddg.debug.lib"))
                     print(paste("param:", param))
                 } else {
                   error.msg <- paste("No data node found for", param)
@@ -4212,7 +4212,7 @@ ddg.details.omitted <- function() {
     .ddg.proc2proc()
     .ddg.set.details.omitted(TRUE)
 
-    if (.ddg.debug.lib()) {
+    if (.ddg.get("ddg.debug.lib")) {
         print("Adding Details Omitted node")
     }
 }
@@ -4267,7 +4267,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
         parsed.statement <- cmd@parsed
     }
 
-    if (.ddg.debug.lib())
+    if (.ddg.get("ddg.debug.lib"))
         print(paste("ddg.eval: statement =", statement))
 
     frame.num <- .ddg.get.frame.number(sys.calls())

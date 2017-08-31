@@ -47,10 +47,6 @@
 
 ##### Getters for specific variables
 
-.ddg.debug.lib <- function() {
-    return(.ddg.get("ddg.debug.lib"))
-}
-
 .ddg.break <- function() {
     return(.ddg.get("ddg.break"))
 }
