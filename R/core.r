@@ -855,7 +855,7 @@ library(jsonlite)
 .ddg.record.edge <- function(etype, node1, node2) {
     # Increment edge counter.
     .ddg.inc("ddg.enum")
-    ddg.enum <- .ddg.enum()
+    ddg.enum <- .ddg.get("ddg.enum")
 
     # If the table is full, make it bigger.
     ddg.edges <- .ddg.edges()
