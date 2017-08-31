@@ -4166,7 +4166,7 @@ ddg.not.inside.loop <- function() {
 # ddg.loop.count returns the current count for the specified loop.
 
 ddg.loop.count <- function(loop.num) {
-    ddg.loops <- .ddg.loops()
+    ddg.loops <- .ddg.get("ddg.loops")
     return(ddg.loops[[loop.num]])
 }
 
@@ -4174,7 +4174,7 @@ ddg.loop.count <- function(loop.num) {
 # returns the incremented value.
 
 ddg.loop.count.inc <- function(loop.num) {
-    ddg.loops <- .ddg.loops()
+    ddg.loops <- .ddg.get("ddg.loops")
     ddg.loops[[loop.num]] <- ddg.loops[[loop.num]] + 1
     .ddg.set("ddg.loops", ddg.loops)
     return(ddg.loops[[loop.num]])
@@ -4183,7 +4183,7 @@ ddg.loop.count.inc <- function(loop.num) {
 # ddg.reset.loop.count sets the current count for the specified loop to zero.
 
 ddg.reset.loop.count <- function(loop.num) {
-    ddg.loops <- .ddg.loops()
+    ddg.loops <- .ddg.get("ddg.loops")
     ddg.loops[loop.num] <- 0
     .ddg.set("ddg.loops", ddg.loops)
 }
