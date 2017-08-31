@@ -1954,7 +1954,7 @@ library(jsonlite)
 
 .ddg.record.warning <- function() {
     # Get the saved warning
-    w <- .ddg.get.warning()
+    w <- .ddg.get(".ddg.warning")
 
     # Create a message that looks like the one R creates
     callStr <- if (is.null(w$call))
