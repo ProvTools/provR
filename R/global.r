@@ -46,18 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.save.debug <- function() {
-    return(.ddg.get("ddg.save.debug"))
-}
-
-.ddg.dnum <- function() {
-    return(.ddg.get("ddg.dnum"))
-}
-
-.ddg.pnum <- function() {
-    return(.ddg.get("ddg.pnum"))
-}
-
 .ddg.enum <- function() {
     return(.ddg.get("ddg.enum"))
 }
