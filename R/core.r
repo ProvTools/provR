@@ -375,7 +375,7 @@ library(jsonlite)
     edges <- .ddg.edges()
 
     # Subset data node table
-    dnum <- .ddg.dnum()
+    dnum <- .ddg.get("ddg.dnum")
     dinv <- dnodes[1:dnum, c("ddg.num", "ddg.name", "ddg.value", "ddg.type", "ddg.scope")]
 
     # Replace scope with ENV if from initial environment
@@ -680,7 +680,7 @@ library(jsonlite)
     dtime = "", dloc = "", dhash = "", drw = "", dscriptpath = "") {
     # Increment data node counter.
     .ddg.inc("ddg.dnum")
-    ddg.dnum <- .ddg.dnum()
+    ddg.dnum <- .ddg.get("ddg.dnum")
 
     # Initialize dscriptpath
     if (!is.null(.ddg.get("ddg.r.script.path"))) {
@@ -1713,7 +1713,7 @@ library(jsonlite)
 # connects to the ddg.
 .ddg.capture.current.graphics <- function(proc.node.name, file = NULL) {
     if (is.null(file)) {
-        file <- paste0("dev.off.", .ddg.dnum() + 1, ".pdf")
+        file <- paste0("dev.off.", .ddg.get("ddg.dnum") + 1, ".pdf")
     }
     # Save the graphic to a file temporarily
     dev.print(device = pdf, file = file)
@@ -2951,7 +2951,7 @@ library(jsonlite)
 
     # Default file extensions.
     dfile <- if (fext == "" || is.null(fext))
-        paste(.ddg.dnum() + 1, "-", snapname, sep = "") else paste(.ddg.dnum() + 1, "-", snapname, ".", fext, sep = "")
+        paste(.ddg.get("ddg.dnum") + 1, "-", snapname, sep = "") else paste(.ddg.get("ddg.dnum") + 1, "-", snapname, ".", fext, sep = "")
 
     # Get path plus file name.
     dpfile <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
@@ -2985,7 +2985,7 @@ library(jsonlite)
 
     # check to see if we want to save the object.
     if (save.object && full.snapshot)
-        save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.dnum() + 1, "-", snapname,
+        save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.get("ddg.dnum") + 1, "-", snapname,
             ".RObject", sep = ""), ascii = TRUE)
 
     dtime <- .ddg.timestamp()
@@ -3021,7 +3021,7 @@ library(jsonlite)
         paste(" Location=\"", file.loc, "\"", sep = "") else ""
 
     # Add number to file name.
-    dfile <- paste(.ddg.dnum() + 1, "-", file.name, sep = "")
+    dfile <- paste(.ddg.get("ddg.dnum") + 1, "-", file.name, sep = "")
 
     # Calculate the path to the file relative to the ddg directory.  This is the
     # value stored in the node.
@@ -4043,7 +4043,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     ddg.num.returns <- ddg.num.returns + 1
     ddg.return.values$ddg.call[ddg.num.returns] <- call.text
     ddg.return.values$return.used[ddg.num.returns] <- FALSE
-    ddg.return.values$return.node.id[ddg.num.returns] <- .ddg.dnum()
+    ddg.return.values$return.node.id[ddg.num.returns] <- .ddg.get("ddg.dnum")
     ddg.cur.cmd.stack <- .ddg.get(".ddg.cur.cmd.stack")
     ddg.return.values$line[ddg.num.returns] <- if (length(ddg.cur.cmd.stack) == 0)
         NA else ddg.cur.cmd.stack[length(ddg.cur.cmd.stack) - 1][[1]]@pos@startLine
