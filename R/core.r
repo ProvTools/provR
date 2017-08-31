@@ -2253,7 +2253,7 @@ library(jsonlite)
       }
 
       # print("Checking whether to set last.cmd")
-      if (.ddg.enable.source() && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
+      if ((.ddg.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
         }
@@ -2635,7 +2635,7 @@ library(jsonlite)
 
 .ddg.console.node <- function() {
     # Don't do anything if sourcing, because history isn't necessary in this case.
-    if (.ddg.enable.source())
+    if ((.ddg.is.set("from.source") && .ddg.get("from.source")))
         return(NULL)
 
     ddg.history.file = .ddg.get(".ddg.history.file")
@@ -2687,7 +2687,7 @@ library(jsonlite)
         # Capture graphic output of previous procedure node.  Comment out this
         # function??? .ddg.auto.graphic.node()
 
-        if (!console && !.ddg.enable.source() && interactive()) {
+        if (!console && !(.ddg.is.set("from.source") && .ddg.get("from.source")) && interactive()) {
             .ddg.console.node()
         }
     }
@@ -4277,7 +4277,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
         return(eval(parsed.statement, env))
     }
 
-    if (interactive() && .ddg.get(".ddg.enable.console") && !.ddg.enable.source()) {
+    if (interactive() && .ddg.get(".ddg.enable.console") && !(.ddg.is.set("from.source") && .ddg.get("from.source"))) {
         .ddg.console.node()
     }
 
@@ -5135,7 +5135,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
             ddg.console.on()
 
         # Let library know that we are sourcing a file.
-        prev.source <- .ddg.is.init() && .ddg.enable.source()
+        prev.source <- .ddg.is.init() && (.ddg.is.set("from.source") && .ddg.get("from.source"))
 
         # Initialize the tables for ddg.capture.
         .ddg.set("from.source", TRUE)
