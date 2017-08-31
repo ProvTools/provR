@@ -887,7 +887,7 @@ null.pos <- function() {
 .ddg.create.block.ddg.eval.call <- function(statement, parsed.stmt) {
     # Get the next DDGStatement number and store parsed.stmt at this location.
     .ddg.inc("ddg.statement.num")
-    num <- .ddg.statement.num()
+    num <- .ddg.get("ddg.statement.num")
     .ddg.add.ddgstatement(parsed.stmt)
 
     return(call("ddg.eval", paste(deparse(statement), collapse = ""), num))
