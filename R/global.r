@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.initial.env <- function() {
-    return(.ddg.get("ddg.initial.env"))
-}
-
 .ddg.enable.console <- function() {
     return(.ddg.get(".ddg.enable.console"))
 }
