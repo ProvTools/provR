@@ -5219,12 +5219,10 @@ ddg.clear.breakpoints <- function() {
 ddg.console.off <- function() {
     if (!.ddg.is.init())
         return(invisible())
-
     # Capture history if console was on up to this point.
     if (interactive() && .ddg.get(".ddg.enable.console")) {
         .ddg.console.node()
     }
-
     # Set the console to off.
     .ddg.set(".ddg.enable.console", FALSE)
 }
@@ -5234,7 +5232,6 @@ ddg.console.off <- function() {
 ddg.console.on <- function() {
     if (!.ddg.is.init())
         return(invisible())
-
     # Write a new timestamp if we're turning on the console so we only capture
     # history from this point forward.
     if (!.ddg.get(".ddg.enable.console"))
@@ -5254,7 +5251,6 @@ ddg.annotate.on <- function(fnames = NULL) {
         .ddg.set("ddg.annotate.inside", TRUE)
         return()
     }
-
     # Add to the on list
     on.list <- .ddg.get("ddg.annotate.on")
     on.list <- union(on.list, fnames)
@@ -5264,7 +5260,6 @@ ddg.annotate.on <- function(fnames = NULL) {
     off.list <- .ddg.get("ddg.annotate.off")
     off.list <- Filter(function(off) !(off %in% fnames), off.list)
     .ddg.set("ddg.annotate.off", off.list)
-
 }
 
 # ddg.annotate.off disables annotation for the specified functions.  Functions
@@ -5277,7 +5272,6 @@ ddg.annotate.off <- function(fnames = NULL) {
         .ddg.set("ddg.annotate.inside", FALSE)
         return()
     }
-
     # Add to the off list
     off.list <- .ddg.get("ddg.annotate.off")
     off.list <- union(off.list, fnames)
@@ -5287,7 +5281,6 @@ ddg.annotate.off <- function(fnames = NULL) {
     on.list <- .ddg.get("ddg.annotate.on")
     on.list <- Filter(function(on) !(on %in% fnames), on.list)
     .ddg.set("ddg.annotate.on", on.list)
-
 }
 
 # ddg.flush.ddg removes all files from the DDG directories unless the the DDG
@@ -5313,6 +5306,5 @@ ddg.flush.ddg <- function(ddg.path = NULL) {
         unlink(paste(ddg.path.debug, "*.*", sep = "/"))
         unlink(paste(ddg.path.scripts, "*.*", sep = "/"))
     }
-
     invisible()
 }
