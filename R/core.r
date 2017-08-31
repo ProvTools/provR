@@ -2169,7 +2169,7 @@ library(jsonlite)
   if (is.null(cmds)) {
     cmds <- .ddg.create.DDGStatements (exprs, script.name, script.num)
 
-    if (.ddg.save.debug()) {
+    if (.ddg.get("ddg.save.debug")) {
       .ddg.save.annotated.script(cmds, script.name)
     }
   }
@@ -4922,7 +4922,7 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
     }
 
     # Save debug files to debug directory.
-    if (save.debug | .ddg.save.debug()) {
+    if (save.debug | .ddg.get("ddg.save.debug")) {
         .ddg.save.debug.files()
     }
 
