@@ -2248,7 +2248,7 @@ library(jsonlite)
 
       # Process breakpoint. We stop if there is a breakpoint set on this line or we are single-stepping.
       # print("Checking for breakpoints")
-      if (.ddg.is.sourced() & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.get("ddg.break.ignore")) {
+      if (.ddg.get(".ddg.is.sourced") & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.get("ddg.break.ignore")) {
         .ddg.process.breakpoint(cmd, inside.function=called.from.ddg.eval)
       }
 
@@ -2620,7 +2620,7 @@ library(jsonlite)
   }
 
   # Write time stamp to history.
-  if (.ddg.is.init() && !.ddg.is.sourced()) .ddg.write.timestamp.to.history()
+  if (.ddg.is.init() && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
 
   return.value <- .ddg.get (".ddg.last.R.value")
   #if (typeof(return.value) != "closure") {
@@ -3749,7 +3749,7 @@ library(jsonlite)
     write.csv(ddg.returns2, fileout, row.names = FALSE)
 
     # Save if script is sourced.
-    if (.ddg.is.sourced()) {
+    if (.ddg.get(".ddg.is.sourced")) {
         # Save sourced script table to file.
         fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/sourced-scripts.csv", sep = "")
         ddg.sourced.scripts <- .ddg.get(".ddg.sourced.scripts")
@@ -4008,7 +4008,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
 
     # Process breakpoint. We stop if there is a breakpoint set on this line or we are
     # single-stepping.
-    if (.ddg.is.sourced() & (return.stmt@is.breakpoint | .ddg.get("ddg.break")) &
+    if (.ddg.get(".ddg.is.sourced") & (return.stmt@is.breakpoint | .ddg.get("ddg.break")) &
         !.ddg.get("ddg.break.ignore")) {
         .ddg.process.breakpoint(return.stmt, inside.function = TRUE)
     }
