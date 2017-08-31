@@ -77,10 +77,6 @@
     .ddg.set(".ddg.warning", w)
 }
 
-.ddg.get.warning <- function() {
-    return(.ddg.get(".ddg.warning"))
-}
-
 .ddg.warning.occurred <- function() {
     return(.ddg.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))
 }
