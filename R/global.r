@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.is.sourced <- function() {
-    return(.ddg.get(".ddg.is.sourced"))
-}
-
 .ddg.source.parsed <- function() {
     return(.ddg.get(".ddg.source.parsed"))
 }
