@@ -4263,7 +4263,8 @@ ddg.eval <- function(statement, cmd.func = NULL) {
     } else if (is.numeric(cmd.func)) {
         # Statement inside control block.
         num <- cmd.func
-        cmd <- .ddg.statement(num)
+        statements <- .ddg.get("ddg.statements")
+        cmd <- statements[[num]]
         parsed.statement <- cmd@parsed
         # Statement inside function.
     } else {
