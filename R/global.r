@@ -46,16 +46,8 @@
 }
 
 ##### Getters for specific variables
-.ddg.path <- function() {
-    return(.ddg.get("ddg.path"))
-}
-
-.ddg.data.dir <- function() {
-    return("data")
-}
-
 .ddg.path.data <- function() {
-    return(paste(.ddg.get("ddg.path"), .ddg.data.dir(), sep = "/"))
+    return(paste(.ddg.get("ddg.path"), "/data", sep = ""))
 }
 
 .ddg.path.debug <- function() {
