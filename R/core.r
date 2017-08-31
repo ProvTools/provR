@@ -4978,7 +4978,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     ignore.ddg.calls = TRUE, ignore.init = ignore.ddg.calls, force.console = ignore.init) {
 
     # Store script number & name.
-    snum <- .ddg.next.script.num()
+    snum <- .ddg.get(".ddg.next.script.num")
     sname <- basename(file)
 
     if (snum == 0) {
