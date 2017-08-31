@@ -2489,7 +2489,7 @@ library(jsonlite)
 
               # If the number of loop iterations exceeds max.loops, add
               # output data nodes containing final values to the finish node.
-              if (loop.statement && .ddg.were.details.omitted()) {
+              if (loop.statement && .ddg.get("details.omitted")) {
                 vars.set2 <- .ddg.add.to.vars.set(vars.set, cmd, i)
                 .ddg.create.data.node.for.possible.writes(vars.set2, cmd, environ)
                 .ddg.set("details.omitted", FALSE)

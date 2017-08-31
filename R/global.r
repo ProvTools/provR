@@ -14,7 +14,6 @@
 # Global variables cannot be used directly in a library.  Instead, we need to
 # place the variables in our own environment.  These functions make that
 # environment easier to use.
-
 .onLoad <- function(libname, pkgname) {
     .ddg.init.tables()
 }
@@ -39,19 +38,10 @@
 }
 
 # .ddg.clear removes all objects from the .ddg.env environment.
-
 .ddg.clear <- function() {
     # reinitialize tables
     .ddg.init.tables()
 }
-
-# value should be TRUE or FALSE Keeps track of whether the last loop has all
-# iterations recorded or not.
-
-.ddg.were.details.omitted <- function() {
-    .ddg.get("details.omitted")
-}
-
 
 # Functions that allow us to save warnings when they occur so that we can create
 # the warning node after the node that caused the warning is created.
@@ -59,13 +49,11 @@
 # saves the warning so that a warning node can be created after the procedural
 # node that corresponds to the expression that caused the warning w - the
 # simplewarning object created by R
-
 .ddg.set.warning <- function(w) {
     .ddg.set(".ddg.warning", w)
 }
 
 ##### Mutators for specific common actions
-
 .ddg.inc <- function(var) {
     value <- .ddg.get(var)
     .ddg.set(var, value + 1)
