@@ -48,7 +48,7 @@ library(jsonlite)
 # scripts, if any. If no scripts were sourced it returns an empty string.
 
 .ddg.sourced.script.names <- function() {
-    ss <- .ddg.sourced.scripts()
+    ss <- .ddg.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1)
         snames <- "" else {
@@ -62,7 +62,7 @@ library(jsonlite)
 # sourced scripts, if any. If no scripts were sourced it returns an empty string.
 
 .ddg.sourced.script.timestamps <- function() {
-    ss <- .ddg.sourced.scripts()
+    ss <- .ddg.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1)
         stimes <- "" else {
@@ -78,7 +78,7 @@ library(jsonlite)
 # timestamps for the JSON file.
 
 .ddg.sourced.script.names.json <- function() {
-    ss <- .ddg.sourced.scripts()
+    ss <- .ddg.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1) {
         output <- "\"\"\n"
@@ -4984,7 +4984,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     if (snum == 0) {
         df <- data.frame(snum, sname, stringsAsFactors = FALSE)
     } else {
-        df <- rbind(.ddg.sourced.scripts(), c(snum, sname))
+        df <- rbind(.ddg.get(".ddg.sourced.scripts"), c(snum, sname))
     }
     .ddg.set(".ddg.sourced.scripts", df)
 

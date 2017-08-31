@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.sourced.scripts <- function() {
-    return(.ddg.get(".ddg.sourced.scripts"))
-}
-
 .ddg.next.script.num <- function() {
     return(.ddg.get(".ddg.next.script.num"))
 }
