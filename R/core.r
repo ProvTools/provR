@@ -623,7 +623,7 @@ library(jsonlite)
     pos = NA) {
     # Increment procedure node counter.
     .ddg.inc("ddg.pnum")
-    ddg.pnum <- .ddg.pnum()
+    ddg.pnum <- .ddg.get("ddg.pnum")
 
     # If the table is full, make it bigger.
     ddg.proc.nodes <- .ddg.proc.nodes()
@@ -1032,7 +1032,7 @@ library(jsonlite)
 # pnum - node number in procedure node table.
 
 .ddg.proc.name <- function(pnum) {
-    if (pnum < 1 || pnum > .ddg.pnum()) {
+    if (pnum < 1 || pnum > .ddg.get("ddg.pnum")) {
         error.msg <- paste("No name found for procedure number", pnum)
         .ddg.insert.error.message(error.msg)
         return("")
@@ -1045,7 +1045,7 @@ library(jsonlite)
 # the current procedure node.
 
 .ddg.proc2proc <- function() {
-    ddg.pnum <- .ddg.pnum()
+    ddg.pnum <- .ddg.get("ddg.pnum")
 
     if (ddg.pnum > 1) {
         # Record in edges table
@@ -1141,7 +1141,7 @@ library(jsonlite)
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
     pn <- if (all)
-        .ddg.pnum() else .ddg.last.proc.number()
+        .ddg.get("ddg.pnum") else .ddg.last.proc.number()
 
     # Record in edges table
     etype <- "df.out"
@@ -1817,7 +1817,7 @@ library(jsonlite)
 
     # Create an edge from each of these to the last procedure node.
     lapply(new.uses$return.node.id, function(data.num) {
-        proc.num <- .ddg.pnum()
+        proc.num <- .ddg.get("ddg.pnum")
 
         # Record in edges table
         etype <- "df.in"
