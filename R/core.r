@@ -4838,8 +4838,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     srcfile <- NULL
     if (is.character(file)) {
         if (identical(encoding, "unknown")) {
-            enc <- utils::localeTo
-            arset()
+            enc <- utils::localeToCharset()
             encoding <- enc[length(enc)]
         } else enc <- encoding
         if (length(enc) > 1L) {
@@ -4878,8 +4877,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
             srcfile <- srcfilecopy(filename, lines, file.info(filename)[1, "mtime"], 
                 isFile = TRUE)
         }
-        loc <- utils::localeTo
-        arset()[1L]
+        loc <- utils::localeToCharset()[1L]
         encoding <- if (have_encoding) 
             switch(loc, `UTF-8` = "UTF-8", `ISO8859-1` = "latin1", "unknown") else "unknown"
     } else {
