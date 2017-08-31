@@ -33,7 +33,7 @@ library(jsonlite)
 # .ddg.init.environ() sets up the filesystem and R environments for use.
 
 .ddg.init.environ <- function() {
-    dir.create(.ddg.path(), showWarnings = FALSE)
+    dir.create(.ddg.get("ddg.path"), showWarnings = FALSE)
     dir.create(.ddg.path.data(), showWarnings = FALSE)
     dir.create(.ddg.path.debug(), showWarnings = FALSE)
     dir.create(.ddg.path.scripts(), showWarnings = FALSE)
@@ -177,7 +177,7 @@ library(jsonlite)
     environ <- paste(environ, .ddg.json.nv("rdt:workingDirectory", working.directory),
         sep = "")
 
-    ddg.directory = .ddg.path()
+    ddg.directory = .ddg.get("ddg.path")
     environ <- paste(environ, .ddg.json.nv("rdt:ddgDirectory", ddg.directory), sep = "")
 
     ddg.timestamp <- .ddg.get("ddg.start.time")
@@ -284,7 +284,7 @@ library(jsonlite)
 # ddg directory.
 
 .ddg.json.write <- function() {
-    fileout <- paste(.ddg.path(), "/ddg.json", sep = "")
+    fileout <- paste(.ddg.get("ddg.path"), "/ddg.json", sep = "")
     # if (interactive()) print(paste('Saving DDG in ', fileout))
     ddg.json <- .ddg.json.current()
     write(ddg.json, fileout)
@@ -723,7 +723,7 @@ library(jsonlite)
     if (dtype == "File") {
         dhash <- md5sum(dname)
         ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
-        longpath <- paste0(getwd(), substring(.ddg.path(), 2))
+        longpath <- paste0(getwd(), substring(.ddg.get("ddg.path"), 2))
     }
 
     ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
@@ -4906,7 +4906,7 @@ ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
     # Save ddg.json to file.
     .ddg.json.write()
     if (interactive())
-        print(paste("Saving ddg.json in ", .ddg.path(), sep = ""))
+        print(paste("Saving ddg.json in ", .ddg.get("ddg.path"), sep = ""))
 
     # Save sourced scripts (if any). First row is main script.
     ddg.sourced.scripts <- .ddg.get(".ddg.sourced.scripts")
@@ -5294,7 +5294,7 @@ ddg.annotate.off <- function(fnames = NULL) {
 ddg.flush.ddg <- function(ddg.path = NULL) {
     # Use current DDG directories if no directory is specified.
     if (is.null(ddg.path)) {
-        ddg.path <- .ddg.path()
+        ddg.path <- .ddg.get("ddg.path")
         ddg.path.data <- .ddg.path.data()
         ddg.path.debug <- .ddg.path.debug()
         ddg.path.scripts <- .ddg.path.scripts()

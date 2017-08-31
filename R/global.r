@@ -55,15 +55,15 @@
 }
 
 .ddg.path.data <- function() {
-    return(paste(.ddg.path(), .ddg.data.dir(), sep = "/"))
+    return(paste(.ddg.get("ddg.path"), .ddg.data.dir(), sep = "/"))
 }
 
 .ddg.path.debug <- function() {
-    return(paste(.ddg.path(), "/debug", sep = ""))
+    return(paste(.ddg.get("ddg.path"), "/debug", sep = ""))
 }
 
 .ddg.path.scripts <- function() {
-    return(paste(.ddg.path(), "/scripts", sep = ""))
+    return(paste(.ddg.get("ddg.path"), "/scripts", sep = ""))
 }
 
 .ddg.save.debug <- function() {
