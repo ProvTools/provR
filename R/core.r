@@ -1965,7 +1965,7 @@ library(jsonlite)
     .ddg.insert.error.message(warningMessage, "warning.msg", doWarn = FALSE)
 
     # Clear the saved warning
-    .ddg.clear.warning()
+    .ddg.set(".ddg.warning", NA)
 }
 
 # .ddg.process.breakpoint pauses execution of a script when a break point is

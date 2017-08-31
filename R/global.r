@@ -77,10 +77,6 @@
     .ddg.set(".ddg.warning", w)
 }
 
-.ddg.clear.warning <- function() {
-    .ddg.set(".ddg.warning", NA)
-}
-
 .ddg.get.warning <- function() {
     return(.ddg.get(".ddg.warning"))
 }
