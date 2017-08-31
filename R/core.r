@@ -371,7 +371,7 @@ library(jsonlite)
 .ddg.data.objects <- function() {
     # Get data node, procedure node, and edge tables.
     dnodes <- .ddg.get("ddg.data.nodes")
-    pnodes <- .ddg.proc.nodes()
+    pnodes <- .ddg.get("ddg.proc.nodes")
     edges <- .ddg.edges()
 
     # Subset data node table
@@ -626,7 +626,7 @@ library(jsonlite)
     ddg.pnum <- .ddg.get("ddg.pnum")
 
     # If the table is full, make it bigger.
-    ddg.proc.nodes <- .ddg.proc.nodes()
+    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     if (nrow(ddg.proc.nodes) < ddg.pnum) {
         size = 100
         new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
@@ -635,7 +635,7 @@ library(jsonlite)
             ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
             ddg.endCol = numeric(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.proc.nodes", new.rows)
-        ddg.proc.nodes <- .ddg.proc.nodes()
+        ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     }
 
     ddg.proc.nodes$ddg.type[ddg.pnum] <- ptype
@@ -899,7 +899,7 @@ library(jsonlite)
 # name
 
 .ddg.proc.node.exists <- function(pname) {
-    ddg.proc.nodes <- .ddg.proc.nodes()
+    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -920,7 +920,7 @@ library(jsonlite)
 # value
 
 .ddg.proc.number <- function(pname, find.unreturned.function = FALSE) {
-    ddg.proc.nodes <- .ddg.proc.nodes()
+    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -948,7 +948,7 @@ library(jsonlite)
 # .ddg.is.proc.node above.
 
 .ddg.last.proc.number <- function() {
-    ddg.proc.nodes <- .ddg.proc.nodes()
+    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -1038,7 +1038,7 @@ library(jsonlite)
         return("")
     }
 
-    return(.ddg.proc.nodes()$ddg.name[pnum])
+    return(.ddg.get("ddg.proc.nodes")$ddg.name[pnum])
 }
 
 # .ddg.proc2proc creates a control flow edge from the preceding procedure node to
@@ -1116,7 +1116,7 @@ library(jsonlite)
         # Record that the function is linked to a return value.  This is necessary for
         # recursive functions to get linked to their return values correctly.
         if (return.value) {
-            ddg.proc.nodes <- .ddg.proc.nodes()
+            ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
             ddg.proc.nodes$ddg.return.linked[pn] <- TRUE
             .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
         }
@@ -3726,7 +3726,7 @@ library(jsonlite)
 
     # Save procedure nodes table to file.
     fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/procedure-nodes.csv", sep = "")
-    ddg.proc.nodes <- .ddg.proc.nodes()
+    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     ddg.proc.nodes <- ddg.proc.nodes[ddg.proc.nodes$ddg.num > 0, ]
     write.csv(ddg.proc.nodes, fileout, row.names = FALSE)
 

@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.proc.nodes <- function() {
-    return(.ddg.get("ddg.proc.nodes"))
-}
-
 .ddg.edges <- function() {
     return(.ddg.get("ddg.edges"))
 }
