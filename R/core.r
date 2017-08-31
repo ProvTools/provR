@@ -3721,7 +3721,7 @@ library(jsonlite)
 .ddg.save.debug.files <- function() {
     # Save initial environment table to file.
     fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/initial-environment.csv", sep = "")
-    ddg.initial.env <- .ddg.initial.env()
+    ddg.initial.env <- .ddg.get("ddg.initial.env")
     write.csv(ddg.initial.env, fileout, row.names = FALSE)
 
     # Save procedure nodes table to file.
