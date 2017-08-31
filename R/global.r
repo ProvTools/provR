@@ -46,15 +46,6 @@
 }
 
 ##### Getters for specific variables
-
-.ddg.break <- function() {
-    return(.ddg.get("ddg.break"))
-}
-
-.ddg.break.ignore <- function() {
-    return(.ddg.get("ddg.break.ignore"))
-}
-
 .ddg.path <- function() {
     return(.ddg.get("ddg.path"))
 }

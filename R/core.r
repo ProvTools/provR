@@ -2248,7 +2248,7 @@ library(jsonlite)
 
       # Process breakpoint. We stop if there is a breakpoint set on this line or we are single-stepping.
       # print("Checking for breakpoints")
-      if (.ddg.is.sourced() & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.break.ignore()) {
+      if (.ddg.is.sourced() & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.get("ddg.break.ignore")) {
         .ddg.process.breakpoint(cmd, inside.function=called.from.ddg.eval)
       }
 
@@ -4009,7 +4009,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     # Process breakpoint. We stop if there is a breakpoint set on this line or we are
     # single-stepping.
     if (.ddg.is.sourced() & (return.stmt@is.breakpoint | .ddg.get("ddg.break")) &
-        !.ddg.break.ignore()) {
+        !.ddg.get("ddg.break.ignore")) {
         .ddg.process.breakpoint(return.stmt, inside.function = TRUE)
     }
 
@@ -5173,7 +5173,7 @@ ddg.debug.lib.off <- function() {
 # ddg.breakpoint turns on script debugging unless ddg.break.ignore is TRUE.
 
 ddg.breakpoint <- function() {
-    if (!.ddg.break.ignore()) {
+    if (!.ddg.get("ddg.break.ignore")) {
         writeLines("\nEnter = next command, C = next breakpoint, Q = quit debugging\n")
         .ddg.set("ddg.break", TRUE)
     }
