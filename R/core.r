@@ -4227,7 +4227,7 @@ ddg.should.run.annotated <- function(func.name) {
         return(FALSE)
 
     # Make sure this specific function has not been disabled
-    if (!is.null(.ddg.annotate.off()) & func.name %in% .ddg.annotate.off())
+    if (!is.null(.ddg.get("ddg.annotate.off")) & func.name %in% .ddg.get("ddg.annotate.off"))
         return(FALSE)
 
     # Not annotating functions in general check if this specific function should be
