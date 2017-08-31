@@ -46,10 +46,6 @@
 }
 
 ##### Getters for specific variables
-.ddg.edges <- function() {
-    return(.ddg.get("ddg.edges"))
-}
-
 .ddg.initial.env <- function() {
     return(.ddg.get("ddg.initial.env"))
 }
