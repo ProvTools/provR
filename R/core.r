@@ -65,29 +65,6 @@ library(jsonlite)
     return(stimes)
 }
 
-# .ddg.sourced.script.names.json returns sourced script names, numbers and
-# timestamps for the JSON file.
-
-.ddg.sourced.script.names.json <- function() {
-    ss <- .ddg.get(".ddg.sourced.scripts")
-    # First row is main script.
-    if (nrow(ss) == 1) {
-        output <- "\"\"\n"
-    } else {
-        ss <- ss[ss$snum > 0, ]
-        stimes <- file.info(ss$sname)$mtime
-        stimes <- .ddg.format.time(stimes)
-
-        scriptarray <- paste("\t{\"number\" : \"", ss[, 1], "\",
-                             \"name\" : \"",
-            ss[, 2], "\",
-                             \"timestamp\" : \"", stimes,
-            "\"}", sep = "", collapse = ",\n")
-        output <- paste("[\n", scriptarray, " ]", sep = "")
-    }
-    return(output)
-}
-
 # ddg.installedpackages() returns information on packages installed at the time
 # of execution and their versions.
 .ddg.installedpackages <- function() {
@@ -155,7 +132,6 @@ library(jsonlite)
     .ddg.json.data.node(ddg.dnum, dname, dvalue, val.type, dtype, dscope, from.env,
         dhash, dtime, dloc)
 }
-
 
 # .ddg.output.edge outputs a control flow or data flow edge.
 
