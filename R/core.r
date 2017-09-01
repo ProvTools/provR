@@ -390,14 +390,6 @@ library(jsonlite)
     return(dinv)
 }
 
-# .ddg.is.init is called at the beginning of all user accessible functions. It
-# verifies that a DDG has been initialized. If it hasn't, it returns FALSE.
-
-.ddg.is.init <- function() {
-    # Short circuits evaluation.
-    return(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized"))
-}
-
 # .ddg.format.time reformats time string. Input format is yyyy-mm-dd hh:mm:ss.
 # Output format is (yyyy-mm-ddThh.mm.ss).
 
@@ -2187,7 +2179,7 @@ library(jsonlite)
 
   # Attempt to close the previous collapsible command node if a ddg
   # exists
-  if (.ddg.is.init() && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
+  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
 
   # Get the last command in the new commands and check to see if
   # we need to create a new .ddg.last.cmd node for future reference.
@@ -2210,7 +2202,7 @@ library(jsonlite)
   named.node.set <- FALSE
   start.node.created <- ""
 
-  if (num.cmds > 0 && .ddg.is.init() && !inside.func && !called.from.ddg.eval) {
+  if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
     # print(paste("ddg.new.parse.commands: Creating Start for", node.name))
     .ddg.add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
@@ -2290,8 +2282,8 @@ library(jsonlite)
       # block, so there is no need to create additional nodes for the
       # control statement itself.
 
-      create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
-      # create <- !cmd@isDdgFunc && .ddg.is.init() && .ddg.get(".ddg.enable.console")
+      create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
+      # create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
 
@@ -2610,7 +2602,7 @@ library(jsonlite)
   # Close the console block if we processed anything and the DDG
   # is initialized (also, save).
   #
-  if (.ddg.is.init() && named.node.set && !inside.func) {
+  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
       .ddg.add.abstract.node("Finish", node.name = node.name, env=environ)
   }
 
@@ -2624,7 +2616,7 @@ library(jsonlite)
   }
 
   # Write time stamp to history.
-  if (.ddg.is.init() && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
+  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
 
   return.value <- .ddg.get (".ddg.last.R.value")
   #if (typeof(return.value) != "closure") {
@@ -3786,7 +3778,7 @@ library(jsonlite)
 
 ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception = NULL,
     outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     .ddg.inc(".ddg.func.depth")
@@ -3830,7 +3822,7 @@ ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception =
 ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NULL,
     outs.exception = NULL, outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
 
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     .ddg.lookup.function.name(pname)
@@ -3927,7 +3919,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
 # expr - the value returned by the function.
 
 ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(expr)
 
     dev.file <- NULL
@@ -4278,7 +4270,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
     frame.num <- .ddg.get.frame.number(sys.calls())
     env <- sys.frame(frame.num)
 
-    if (!.ddg.is.init()) {
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized"))) {
         return(eval(parsed.statement, env))
     }
 
@@ -4321,7 +4313,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
 
 
 ddg.data <- function(dname, dvalue = NULL, graphic.fext = "jpeg") {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # Look up the value if one was not provided.
@@ -4343,7 +4335,7 @@ ddg.data <- function(dname, dvalue = NULL, graphic.fext = "jpeg") {
 # environment to determine the value.
 
 ddg.exception <- function(dname, dvalue = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # Look up the value if one was not provided.
@@ -4373,7 +4365,7 @@ ddg.exception <- function(dname, dvalue = NULL) {
 # calling environment to determine the value.
 
 ddg.url <- function(dname, dvalue = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # Look up the value if one was not provided.
@@ -4400,7 +4392,7 @@ ddg.url <- function(dname, dvalue = NULL) {
 # omitted, the filename, minus the directory path, is used as the label.
 
 ddg.file <- function(filename, dname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     scope <- if (!is.null(dname))
@@ -4418,7 +4410,7 @@ ddg.file <- function(filename, dname = NULL) {
 # will be used.
 
 ddg.data.in <- function(dname, pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     .ddg.lookup.function.name(pname)
@@ -4472,7 +4464,7 @@ ddg.data.in <- function(dname, pname = NULL) {
 # graphic.
 
 ddg.data.out <- function(dname, dvalue = NULL, pname = NULL, graphic.fext = "jpeg") {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # If no value is provided, get value in calling environment.
@@ -4504,7 +4496,7 @@ ddg.data.out <- function(dname, dvalue = NULL, pname = NULL, graphic.fext = "jpe
 # function will be used.
 
 ddg.exception.out <- function(dname, dvalue = NULL, pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # If no value is provided, get value in calling environment.
@@ -4532,7 +4524,7 @@ ddg.exception.out <- function(dname, dvalue = NULL, pname = NULL) {
 # in which case the name of the function will be used.
 
 ddg.url.out <- function(dname, dvalue = NULL, pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     # If no value is provided, get value in calling environment.
@@ -4570,7 +4562,7 @@ ddg.url.out <- function(dname, dvalue = NULL, pname = NULL) {
 # used.
 
 ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     if (is.null(dname)) {
@@ -4603,7 +4595,7 @@ ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
 # be used for the captured image file. If omitted, this value defaults to jpeg.
 
 ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return
     # Write out the graphic.
     .ddg.write.graphic(dname, "Graphical Plot. Not saved in script.", graphic.fext)
@@ -4623,7 +4615,7 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
 # case the name of the function will be used.
 
 ddg.start <- function(pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     .ddg.lookup.function.name(pname)
@@ -4658,7 +4650,7 @@ ddg.start <- function(pname = NULL) {
 # the name of the function will be used.
 
 ddg.finish <- function(pname = NULL) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     .ddg.lookup.function.name(pname)
@@ -4894,7 +4886,7 @@ ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = N
 # tests, as opposed to by the user.
 
 ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
 
     if (interactive() && .ddg.get(".ddg.enable.console")) {
@@ -5133,14 +5125,14 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
 
         # Turn on the console if forced to, keep track of previous setting, parse
         # previous commands if necessary.
-        prev.on <- .ddg.is.init() && .ddg.get(".ddg.enable.console")
+        prev.on <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
         if (prev.on && interactive())
             .ddg.console.node()
         if (force.console)
             ddg.console.on()
 
         # Let library know that we are sourcing a file.
-        prev.source <- .ddg.is.init() && (.ddg.is.set("from.source") && .ddg.get("from.source"))
+        prev.source <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.ddg.is.set("from.source") && .ddg.get("from.source"))
 
         # Initialize the tables for ddg.capture.
         .ddg.set("from.source", TRUE)
@@ -5217,7 +5209,7 @@ ddg.clear.breakpoints <- function() {
 # ddg.console.off turns off the console mode of DDG construction.
 
 ddg.console.off <- function() {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Capture history if console was on up to this point.
     if (interactive() && .ddg.get(".ddg.enable.console")) {
@@ -5230,7 +5222,7 @@ ddg.console.off <- function() {
 # ddg.console.on turns on the console mode of DDG construction.
 
 ddg.console.on <- function() {
-    if (!.ddg.is.init())
+    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Write a new timestamp if we're turning on the console so we only capture
     # history from this point forward.
