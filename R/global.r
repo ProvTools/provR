@@ -116,17 +116,6 @@
 .ddg.pop <- function(x) {
     return(assign(as.character(substitute(x)), x[-length(x)], parent.frame()))
 }
-
-.ddg.add.ddgstatement <- function(parsed.stmt) {
-    ddg.statements <- c(.ddg.get("ddg.statements"), parsed.stmt)
-    .ddg.set("ddg.statements", ddg.statements)
-}
-
-.ddg.add.loop <- function() {
-    ddg.loops <- c(.ddg.loops(), 0)
-    .ddg.set("ddg.loops", ddg.loops)
-}
-
 #-------------------BASIC FUNCTIONS-----------------------#
 
 # .ddg.get.initial.env creates a table of non-ddg objects present in the R
