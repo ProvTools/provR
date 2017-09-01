@@ -21,15 +21,6 @@ ddg.MAX_HIST_LINES <- 2^14
 library(tools)
 library(jsonlite)
 
-# .ddg.set.history provides a wrapper to change the number of history lines
-# during execution of an R script.
-
-# lines - number of lines in history file.
-
-.ddg.set.history <- function(lines = 16384) {
-    Sys.setenv(R_HISTSIZE = lines)
-}
-
 # .ddg.init.environ() sets up the filesystem and R environments for use.
 
 .ddg.init.environ <- function() {
@@ -40,7 +31,7 @@ library(jsonlite)
 
     if (interactive() && .ddg.get(".ddg.enable.console")) {
         .ddg.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
-        .ddg.set.history()
+        Sys.setenv(R_HISTSIZE = ddg.MAX_HIST_LINES)
     }
 }
 
