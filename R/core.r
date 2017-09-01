@@ -1062,8 +1062,6 @@ library(jsonlite)
                 # or to the last writer of this variable within the console block.
 
                 if (cmd.pos <= first.writer || cmd.pos >= last.writer) {
-                  # Note: the following line leads to the self-referencing node problem.  if
-                  # (cmd.pos <= first.writer || cmd.pos > last.writer) {
                   .ddg.data2proc(var, scope, cmd@abbrev)
                 }
 
@@ -1476,9 +1474,6 @@ library(jsonlite)
 
     # USED TO STORE ENTIRE HISTORY IN SEP. FILE.  Write history out to temporary file
 
-    # ddg.grab.timestamp <- .ddg.get('.ddg.grab.timestamp.history')
-    # ddg.tmp.history.file <- paste(hist.file,'.tmp', sep='')
-
     if (.ddg.is.set(".ddg.history.file") && is.character(.ddg.get(".ddg.history.file")) &&
         .ddg.get(".ddg.history.file") == hist.file) {
         savehistory(hist.file)
@@ -1619,16 +1614,6 @@ library(jsonlite)
         .ddg.set(".ddg.last.cmd", new.command)
         .ddg.set(".ddg.possible.last.cmd", NULL)
     }
-}
-
-# .ddg.is.procedure.cmd returns TRUE if the command passed in (as a string) will
-# create a procedure node and therefore initiate the creation of a collapsible
-# console node.
-
-# cmd.str - command string.
-
-.ddg.is.procedure.cmd <- function(cmd) {
-    return(grepl("^ddg.(procedure|start|finish|restore)", cmd@text))
 }
 
 # .ddg.parse.lines takes as input a set of lines corresponding to the history of
@@ -1886,8 +1871,6 @@ library(jsonlite)
 
   # Figure out if we will execute commands or not.
   execute <- run.commands & !is.null(environ) & is.environment(environ)
-
-  # print (paste("ddg.parse.commands: .ddg.func.depth =", .ddg.get(".ddg.func.depth")))
   inside.func <- (.ddg.get(".ddg.func.depth") > 0)
 
   # Attempt to close the previous collapsible command node if a ddg
@@ -1898,10 +1881,8 @@ library(jsonlite)
   # we need to create a new .ddg.last.cmd node for future reference.
   if (!inside.func) {
       .ddg.last.cmd <- cmds[[num.cmds]]
-    # print(paste(".ddg.parse.commands: setting .ddg.last.cmd to", .ddg.last.cmd$text))
     if (.ddg.last.cmd@isDdgFunc) {
       .ddg.last.cmd <- NULL
-      #print(".ddg.parse.commands: setting .ddg.last.cmd to null")
     }
 
     else if (!execute) {
@@ -1916,7 +1897,6 @@ library(jsonlite)
   start.node.created <- ""
 
   if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
-    # print(paste("ddg.new.parse.commands: Creating Start for", node.name))
     .ddg.add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
     start.node.created <- node.name
@@ -1956,12 +1936,10 @@ library(jsonlite)
       if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
 
       # Process breakpoint. We stop if there is a breakpoint set on this line or we are single-stepping.
-      # print("Checking for breakpoints")
       if (.ddg.get(".ddg.is.sourced") & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.get("ddg.break.ignore")) {
         .ddg.process.breakpoint(cmd, inside.function=called.from.ddg.eval)
       }
 
-      # print("Checking whether to set last.cmd")
       if ((.ddg.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
@@ -1996,7 +1974,6 @@ library(jsonlite)
       # control statement itself.
 
       create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
-      # create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
 
@@ -2022,8 +1999,6 @@ library(jsonlite)
             .ddg.set(".ddg.possible.last.cmd", cmd)
             .ddg.set (".ddg.cur.cmd", cmd)
 
-            #print(paste("Pushing onto the stack:", cmd@text))
-
             # Remember the current statement on the stack so that we
             # will be able to create a corresponding Finish node later
             # if needed.
@@ -2036,9 +2011,8 @@ library(jsonlite)
               .ddg.cur.cmd.stack <- c(.ddg.get(".ddg.cur.cmd.stack"), cmd, FALSE)
             }
             .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack)
-          }
-
-          else if (.ddg.is.procedure.cmd(cmd)) {
+          } else if (grepl("^ddg.(procedure|start|finish|restore)", cmd@text)) {
+            # is procedure cmd?
             .ddg.set(".ddg.possible.last.cmd", NULL)
           }
 
@@ -2053,15 +2027,6 @@ library(jsonlite)
             dev.file.created <- NULL
           }
 
-
-          # Before evaluating,
-          # keep track of variable types for common variables between vars.set and vars.used.
-          #common.vars <- intersect( cmd@vars.set , cmd@vars.used )
-          #num.vars <- length(common.vars)
-
-          #if( num.vars > 0 )
-          #  used.types <- sapply( common.vars , .ddg.get.val.type.from.var )
-
           # Capture any warnings that occur when an expression is evaluated.
           # Note that we cannot just use a tryCatch here because it behaves
           # slightly differently and we would lose the value that eval
@@ -2071,24 +2036,17 @@ library(jsonlite)
           # EVALUATE.
 
           if (.ddg.get("ddg.debug.lib")) print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
-          #print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
-          #print (paste ("length(cmd@annotated) =", length(cmd@annotated)))
 
           result <- withCallingHandlers(
 
               {
                 for (annot in cmd@annotated) {
-                  #print (paste (".ddg.parse.commands: Evaluating ", paste(annot, collapse = " ")))
                   # Don't set return.value if we are calling a ddg function or we are executing an if-statement
                   if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.ddg.get.statement.type(annot)) == "if") {
                     eval(annot, environ, NULL)
                   }
                   else {
                     return.value <- eval(annot, environ, NULL)
-                    #if (typeof(return.value) != "closure") {
-                    #  print (paste (".ddg.parse.commands: Done evaluating ", annot))
-                    #  print(paste(".ddg.parse.commands: setting .ddg.last.R.value to", return.value))
-                    #}
                     .ddg.set (".ddg.last.R.value", return.value)
                   }
                 }
@@ -2105,77 +2063,12 @@ library(jsonlite)
               if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding", cmd@abbrev, "information to vars.set, for an error"))
               .ddg.create.data.use.edges.for.console.cmd(vars.set, cmd, i, for.caller=FALSE)
 
-              # check for factors
-              #msg <- e[[1]]
-              #
-              #if( msg == "invalid 'type' (character) of argument" | msg == "only defined on a data frame with all numeric variables" )
-              #{
-              #  containsFactor <- sapply( cmd@vars.used , .ddg.var.contains.factor )
-              #
-              #  if( is.element(TRUE , containsFactor) )
-              #  {
-              #    factors <- names(containsFactor)[which(containsFactor==TRUE)]
-              #
-              #    # form suggestion
-              #    cat( "The following input data contain(s) a factor:\n" )
-              #    cat( paste(shQuote(factors , type="cmd") , collapse = ", ") )
-              #    cat("\nThis website may be helpful:\n")
-              #
-              #    #if( msg == "invalid 'type' (character) of argument" )
-              #    #  cat("https://stat.ethz.ch/pipermail/r-help/2010-May/239461.html")
-              #    #else
-              #    #  cat("http://stackoverflow.com/questions/38032814/trying-to-understand-r-error-error-in-funxi-only-defined-on-a-data")
-              #    cat( "https://www.r-bloggers.com/using-r-common-errors-in-table-import/" )
-              #  }
-              #}
-
               # create and link to an error node
               ddg.exception.out("error.msg", toString(e) , cmd@abbrev)
             }
           )
 
           if (.ddg.get("ddg.debug.lib")) print (paste (".ddg.parse.commands: Done evaluating ", cmd@annotated))
-
-          # After evaluating
-          # Check changes to variable type for common variables between vars.set and vars.used
-          #if( num.vars > 0 )
-          #{
-          #  set.types <- sapply( common.vars , .ddg.get.val.type.from.var )
-          #
-          #  # comparing type changes for variables set and variables used
-          #  # only 1 common variable between vars.set and vars.used
-          #  if( num.vars == 1 )
-          #  {
-          #    is.same <- identical( set.types , used.types )
-          #
-          #    # remember var names for vars whose types have changed, NULL otherwise
-          #    if(is.same)
-          #      changed.vars <- NULL
-          #    else
-          #      changed.vars <- common.vars
-          #  }
-          #
-          #  # multiple common variables between vars.set and vars.used
-          #  # currently untested since multiple variable assignment is not working!
-          #  else
-          #  {
-          #    is.same <- mapply( identical , set.types , used.types )
-          #    changed.vars <- names(is.same)[which(is.same==FALSE)]
-          #
-          #    # convert to string
-          #    if( ! is.null(changed.vars) )
-          #      changed.vars <- paste( changed.vars , collapse = "," )
-          #  }
-          #
-          #  # show warning message
-          #  if( ! is.null(changed.vars) )
-          #  {
-          #    msg <- paste( "For the statement \"" , cmd@text , "\", " , "in line " , cmd@pos@startLine , ",\n" , sep = "" )
-          #    msg <- paste( msg , "The type changed for the following variables: " , changed.vars , sep = "" )
-          #
-          #    warning( msg , call. = FALSE )
-          #  }
-          #}
 
           if (!cmd@isDdgFunc && cmd@text != "next") {
             # Need to get the stack again because it could have been
@@ -2307,8 +2200,6 @@ library(jsonlite)
      }
   }
 
-  #print("Done with ddg.parse.commands loop")
-
   # Close any node left open during execution.
   if (execute && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
 
@@ -2332,9 +2223,6 @@ library(jsonlite)
   if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
 
   return.value <- .ddg.get (".ddg.last.R.value")
-  #if (typeof(return.value) != "closure") {
-  #  print(paste(".ddg.parse.commands: returning ", return.value))
-  #}
   return(return.value)
 }
 
@@ -2843,7 +2731,6 @@ library(jsonlite)
         })
     } else expr <- deparse(arg)
     value <- tryCatch(eval(arg, env), error = function(e) {
-        # if (is.character(expr)) return (expr)
         if (warn) {
             error.msg <- paste("Unable to evaluate", expr, "in call to", procname)
             .ddg.insert.error.message(error.msg)
@@ -2894,7 +2781,6 @@ library(jsonlite)
     # Exception node.
     if (!is.null(outs.exception)) {
         stack <- sys.calls()
-        # Get scope.  scope <- .ddg.get.scope(outs.exception[[1]])
 
         lapply(outs.exception, function(param) {
             # Get value in calling environment.
@@ -2912,7 +2798,6 @@ library(jsonlite)
     # URL node.
     if (!is.null(outs.url)) {
         stack <- sys.calls()
-        # Get scope.  scope <- .ddg.get.scope(outs.url[[1]])
 
         lapply(outs.url, function(param) {
             # Get value in calling environment.
@@ -2929,7 +2814,6 @@ library(jsonlite)
 
     # Generalized data node (includes simple data values as well as snapshots)
     if (!is.null(outs.data)) {
-        # Get scope.  scope <- .ddg.get.scope(outs.data[[1]])
         stack <- sys.calls()
         lapply(outs.data, function(param) {
             # Get value in calling environment.
@@ -2952,7 +2836,6 @@ library(jsonlite)
 
     # File node.
     if (!is.null(outs.file)) {
-        # Get scope.  scope <- .ddg.get.scope(outs.file[[1]])
         stack <- sys.calls()
 
         lapply(outs.file, function(param) {
@@ -3174,8 +3057,6 @@ library(jsonlite)
     # does not display to the user and also causes the subsequent grepl call in this
     # function to fail.
 
-    # scope <- sub('<environment: (.*)>', '\\1', capture.output(.ddg.where(name,
-    # sys.frame(fnum))))
     tryCatch(if (!exists(name, sys.frame(fnum), inherits = TRUE))
         return(NULL), error = function(e) {
     })
@@ -3930,7 +3811,6 @@ ddg.details.omitted <- function() {
 # we should run the unannotated version.
 
 ddg.should.run.annotated <- function(func.name) {
-
     # check if we are in a loop and loop annotations are off
     if (!.ddg.loop.annotate() && .ddg.inside.loop() > 0)
         return(FALSE)
