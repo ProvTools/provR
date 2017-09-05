@@ -1973,7 +1973,7 @@ library(jsonlite)
       # block, so there is no need to create additional nodes for the
       # control statement itself.
 
-      create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.loop.annotate() && ddg.max.loops() > 0)
+      create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.get("ddg.loop.annotate") && ddg.max.loops() > 0)
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
 
@@ -3523,7 +3523,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     if (!is.null(cmd.func)) {
         parsed.stmt <- cmd.func()
         if (parsed.stmt@has.dev.off) {
-            if (.ddg.is.call.to(parsed.stmt@parsed[[1]], "dev.off") || !.ddg.loop.annotate()) {
+            if (.ddg.is.call.to(parsed.stmt@parsed[[1]], "dev.off") || !.ddg.get("ddg.loop.annotate")) {
                 dev.file <- .ddg.capture.graphics(NULL)
                 dev.node.name <- paste0("dev.", dev.cur())
             }
@@ -3712,11 +3712,6 @@ ddg.max.snapshot.size <- function() {
     return(.ddg.get("ddg.max.snapshot.size"))
 }
 
-# ddg.loop.annotate returns the value of the parameter ddg.loop.annotate.
-.ddg.loop.annotate <- function() {
-    return(.ddg.get("ddg.loop.annotate"))
-}
-
 # ddg.loop.annotate.on turns on loop annotation.
 ddg.loop.annotate.on <- function() {
     .ddg.set("ddg.loop.annotate", TRUE)
@@ -3806,7 +3801,7 @@ ddg.details.omitted <- function() {
 
 ddg.should.run.annotated <- function(func.name) {
     # check if we are in a loop and loop annotations are off
-    if (!.ddg.loop.annotate() && .ddg.inside.loop() > 0)
+    if (!.ddg.get("ddg.loop.annotate") && .ddg.inside.loop() > 0)
         return(FALSE)
 
     # Make sure this specific function has not been disabled
