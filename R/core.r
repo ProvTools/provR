@@ -3722,10 +3722,6 @@ ddg.loop.annotate.off <- function() {
     .ddg.set("ddg.loop.annotate", FALSE)
 }
 
-.ddg.inside.loop <- function() {
-    return(.ddg.get("ddg.inside.loop"))
-}
-
 ddg.set.inside.loop <- function() {
     if (!.ddg.is.set("ddg.inside.loop")) {
         .ddg.set("ddg.inside.loop", 0)
@@ -3801,7 +3797,7 @@ ddg.details.omitted <- function() {
 
 ddg.should.run.annotated <- function(func.name) {
     # check if we are in a loop and loop annotations are off
-    if (!.ddg.get("ddg.loop.annotate") && .ddg.inside.loop() > 0)
+    if (!.ddg.get("ddg.loop.annotate") && .ddg.get("ddg.inside.loop") > 0)
         return(FALSE)
 
     # Make sure this specific function has not been disabled
