@@ -1249,23 +1249,15 @@ library(jsonlite)
     return(find.files.rec(main.object@parsed))
 }
 
-# Given a parse tree, this function returns a list containing the expressions
-# that correspond to the filename argument of the calls to functions that read
-# from files.  If there are none, it returns NULL.
-.ddg.find.files.read <- function(main.object, env) {
-    return(.ddg.find.files(main.object, .ddg.get(".ddg.file.read.functions.df"),
-        env))
-}
-
 # Creates file nodes and data in edges for any files that are read in this cmd
 # cmd - text command cmd.expr - parsed command
 .ddg.create.file.read.nodes.and.edges <- function(cmd, env) {
     # Find all the files potentially read in this command.  This may include files
     # that are not actually read if the read are within an if-statement, for example.
-    files.read <- .ddg.find.files.read(cmd, env)
+    files.read <- .ddg.find.files(cmd, .ddg.get(".ddg.file.read.functions.df"),
+                  env)
 
     for (file in files.read) {
-
         # Only create the node and edge if there actually is a file then if the file
         # exists, it is possible that it was not read here
         if (file.exists(file)) {
@@ -1280,21 +1272,14 @@ library(jsonlite)
     }
 }
 
-# Given a parse tree, this function returns a list containing the expressions
-# that correspond to the filename argument of the calls to functions that write
-# files.  If there are none, it returns NULL.
-.ddg.find.files.written <- function(main.object, env) {
-    return(.ddg.find.files(main.object, .ddg.get(".ddg.file.write.functions.df"),
-        env))
-}
-
 # Creates file nodes and data in edges for any files that are written in this cmd
 # cmd - text command cmd.expr - parsed command
 .ddg.create.file.write.nodes.and.edges <- function(cmd, env) {
     # Find all the files potentially written in this command.  This may include files
     # that are not actually written if the write calls are within an if-statement,
     # for example.
-    files.written <- .ddg.find.files.written(cmd, env)
+    files.written <- .ddg.find.files(cmd, .ddg.get(".ddg.file.write.functions.df"),
+                      env)
 
     for (file in files.written) {
         # check that the file exists.  If it does, we will assume that it was created by
