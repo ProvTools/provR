@@ -3694,12 +3694,6 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     return(expr)
 }
 
-# ddg.annotate.inside returns the value of the parameter annotate.inside.
-
-.ddg.annotate.inside <- function() {
-    return(.ddg.get("ddg.annotate.inside"))
-}
-
 # ddg.first.loop returns the value of the parameter first.loop.
 
 ddg.first.loop <- function() {
@@ -3826,7 +3820,7 @@ ddg.should.run.annotated <- function(func.name) {
 
     # If we do not know anything specific about this function, follow the general
     # rule
-    return(.ddg.annotate.inside())
+    return(.ddg.get("ddg.annotate.inside"))
 }
 
 # ddg.eval evaluates a statement and creates data flow edges from variable and
