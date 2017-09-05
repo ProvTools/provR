@@ -25,14 +25,11 @@ prov.capture <- function(r.script.path, annotate.inside.functions = FALSE, first
     # Initiate ddg.
     ddg.init(r.script.path, NULL, FALSE, TRUE, annotate.inside.functions, first.loop,
         max.loops, 0, save.to.disk = save)
-
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
         .ddg.set(".ddg.is.sourced", TRUE)
-
     # Save debug files to debug directory.
     .ddg.set("ddg.save.debug", FALSE)
-
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(if (!is.null(r.script.path))
         ddg.source(.ddg.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE,
@@ -40,7 +37,6 @@ prov.capture <- function(r.script.path, annotate.inside.functions = FALSE, first
         if (save)
             ddg.save(r.script.path, FALSE)
     })
-
     invisible()
 }
 

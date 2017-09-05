@@ -65,15 +65,11 @@
         script.timestamp <- ""
         sourced.scripts.timestamps <- ""
     }
-
     environ <- paste(environ, .ddg.json.nv("rdt:script", ddg.r.script.path), sep = "")
-
     environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n",
         sep = "")
-
     environ <- paste(environ, .ddg.json.nv("rdt:scriptTimeStamp", script.timestamp),
         sep = "")
-
     working.directory = getwd()
     environ <- paste(environ, .ddg.json.nv("rdt:workingDirectory", working.directory),
         sep = "")
@@ -89,14 +85,12 @@
 
     environ <- paste(environ, .ddg.installedpackages.json(), sep = "")
     environ <- paste(environ, "\n}", sep = "")
-
     return(environ)
 }
 
 # .ddg.json.procedure.node adds a procedure node to the ddg.json string.
 
 .ddg.json.procedure.node <- function(id, pname, ptype, ptime, snum, pos) {
-
     if (is.object(pos)) {
         jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : \"", pname, "\",\n\"rdt:type\" : \"",
             ptype, "\",\n\"rdt:elapsedTime\" : \"", ptime, "\",\n\"rdt:scriptNum\" : \"",
@@ -109,7 +103,6 @@
             snum, "\",\n\"rdt:startLine\" : \"NA\"", ",\n\"rdt:startCol\" : \"NA\"",
             ",\n\"rdt:endLine\" : \"NA\"", ",\n\"rdt:endCol\" : \"NA\"", "\n}", sep = "")
     }
-
     .ddg.append.activity(jstr)
 }
 
@@ -117,13 +110,11 @@
 
 .ddg.json.data.node <- function(id, dname, dvalue, val.type, dtype, dscope, from.env,
     dhash, dtime, dloc) {
-
     jstr <- paste("\n\"d", id, "\" : {\n\"rdt:name\" : \"", dname, "\",\n\"rdt:value\" : \"",
         dvalue, "\",\n\"rdt:valType\" : ", val.type, ",\n\"rdt:type\" : \"", dtype,
         "\",\n\"rdt:scope\" : \"", dscope, "\",\n\"rdt:fromEnv\" : \"", from.env,
         "\",\n\"rdt:MD5hash\" : \"", dhash, "\",\n\"rdt:timestamp\" : \"", dtime,
         "\",\n\"rdt:location\" : \"", dloc, "\"\n}", sep = "")
-
     .ddg.append.entity(jstr)
 }
 
@@ -133,7 +124,6 @@
 
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:informant\" : \"", node1, "\",\n\"prov:informed\" : \"",
         node2, "\"\n}", sep = "")
-
     .ddg.append.wasInformedBy(jstr)
 }
 
@@ -143,17 +133,14 @@
 
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:entity\" : \"", node2, "\",\n\"prov:activity\" : \"",
         node1, "\"\n}", sep = "")
-
     .ddg.append.wasGeneratedBy(jstr)
 }
 
 # .ddg.json.data.in.edge adds an input data flow edge to the ddg.json string.
 
 .ddg.json.data.in.edge <- function(id, node1, node2) {
-
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:activity\" : \"", node2, "\",\n\"prov:entity\" : \"",
         node1, "\"\n}", sep = "")
-
     .ddg.append.used(jstr)
 }
 
@@ -213,15 +200,12 @@
     snum, pos) {
     # Get counter
     ddg.pnum <- .ddg.get("ddg.pnum")
-
     # Prepare values
     pname <- gsub("\\\"", "\\\\\"", pname)
-
     if (pvalue != "") {
         pvalue <- gsub("\\\"", "\\\\\"", pvalue)
         value.str <- paste(" Value=\"", pvalue, "\"", sep = "")
     } else value.str <- ""
-
     # Record in ddg.json
     .ddg.json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
 }
@@ -233,33 +217,24 @@
     from.env, dhash, drw, dtime, dloc) {
     # Get counter
     ddg.dnum <- .ddg.get("ddg.dnum")
-
     # Prepare values
     if (from.env)
         dname <- paste(dname, " [ENV]", sep = "")
-
     if (dvalue != "")
         value.str <- paste(" Value=\"", dvalue, "\"", sep = "") else value.str <- ""
-
     if (dscriptpath != "")
         dscriptpath.str <- paste(" Script Path=\"", dscriptpath, "\"", sep = "") else dscriptpath.str <- ""
-
     if (val.type != "")
         val.type.str <- paste(" ValType=\"", .ddg.replace.quotes(val.type), "\"",
             sep = "") else val.type.str <- ""
-
     if (dtime != "")
         time.str <- paste(" Time=\"", dtime, "\"", sep = "") else time.str <- ""
-
     if (dloc != "")
         loc.str <- paste(" Location=\"", dloc, "\"", sep = "") else loc.str <- ""
-
     if (dhash != "" && !is.na(dhash))
         dhash.str <- paste(" MD5 Hash=\"", dhash, "\"", sep = "") else dhash.str <- ""
-
     if (drw != "")
         drw.str <- paste(" RW=\"", drw, "\"", sep = "") else drw.str <- ""
-
     # Record in ddg.json
     .ddg.json.data.node(ddg.dnum, dname, dvalue, val.type, dtype, dscope, from.env,
         dhash, dtime, dloc)
@@ -270,7 +245,6 @@
 .ddg.output.edge <- function(etype, node1, node2) {
     # Get counter
     ddg.enum <- .ddg.get("ddg.enum")
-
     # Record in ddg.json
     if (etype == "cf")
         .ddg.json.control.edge(ddg.enum, node1, node2) else if (etype == "df.in")
