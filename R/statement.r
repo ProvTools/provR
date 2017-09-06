@@ -482,7 +482,7 @@ null.pos <- function() {
 # .ddg.add.function.annotations is passed a command that corresponds to a
 # function declaration.  It returns a parsed command corresponding to the same
 # function declaration but with calls to ddg.function, ddg.eval and
-# ddg.return.value inserted if they are not already present.  The functions
+# ddg.ret.value inserted if they are not already present.  The functions
 # ddg.annotate.on and ddg.annotate.off may be used to provide a list of functions
 # to annotate or not to annotate, respectively.  function.decl should be a
 # command that contains an assignment statement where the value being bound is a
@@ -504,20 +504,20 @@ null.pos <- function() {
     if (!.ddg.has.call.to(func.definition[[3]], "ddg.function")) {
         func.definition <- .ddg.insert.ddg.function(func.definition)
     }
-    # Insert calls to ddg.return.value if not already added.
-    if (!.ddg.has.call.to(func.definition[[3]], "ddg.return.value")) {
-        func.definition <- .ddg.wrap.all.return.parameters(func.definition, function.decl@contained)
+    # Insert calls to ddg.ret.value if not already added.
+    if (!.ddg.has.call.to(func.definition[[3]], "ddg.ret.value")) {
+        func.definition <- .ddg.wrap.all.ret.parameters(func.definition, function.decl@contained)
     }
-    # Wrap last statement with ddg.return.value if not already added and if last
+    # Wrap last statement with ddg.ret.value if not already added and if last
     # statement is not a simple return or a ddg function.
     last.statement <- .ddg.find.last.statement(func.definition)
 
-    if (!.ddg.is.call.to(last.statement, "ddg.return.value") & !.ddg.is.call.to(last.statement,
+    if (!.ddg.is.call.to(last.statement, "ddg.ret.value") & !.ddg.is.call.to(last.statement,
         "return") & !.ddg.is.call.to.ddg.function(last.statement)) {
         func.definition <- .ddg.wrap.last.line(func.definition, function.decl@contained)
     }
     # Wrap statements with ddg.eval if not already added and if statements are not
-    # calls to a ddg function and do not contain ddg.return.value.
+    # calls to a ddg function and do not contain ddg.ret.value.
     if (!.ddg.has.call.to(func.definition, "ddg.eval")) {
         func.definition <- .ddg.wrap.with.ddg.eval(func.definition, function.decl@contained)
     }
@@ -587,20 +587,20 @@ null.pos <- function() {
     return(call("function", func.params, as.call(func.body)))
 }
 
-# .ddg.wrap.return.parameters wraps parameters of return functions with
-# ddg.return.value in the annotated block of a function body.  block is the parse
+# .ddg.wrap.ret.parameters wraps parameters of return functions with
+# ddg.ret.value in the annotated block of a function body.  block is the parse
 # tree corresponding to the statements within the annotated block of a function
 # parsed.stmts is the list of DDGStatement objects contained in the function
 # Returns a parse tree for the same function body but with a call to
-# ddg.return.value wrapped around all expressions that are returned.
+# ddg.ret.value wrapped around all expressions that are returned.
 
-.ddg.wrap.return.parameters <- function(block, parsed.stmts) {
-    # Check each statement in the annotated block to see if it contains a return.
+.ddg.wrap.ret.parameters <- function(block, parsed.stmts) {
+    # Check each statement in the annotated block to see if it contains a ret.
     pos <- length(block)
     for (i in 1:pos) {
         statement <- block[[i]]
         if (.ddg.has.call.to(statement, "return")) {
-            # If statement is a return, wrap parameters with ddg.return.value.
+            # If statement is a return, wrap parameters with ddg.ret.value.
             if (.ddg.is.call.to(statement, "return")) {
                 # Need to handle empty parameter separately.
                 if (length(statement) == 1) {
@@ -615,9 +615,9 @@ null.pos <- function() {
                 }
                 # If parameters contain a return, recurse on parameters.
                 if (.ddg.has.call.to(ret.params, "return")) {
-                  ret.params <- .ddg.wrap.return.parameters(ret.params, parsed.stmt)
+                  ret.params <- .ddg.wrap.ret.parameters(ret.params, parsed.stmt)
                 }
-                new.ret.params <- .ddg.create.ddg.return.call(ret.params, parsed.stmt)
+                new.ret.params <- .ddg.create.ddg.ret.call(ret.params, parsed.stmt)
                 new.statement <- call("return", new.ret.params)
                 block[[i]] <- new.statement
                 # If statement contains a return, recurse on statement.
@@ -627,22 +627,22 @@ null.pos <- function() {
                 } else {
                   parsed.stmt <- parsed.stmts
                 }
-                block[[i]] <- .ddg.wrap.return.parameters(statement, parsed.stmt)
+                block[[i]] <- .ddg.wrap.ret.parameters(statement, parsed.stmt)
             }
         }
     }
     return(block)
 }
 
-# .ddg.wrap.all.return.parameters wraps parameters of all return functions with
-# ddg.return.value in the annotated block of a function definition.
+# .ddg.wrap.all.ret.parameters wraps parameters of all return functions with
+# ddg.ret.value in the annotated block of a function definition.
 # func.definition is a parsed expression for a function declaration (not the full
 # assignment statement in which it is declared) parsed.stmts is the list of
 # DDGStatement objects contained in the function Returns a parse tree for the
-# same function declaration but with a call to ddg.return.value wrapped around
+# same function declaration but with a call to ddg.ret.value wrapped around
 # all expressions that are returned.
 
-.ddg.wrap.all.return.parameters <- function(func.definition, parsed.stmts) {
+.ddg.wrap.all.ret.parameters <- function(func.definition, parsed.stmts) {
     # Get function parameters.
     func.params <- func.definition[[2]]
     # Get the body of the function.
@@ -651,7 +651,7 @@ null.pos <- function() {
     block <- func.body[[2]][[3]]
     pos <- length(block)
     # Wrap individual return functions.
-    block <- .ddg.wrap.return.parameters(block, parsed.stmts)
+    block <- .ddg.wrap.ret.parameters(block, parsed.stmts)
     # Get new function body
     func.body[[2]][[3]] <- block
     # Reconstruct function.
@@ -674,11 +674,11 @@ null.pos <- function() {
 }
 
 # .ddg.wrap.last.line wraps the last line of the annotated block of a function
-# with ddg.return.value.  func.definition is a parsed expression for a function
+# with ddg.ret.value.  func.definition is a parsed expression for a function
 # declaration (not the full assignment statement in which it is declared)
 # parsed.stmts is the list of DDGStatement objects contained in the function
 # Returns a parse tree for the same function declaration but with a call to
-# ddg.return.value wrapped around the last line in the body.
+# ddg.ret.value wrapped around the last line in the body.
 
 .ddg.wrap.last.line <- function(func.definition, parsed.stmts) {
     # Get function parameters.
@@ -692,35 +692,35 @@ null.pos <- function() {
     last.statement <- block[[pos]]
     parsed.stmt <- parsed.stmts[[length(parsed.stmts)]]
 
-    wrapped.statement <- .ddg.create.ddg.return.call(last.statement, parsed.stmt)
+    wrapped.statement <- .ddg.create.ddg.ret.call(last.statement, parsed.stmt)
     func.body[[2]][[3]][[pos]] <- wrapped.statement
 
     return(call("function", func.params, as.call(func.body)))
 }
 
-# Creates a call to ddg.return.value using a closure so that we will be able to
+# Creates a call to ddg.ret.value using a closure so that we will be able to
 # refer to the correct DDGStatement object when the return call is executed.
 # last.statement is the parse tree for the expression being returned parsed.stmt
 # is the DDGStatement object corresponding to the last statement Returns a parse
-# tree with a call to ddg.return.value.  The arguments to ddg.return.value are
+# tree with a call to ddg.ret.value.  The arguments to ddg.ret.value are
 # the parsed statement and the DDGStatement object.
 
-.ddg.create.ddg.return.call <- function(last.statement, parsed.stmt) {
+.ddg.create.ddg.ret.call <- function(last.statement, parsed.stmt) {
     # We need to force the evaluation of parsed.stmt for the closure to return the
     # value that parsed.stmt has at the time the ddg.eval call is created.
     force(parsed.stmt)
     if (.ddg.has.call.to(last.statement, "return")) {
-        return(call("ddg.return.value", last.statement, function() parsed.stmt))
+        return(call("ddg.ret.value", last.statement, function() parsed.stmt))
     } else {
         # If there is no return call, we will use ddg.eval to execute the statement and
-        # then ddg.return.value to create the necessary return structure.  We cannot use
+        # then ddg.ret.value to create the necessary return structure.  We cannot use
         # this technique if there is a return call because we if tried to eval a return
         # call, we would end up returning from some code inside RDT, instead of the
         # user's function.
         eval.cmd <- .ddg.construct.DDGStatement(parse(text = deparse(last.statement)),
             pos = NA, script.num = NA, parseData = NULL)
         new.statement <- .ddg.create.ddg.eval.call(last.statement, parsed.stmt)
-        return(call("ddg.return.value", new.statement, function() parsed.stmt))
+        return(call("ddg.ret.value", new.statement, function() parsed.stmt))
     }
 }
 
@@ -740,7 +740,7 @@ null.pos <- function() {
 
 # .ddg.wrap.with.ddg.eval wraps each statement in the annotated block of a
 # function body with ddg.eval if the statement is not a call to a ddg function
-# and does not contain a call to ddg.return.value. The statement is enclosed in
+# and does not contain a call to ddg.ret.value. The statement is enclosed in
 # quotation marks.  func.definition is a parsed expression for a function
 # declaration (not the full assignment statement in which it is declared)
 # parsed.stmts is the list of DDGStatement objects contained in the function
@@ -758,9 +758,9 @@ null.pos <- function() {
     # Process each statement in block.
     for (i in 2:pos) {
         # Wrap with ddg.eval if statement is not a call to a ddg function and does not
-        # contain a call to ddg.return.value. Enclose statement in quotation marks.
+        # contain a call to ddg.ret.value. Enclose statement in quotation marks.
         statement <- block[[i]]
-        if (!grepl("^ddg.", statement[1]) & !.ddg.has.call.to(statement, "ddg.return.value")) {
+        if (!grepl("^ddg.", statement[1]) & !.ddg.has.call.to(statement, "ddg.ret.value")) {
             parsed.stmt <- parsed.stmts[[i - 2]]
             new.statement <- .ddg.create.ddg.eval.call(statement, parsed.stmt)
             func.body[[2]][[3]][[i]] <- new.statement
@@ -785,14 +785,14 @@ null.pos <- function() {
 }
 
 # .ddg.wrap.block.with.ddg.eval wraps each statement in a block with ddg.eval
-# unless the statement is a ddg function or contains a call to ddg.return.value.
+# unless the statement is a ddg function or contains a call to ddg.ret.value.
 
 .ddg.wrap.block.with.ddg.eval <- function(block, parsed.stmts) {
     # Ignore initial brace.
     for (i in 2:length(block)) {
         # Enclose statement in quotation marks and wrap with ddg.eval.
         statement <- block[[i]]
-        if (!grepl("^ddg.", statement) && !.ddg.has.call.to(statement, "ddg.return.value")) {
+        if (!grepl("^ddg.", statement) && !.ddg.has.call.to(statement, "ddg.ret.value")) {
             parsed.stmt <- parsed.stmts[[i - 1]]
             # print(statement) print(parsed.stmt@text)
 

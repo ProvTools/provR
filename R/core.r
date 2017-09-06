@@ -329,7 +329,7 @@ library(jsonlite)
     if (nrow(ddg.proc.nodes) < ddg.pnum) {
         size = 100
         new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
-            ddg.name = character(size), ddg.value = character(size), ddg.return.linked = logical(size),
+            ddg.name = character(size), ddg.value = character(size), ddg.ret.linked = logical(size),
             ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
             ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
             ddg.endCol = numeric(size), stringsAsFactors = FALSE)
@@ -572,7 +572,7 @@ library(jsonlite)
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
-        if (.ddg.is.proc.node(type) & ddg.proc.nodes$ddg.name[i] == pname & !ddg.proc.nodes$ddg.return.linked[i] &
+        if (.ddg.is.proc.node(type) & ddg.proc.nodes$ddg.name[i] == pname & !ddg.proc.nodes$ddg.ret.linked[i] &
             !ddg.proc.nodes$ddg.auto.created[i]) {
             return(TRUE)
         }
@@ -597,7 +597,7 @@ library(jsonlite)
                 return(ddg.proc.nodes$ddg.num[i])
             }
 
-            if (find.unreturned.function & !ddg.proc.nodes$ddg.return.linked[i]) {
+            if (find.unreturned.function & !ddg.proc.nodes$ddg.ret.linked[i]) {
                 return(ddg.proc.nodes$ddg.num[i])
             }
         }
@@ -748,17 +748,17 @@ library(jsonlite)
 # .ddg.proc2data creates a data flow edge from a procedure node to a data node.
 
 # pname - procedure node name.  dname - data node name.  dscope (optional) - data
-# node scope.  return.value (optional) - if true it means we are linking to a
+# node scope.  ret.value (optional) - if true it means we are linking to a
 # return value. In this case, we need to be sure that there is not already a
 # return value linked.  This is necessary to manage recursive functions
 # correctly.
 
-.ddg.proc2data <- function(pname, dname, dscope = NULL, return.value = FALSE) {
+.ddg.proc2data <- function(pname, dname, dscope = NULL, ret.value = FALSE) {
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
     # attach data node to the last procedure node if pname is NULL.
     if (is.null(pname) || startsWith(pname, ".ddg.") || startsWith(pname, "ddg"))
-        pn <- .ddg.last.proc.number() else pn <- .ddg.proc.number(pname, return.value)
+        pn <- .ddg.last.proc.number() else pn <- .ddg.proc.number(pname, ret.value)
     # Create data flow edge from procedure node to data node.
     if (dn != 0 && pn != 0) {
         # Record in edges table
@@ -768,9 +768,9 @@ library(jsonlite)
         .ddg.record.edge(etype, node1, node2)
         # Record that the function is linked to a return value.  This is necessary for
         # recursive functions to get linked to their return values correctly.
-        if (return.value) {
+        if (ret.value) {
             ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
-            ddg.proc.nodes$ddg.return.linked[pn] <- TRUE
+            ddg.proc.nodes$ddg.ret.linked[pn] <- TRUE
             .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
         }
 
@@ -1344,12 +1344,12 @@ library(jsonlite)
 .ddg.link.function.returns <- function(command) {
     # Find the functions that have completed but whose returns have not been used
     # yet.
-    returns <- .ddg.get(".ddg.return.values")
+    returns <- .ddg.get(".ddg.ret.values")
     if (!is.na(command@pos@startLine)) {
-        unused.returns <- returns[!returns$return.used & returns$return.node.id >
+        unused.returns <- returns[!returns$ret.used & returns$ret.node.id >
             0 & !is.na(returns$line) & returns$line == command@pos@startLine, ]
     } else {
-        unused.returns <- returns[!returns$return.used & returns$return.node.id >
+        unused.returns <- returns[!returns$ret.used & returns$ret.node.id >
             0, ]
     }
     if (nrow(unused.returns) == 0)
@@ -1361,14 +1361,14 @@ library(jsonlite)
         grepl(call, command.text, fixed = TRUE)
     })
     # The following line is here to get around R CMD check, which otherwise reports:
-    # no visible binding for global variable.  Note that return.node.id is not a
+    # no visible binding for global variable.  Note that ret.node.id is not a
     # variable in the subset call, but the name of a column in the data frame being
     # subsetted.
-    return.node.id <- NULL
+    ret.node.id <- NULL
     # Extracts for the return value nodes.
-    new.uses <- subset(unused.returns, uses, return.node.id)
+    new.uses <- subset(unused.returns, uses, ret.node.id)
     # Create an edge from each of these to the last procedure node.
-    lapply(new.uses$return.node.id, function(data.num) {
+    lapply(new.uses$ret.node.id, function(data.num) {
         proc.num <- .ddg.get("ddg.pnum")
         # Record in edges table
         etype <- "df.in"
@@ -1381,8 +1381,8 @@ library(jsonlite)
             print(paste("DF ", node1, " ", node2, sep = ""))
         }
         # Set the return value as being used.
-        returns$return.used[returns$return.node.id == data.num] <- TRUE
-        .ddg.set(".ddg.return.values", returns)
+        returns$ret.used[returns$ret.node.id == data.num] <- TRUE
+        .ddg.set(".ddg.ret.values", returns)
     })
 }
 
@@ -1584,7 +1584,7 @@ library(jsonlite)
 # command, and then creates the data nodes based on the information
 # available in the environment. If environ is not NULL, calls to
 # ddg.* are not executed so only the clean script is processed.
-# If annotate.inside is TRUE, ddg.function, ddg.eval and ddg.return.value
+# If annotate.inside is TRUE, ddg.function, ddg.eval and ddg.ret.value
 # are added to each function definition and ddg.eval is added to control
 # statements before commands are processed. If save.debug is TRUE,
 # changes to the script are saved in the ddg/debug directory.
@@ -1617,7 +1617,7 @@ library(jsonlite)
 #   creates the DDG Statement objects.
 
 .ddg.parse.commands <- function (exprs, script.name="", script.num=NA, environ, ignore.patterns=c('^ddg.'), node.name="Console", run.commands = FALSE, echo=FALSE, print.eval=echo, max.deparse.length=150, called.from.ddg.eval=FALSE, cmds=NULL) {
-  return.value <- NULL
+  ret.value <- NULL
   # Gather all the information that we need about the statements
   if (is.null(cmds)) {
     cmds <- .ddg.create.DDGStatements (exprs, script.name, script.num)
@@ -1767,13 +1767,13 @@ library(jsonlite)
 
               {
                 for (annot in cmd@annotated) {
-                  # Don't set return.value if we are calling a ddg function or we are executing an if-statement
+                  # Don't set ret.value if we are calling a ddg function or we are executing an if-statement
                   if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.ddg.get.statement.type(annot)) == "if") {
                     eval(annot, environ, NULL)
                   }
                   else {
-                    return.value <- eval(annot, environ, NULL)
-                    .ddg.set (".ddg.last.R.value", return.value)
+                    ret.value <- eval(annot, environ, NULL)
+                    .ddg.set (".ddg.last.R.value", ret.value)
                   }
                 }
               },
@@ -1917,8 +1917,8 @@ library(jsonlite)
   }
   # Write time stamp to history.
   if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
-  return.value <- .ddg.get (".ddg.last.R.value")
-  return(return.value)
+  ret.value <- .ddg.get (".ddg.last.R.value")
+  return(ret.value)
 }
 
 
@@ -2932,8 +2932,8 @@ library(jsonlite)
     write.csv(ddg.edges2, fileout, row.names = FALSE)
     # Save function return table to file.
     fileout <- paste(paste(.ddg.get("ddg.path"), "/debug", sep = ""), "/function-returns.csv", sep = "")
-    ddg.returns <- .ddg.get(".ddg.return.values")
-    ddg.returns2 <- ddg.returns[ddg.returns$return.node.id > 0, ]
+    ddg.returns <- .ddg.get(".ddg.ret.values")
+    ddg.returns2 <- ddg.returns[ddg.returns$ret.node.id > 0, ]
     write.csv(ddg.returns2, fileout, row.names = FALSE)
     # Save if script is sourced.
     if (.ddg.get(".ddg.is.sourced")) {
@@ -3063,37 +3063,37 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
     invisible()
 }
 
-# .ddg.find.ddg.return.value.caller.frame.number returns the frame number of the
-# first caller to ddg.return.value.  If ddg.return.value is called recursively,
+# .ddg.find.ddg.ret.value.caller.frame.number returns the frame number of the
+# first caller to ddg.ret.value.  If ddg.ret.value is called recursively,
 # this will give us the position of the earliest one called.
 
-.ddg.find.ddg.return.value.caller.frame.number <- function() {
+.ddg.find.ddg.ret.value.caller.frame.number <- function() {
     # Get the stack
     calls <- sys.calls()
-    # Find the calls to ddg.return.value
+    # Find the calls to ddg.ret.value
     ddg.funcs <- unlist(lapply(calls, function(call) return(grepl("^ddg|.ddg", deparse(call)[[1]]))))
-    calls.to.ddg.return.value <- unlist(lapply(calls, function(call) return(.ddg.is.call.to(call,
-        as.name("ddg.return.value")))))
-    non.ddg.calls.to.ddg.return.value <- !(ddg.funcs[1:length(ddg.funcs) - 1]) &
-        calls.to.ddg.return.value[2:length(calls.to.ddg.return.value)]
-    which.frame <- Position(function(call) return(call), non.ddg.calls.to.ddg.return.value,
+    calls.to.ddg.ret.value <- unlist(lapply(calls, function(call) return(.ddg.is.call.to(call,
+        as.name("ddg.ret.value")))))
+    non.ddg.calls.to.ddg.ret.value <- !(ddg.funcs[1:length(ddg.funcs) - 1]) &
+        calls.to.ddg.ret.value[2:length(calls.to.ddg.ret.value)]
+    which.frame <- Position(function(call) return(call), non.ddg.calls.to.ddg.ret.value,
         right = TRUE)
-    # Return the frame number of the caller to ddg.return.value
+    # Return the frame number of the caller to ddg.ret.value
     return(which.frame)
 }
 
-# ddg.return.value creates a data node for a function's return value. If the
+# ddg.ret.value creates a data node for a function's return value. If the
 # function is called from a console command and console mode is enabled, a data
 # flow edge will be created linking this node to the console command that uses
-# the value. ddg.return.value returns the same value as the function (expr) and
+# the value. ddg.ret.value returns the same value as the function (expr) and
 # can be used in place of the function's normal return statement(s) if it is the
 # last statement in the function.  Otherwise, it should be a parameter to return,
-# as in return(ddg.return.value(expr)). If expr is an assignment, nodes and edges
+# as in return(ddg.ret.value(expr)). If expr is an assignment, nodes and edges
 # are created for the assignment.
 
 # expr - the value returned by the function.
 
-ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
+ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(expr)
     dev.file <- NULL
@@ -3115,10 +3115,10 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     orig.return <- paste("return(", deparse(orig.expr), ")", sep = "")
     pname <- NULL
     .ddg.lookup.function.name(pname)
-    # If this is a recursive call to ddg.return.value, find the caller of the first
-    # ddg.return.value
+    # If this is a recursive call to ddg.ret.value, find the caller of the first
+    # ddg.ret.value
     if (grepl("(^ddg|.ddg)", pname)) {
-        caller.frame <- .ddg.find.ddg.return.value.caller.frame.number()
+        caller.frame <- .ddg.find.ddg.ret.value.caller.frame.number()
         pname <- as.character(sys.call(caller.frame)[[1]])
     } else {
         caller.frame <- -1
@@ -3127,16 +3127,16 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     # think that causes some examples to work with debugging on but not off.
     # checking.  (6/26/2015 - Barb).  Yes, ReturnTest.R fails on the recursive f5
     # function
-    ddg.return.values <- .ddg.get(".ddg.return.values")
+    ddg.ret.values <- .ddg.get(".ddg.ret.values")
     ddg.num.returns <- .ddg.get(".ddg.num.returns")
-    if (nrow(ddg.return.values) == ddg.num.returns) {
+    if (nrow(ddg.ret.values) == ddg.num.returns) {
         size = 100
         new.rows <- data.frame(ddg.call = character(size), line = integer(size),
-            return.used = logical(size), return.node.id = integer(size), stringsAsFactors = FALSE)
-        .ddg.add.rows(".ddg.return.values", new.rows)
-        ddg.return.values <- .ddg.get(".ddg.return.values")
+            ret.used = logical(size), ret.node.id = integer(size), stringsAsFactors = FALSE)
+        .ddg.add.rows(".ddg.ret.values", new.rows)
+        ddg.ret.values <- .ddg.get(".ddg.ret.values")
     }
-    # If this is not a recursive call to ddg.return.value and ddg.function was not
+    # If this is not a recursive call to ddg.ret.value and ddg.function was not
     # called, create the function nodes that it would have created.
     call <- sys.call(caller.frame)
     if (!.ddg.proc.node.exists(pname)) {
@@ -3146,68 +3146,68 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
         .ddg.dec(".ddg.func.depth")
     }
     if (is.null(cmd.func)) {
-        return.stmt <- .ddg.construct.DDGStatement(parse(text = orig.return), pos = NA,
+        ret.stmt <- .ddg.construct.DDGStatement(parse(text = orig.return), pos = NA,
             script.num = NA)
     } else {
-        return.stmt <- cmd.func()
-        parsed.statement <- return.stmt@parsed
+        ret.stmt <- cmd.func()
+        parsed.statement <- ret.stmt@parsed
     }
     # Create a data node for the return value. We want the scope of the function that
-    # called the function that called ddg.return.
+    # called the function that called ddg.ret.
     call.text <- gsub(" ", "", deparse(call, nlines = 1))
-    return.node.name <- paste(call.text, "return")
-    return.node.name <- gsub("\"", "\\\\\"", return.node.name)
+    ret.node.name <- paste(call.text, "return")
+    ret.node.name <- gsub("\"", "\\\\\"", ret.node.name)
 
-    return.node.scope <- environmentName(if (sys.nframe() == 2)
+    ret.node.scope <- environmentName(if (sys.nframe() == 2)
         .GlobalEnv else parent.env(sys.frame(caller.frame)))
-    .ddg.save.data(return.node.name, expr, fname = "ddg.return", scope = return.node.scope)
+    .ddg.save.data(ret.node.name, expr, fname = "ddg.return", scope = ret.node.scope)
     caller.env = sys.frame(caller.frame)
-    # check if there is a return call within this call to ddg.return.
+    # check if there is a return call within this call to ddg.ret.
     if (.ddg.has.call.to(parsed.stmt, "return")) {
-        .ddg.proc.node("Operation", return.stmt@abbrev, return.stmt@abbrev, console = TRUE,
-            env = caller.env, cmd = return.stmt)
+        .ddg.proc.node("Operation", ret.stmt@abbrev, ret.stmt@abbrev, console = TRUE,
+            env = caller.env, cmd = ret.stmt)
         # Create control flow edge from preceding procedure node.
         .ddg.proc2proc()
         # Create an edge from the return statement to its return value.
-        .ddg.proc2data(return.stmt@abbrev, return.node.name, return.node.scope, return.value = TRUE)
+        .ddg.proc2data(ret.stmt@abbrev, ret.node.name, ret.node.scope, ret.value = TRUE)
         if (!is.null(dev.file)) {
-            ddg.file.out(dev.file, pname = return.stmt@abbrev)
+            ddg.file.out(dev.file, pname = ret.stmt@abbrev)
             # Remove the temporary file
             file.remove(dev.file)
             # Add an input edge from the current device
-            .ddg.data2proc(dev.node.name, NULL, return.stmt@abbrev)
+            .ddg.data2proc(dev.node.name, NULL, ret.stmt@abbrev)
         }
     } else {
-        .ddg.lastproc2data(return.node.name, dscope = return.node.scope)
+        .ddg.lastproc2data(ret.node.name, dscope = ret.node.scope)
     }
     # Update the table.
     ddg.num.returns <- ddg.num.returns + 1
-    ddg.return.values$ddg.call[ddg.num.returns] <- call.text
-    ddg.return.values$return.used[ddg.num.returns] <- FALSE
-    ddg.return.values$return.node.id[ddg.num.returns] <- .ddg.get("ddg.dnum")
+    ddg.ret.values$ddg.call[ddg.num.returns] <- call.text
+    ddg.ret.values$ret.used[ddg.num.returns] <- FALSE
+    ddg.ret.values$ret.node.id[ddg.num.returns] <- .ddg.get("ddg.dnum")
     ddg.cur.cmd.stack <- .ddg.get(".ddg.cur.cmd.stack")
-    ddg.return.values$line[ddg.num.returns] <- if (length(ddg.cur.cmd.stack) == 0)
+    ddg.ret.values$line[ddg.num.returns] <- if (length(ddg.cur.cmd.stack) == 0)
         NA else ddg.cur.cmd.stack[length(ddg.cur.cmd.stack) - 1][[1]]@pos@startLine
-    .ddg.set(".ddg.return.values", ddg.return.values)
+    .ddg.set(".ddg.ret.values", ddg.ret.values)
     .ddg.set(".ddg.num.returns", ddg.num.returns)
     # If it does not have return, then its parameter was a call to ddg.eval and this
     # stuff has been done already.
     if (.ddg.has.call.to(parsed.stmt, "return")) {
         # Create edges from variables used in the return statement
-        vars.used <- return.stmt@vars.used
+        vars.used <- ret.stmt@vars.used
         for (var in vars.used) {
             # Make sure there is a node we could connect to.
             scope <- .ddg.get.scope(var)
             if (.ddg.data.node.exists(var, scope)) {
-                .ddg.data2proc(var, scope, return.stmt@abbrev)
+                .ddg.data2proc(var, scope, ret.stmt@abbrev)
             }
         }
-        for (var in return.stmt@vars.set) {
+        for (var in ret.stmt@vars.set) {
             if (var != "") {
                 # Create output data node.
                 dvalue <- eval(as.symbol(var), envir = env)
                 # check for non-local assignment
-                if (.ddg.is.nonlocal.assign(return.stmt@parsed[[1]])) {
+                if (.ddg.is.nonlocal.assign(ret.stmt@parsed[[1]])) {
                   env <- .ddg.where(var, env = parent.env(parent.frame()), warning = FALSE)
                   if (identical(env, "undefined"))
                     env <- globalenv()
@@ -3215,14 +3215,14 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
                 dscope <- .ddg.get.scope(var, env = env)
                 .ddg.save.data(var, dvalue, scope = dscope)
                 # Create an edge from procedure node to data node.
-                .ddg.proc2data(return.stmt@abbrev, var, dscope = dscope, return.value = FALSE)
+                .ddg.proc2data(ret.stmt@abbrev, var, dscope = dscope, ret.value = FALSE)
             }
         }
         # Create nodes and edges dealing with reading and writing files
-        .ddg.create.file.read.nodes.and.edges(return.stmt, env)
-        .ddg.create.file.write.nodes.and.edges(return.stmt, env)
-        if (return.stmt@createsGraphics) {
-            .ddg.set.graphics.files(return.stmt, env)
+        .ddg.create.file.read.nodes.and.edges(ret.stmt, env)
+        .ddg.create.file.write.nodes.and.edges(ret.stmt, env)
+        if (ret.stmt@createsGraphics) {
+            .ddg.set.graphics.files(ret.stmt, env)
         }
     }
     # Create the finish node for the function
@@ -3396,7 +3396,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
     if (!is.null(cmd) && cmd@text == "next") {
         .ddg.next.statement()
     }
-    return.value <- .ddg.parse.commands(parsed.statement, environ = env, run.commands = TRUE,
+    ret.value <- .ddg.parse.commands(parsed.statement, environ = env, run.commands = TRUE,
         node.name = statement, called.from.ddg.eval = TRUE, cmds = list(cmd))
 
     if (.ddg.get(".ddg.func.depth")) {
@@ -3404,7 +3404,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
             .ddg.link.function.returns(cmd)
         }
     }
-    return(return.value)
+    return(ret.value)
 }
 
 # ddg.data creates a data node for a single or complex data value.  If the value
