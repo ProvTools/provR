@@ -1494,60 +1494,6 @@ library(jsonlite)
     .ddg.set(".ddg.warning", NA)
 }
 
-# .ddg.process.breakpoint pauses execution of a script when a break point is
-# reached.  Breakpoints may be set by using the debug parameter in ddg.run,
-# adding ddg.breakpoint to the script, or using ddg.set.breakpoint at the R
-# command line. If a breakpoint has been set, execution is paused and the script
-# number (if > 0) and line number of the next command to be executed (or the
-# function name if internal to a function) are displayed, followed by the text of
-# the command. Execution resumes when the user enters text at the keyboard.
-# Options include: Enter = execute next command, C = continue execution until
-# another breakpoint is reached, and Q = quit debugging and continue until
-# execution is finished.
-
-# command - text of current parsed command.  inside.function - whether called
-# from within a function.
-
-.ddg.process.breakpoint <- function(command, inside.function) {
-    # Display prompt if we are reaching a breakpoint (i.e., not single-stepping)
-    if (!.ddg.get("ddg.break")) {
-        writeLines("\nEnter = next command, C = next breakpoint, Q = quit debugging\n")
-    }
-    # Abbreviate command.
-    abbrev <- command@abbrev
-    # Display script and line numbers if top-level command.
-    if (!inside.function) {
-        snum <- command@script.num
-        lnum <- command@pos@startLine
-        if (snum == 0)
-            slnum <- lnum else slnum <- paste(snum, ":", lnum, sep = "")
-        print(paste(slnum, "  |  ", abbrev, sep = ""))
-        # Display name of function if inside function.
-    } else {
-        frame.num <- .ddg.get.frame.number(sys.calls())
-        func.call <- sys.call(frame.num)
-        # Need to check for closure in case of mapply function
-        if (typeof(func.call[[1]]) == "closure") {
-            func.name <- "FUN"
-        } else {
-            func.name <- as.character(func.call[[1]])
-        }
-        print(paste("[", func.name, "]  |  ", abbrev, sep = ""))
-    }
-    # Save ddg.
-    .ddg.json.write()
-    # Get user input from the keyboard.
-    line <- "D"
-    while (line == "D") {
-        line <- toupper(readline())
-        if (line == "")
-            .ddg.set("ddg.break", TRUE) else if (line == "C")
-            .ddg.set("ddg.break", FALSE) else if (line == "Q")
-            .ddg.set("ddg.break.ignore", TRUE)
-    }
-
-}
-
 # Create the DDGStatement list for a list of parsed expressions.
 
 # exprs - a list of parsed expressions script.name - the name of the script the
@@ -1568,8 +1514,7 @@ library(jsonlite)
             cmds <- vector("list", (length(exprs)))
             for (i in 1:length(exprs)) {
                 expr <- as.expression(exprs[i])
-                cmds[[i]] <- .ddg.construct.DDGStatement(expr, NA, script.name, script.num,
-                  NA, parseData)
+                cmds[[i]] <- .ddg.construct.DDGStatement(expr, NA, script.name, script.num, parseData)
             }
             return(cmds)
         }
@@ -1588,9 +1533,6 @@ library(jsonlite)
             non.comment.parse.data$line2 <= enclosing.pos@endLine & non.comment.parse.data$text ==
             paste(deparse(exprs[[1]]), collapse = "\n"))[1]
     }
-    # Get the breakpoint information
-    breakpoints <- ddg.list.breakpoints()
-    breakpoints <- breakpoints[breakpoints$sname == script.name, ]
     # Create the DDGStatements
     cmds <- vector("list", (length(exprs)))
     next.cmd <- 1
@@ -1599,7 +1541,7 @@ library(jsonlite)
         next.expr.pos <- new(Class = "DDGStatementPos", non.comment.parse.data[next.parseData,
             ])
         cmds[[next.cmd]] <- .ddg.construct.DDGStatement(expr, next.expr.pos, script.name,
-            script.num, breakpoints, parseData)
+            script.num, parseData)
         next.cmd <- next.cmd + 1
         # If there are more expressions, determine where to look next in the parseData
         if (i < length(exprs)) {
@@ -1741,10 +1683,6 @@ library(jsonlite)
     for (i in 1:length(cmds)) {
       cmd <- cmds[[i]]
       if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
-      # Process breakpoint. We stop if there is a breakpoint set on this line or we are single-stepping.
-      if (.ddg.get(".ddg.is.sourced") & (cmd@is.breakpoint | .ddg.get("ddg.break")) & !.ddg.get("ddg.break.ignore")) {
-        .ddg.process.breakpoint(cmd, inside.function=called.from.ddg.eval)
-      }
       if ((.ddg.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
@@ -3209,7 +3147,7 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     }
     if (is.null(cmd.func)) {
         return.stmt <- .ddg.construct.DDGStatement(parse(text = orig.return), pos = NA,
-            script.num = NA, breakpoints = NA)
+            script.num = NA)
     } else {
         return.stmt <- cmd.func()
         parsed.statement <- return.stmt@parsed
@@ -3223,13 +3161,6 @@ ddg.return.value <- function(expr = NULL, cmd.func = NULL) {
     return.node.scope <- environmentName(if (sys.nframe() == 2)
         .GlobalEnv else parent.env(sys.frame(caller.frame)))
     .ddg.save.data(return.node.name, expr, fname = "ddg.return", scope = return.node.scope)
-
-    # Process breakpoint. We stop if there is a breakpoint set on this line or we are
-    # single-stepping.
-    if (.ddg.get(".ddg.is.sourced") & (return.stmt@is.breakpoint | .ddg.get("ddg.break")) &
-        !.ddg.get("ddg.break.ignore")) {
-        .ddg.process.breakpoint(return.stmt, inside.function = TRUE)
-    }
     caller.env = sys.frame(caller.frame)
     # check if there is a return call within this call to ddg.return.
     if (.ddg.has.call.to(parsed.stmt, "return")) {
@@ -3828,7 +3759,6 @@ ddg.finish <- function(pname = NULL) {
 ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
     annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10,
     save.to.disk = TRUE) {
-    # .ddg.DDGStatement.init()
     .ddg.init.tables()
     # Setting the path for the ddg
     if (is.null(ddgdir)) {
@@ -3951,8 +3881,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
 # files are saved. If -1, all snapshot files are saved.  Size in kilobytes.  Note
 # that this tests the size of the object that will be turned into a snapshot, not
 # the size of the resulting snapshot.  debug (optional) - If TRUE, enable script
-# debugging. This has the same effect as inserting ddg.breakpoint() at the top of
-# the script.  save.debug (optional) - If TRUE, save debug files to debug
+# debugging. save.debug (optional) - If TRUE, save debug files to debug
 # directory.
 
 ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL,
@@ -3964,9 +3893,6 @@ ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = N
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
         .ddg.set(".ddg.is.sourced", TRUE)
-    # Set breakpoint if debug is TRUE.
-    if (debug)
-        ddg.breakpoint()
     # Save debug files to debug directory.
     .ddg.set("ddg.save.debug", save.debug)
     # If an R error is generated, get the error message and close the DDG.
@@ -4236,45 +4162,6 @@ ddg.debug.lib.on <- function() {
 
 ddg.debug.lib.off <- function() {
     .ddg.set("ddg.debug.lib", FALSE)
-}
-
-# ddg.breakpoint turns on script debugging unless ddg.break.ignore is TRUE.
-
-ddg.breakpoint <- function() {
-    if (!.ddg.get("ddg.break.ignore")) {
-        writeLines("\nEnter = next command, C = next breakpoint, Q = quit debugging\n")
-        .ddg.set("ddg.break", TRUE)
-    }
-}
-
-# ddg.set.breakpoint sets a breakpoint for the specified script at the specified
-# line number.
-
-ddg.set.breakpoint <- function(script.name, line.num) {
-    df2 <- data.frame(script.name, line.num)
-    colnames(df2) <- c("sname", "lnum")
-
-    if (.ddg.is.set("ddg.breakpoints")) {
-        df1 <- ddg.list.breakpoints()
-        .ddg.set("ddg.breakpoints", rbind(df1, df2))
-    } else {
-        .ddg.set("ddg.breakpoints", df2)
-    }
-}
-
-# ddg.list.breakpoints returns a list of breakpoints set by script name and line
-# number.
-
-ddg.list.breakpoints <- function() {
-    if (.ddg.is.set("ddg.breakpoints"))
-        return(.ddg.get("ddg.breakpoints")) else return(NULL)
-}
-
-# ddg.clear.breakpoints removes all breakpoints at specified scripts and line
-# numbers.
-
-ddg.clear.breakpoints <- function() {
-    .ddg.set("ddg.breakpoints", NULL)
 }
 
 # ddg.console.off turns off the console mode of DDG construction.
