@@ -213,7 +213,6 @@ library(jsonlite)
     }
     # No switching, or previous is not accessible (NULL or removed).
     return(0)
-
 }
 
 # .ddg.save.simple takes in a simple name-value pair and saves it to the DDG. It
@@ -613,8 +612,7 @@ library(jsonlite)
         if (.ddg.is.proc.node(type))
             return(i)
     }
-    error.msg <- paste("No final procedure nodes")
-    .ddg.insert.error.message(error.msg)
+    .ddg.insert.error.message("No final procedure nodes")
     return(0)
 }
 
