@@ -139,9 +139,9 @@
           d.environ <- globalenv()
       }
       # Check for control & loop statements.
-      st.type <- .ddg.get.statement.type(cmd@parsed[[1]])
-      control.statement <- (st.type == "if" || st.type == "for" || st.type == "while" || st.type == "repeat" || st.type == "{")
-      loop.statement <- (st.type == "for" || st.type == "while" || st.type == "repeat")
+      statement.type <- .ddg.get.statement.type(cmd@parsed[[1]])
+      control.statement <- (statement.type == "if" || statement.type == "for" || statement.type == "while" || statement.type == "repeat" || statement.type == "{")
+      loop.statement <- (statement.type == "for" || statement.type == "while" || statement.type == "repeat")
       # Specifies whether or not a procedure node should be created
       # for this command. Basically, if a ddg exists and the
       # command is not a DDG command or a control statement, it should
