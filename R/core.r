@@ -3823,13 +3823,10 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     if (interactive() && .ddg.get(".ddg.enable.console") && save.to.disk) {
         ddg.history.file <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/.ddghistory", sep = "")
         .ddg.set(".ddg.history.file", ddg.history.file)
-
         # Empty file if it already exists, do the same with tmp file.
         file.create(ddg.history.file, showWarnings = FALSE)
-
         # One timestamp keeps track of last ddg.save (the default).
         .ddg.write.timestamp.to.history()
-
         # Save the history if the platform supports it.
         tryCatch(savehistory(ddg.history.file), error = function(e) {
         })
