@@ -83,8 +83,6 @@ library(jsonlite)
 .ddg.data.objects <- function() {
     # Get data node, procedure node, and edge tables.
     dnodes <- .ddg.get("ddg.data.nodes")
-    pnodes <- .ddg.get("ddg.proc.nodes")
-    edges <- .ddg.get("ddg.edges")
     # Subset data node table
     dnum <- .ddg.get("ddg.dnum")
     dinv <- dnodes[1:dnum, c("ddg.num", "ddg.name", "ddg.value", "ddg.type", "ddg.scope")]

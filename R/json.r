@@ -99,7 +99,6 @@
 # .ddg.json.control.edge adds a control flow edge to the ddg.json string.
 
 .ddg.json.control.edge <- function(id, node1, node2) {
-
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:informant\" : \"", node1, "\",\n\"prov:informed\" : \"",
         node2, "\"\n}", sep = "")
     .ddg.append.wasInformedBy(jstr)
@@ -108,7 +107,6 @@
 # .ddg.json.data.out.edge adds an output data flow edge to the ddg.json string.
 
 .ddg.json.data.out.edge <- function(id, node1, node2) {
-
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:entity\" : \"", node2, "\",\n\"prov:activity\" : \"",
         node1, "\"\n}", sep = "")
     .ddg.append.wasGeneratedBy(jstr)
