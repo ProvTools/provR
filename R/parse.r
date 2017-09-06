@@ -577,7 +577,10 @@
                   }
                 }
               },
-            warning = .ddg.set.warning ,
+            warning = function(w)
+            {
+                .ddg.set(".ddg.warning", w)
+            },
             error = function(e)
             {
               # create procedure node for the error-causing operation
