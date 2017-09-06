@@ -202,3 +202,25 @@ ddg.finish <- function(pname = NULL) {
     # value of the last R statement.
     return(.ddg.get(".ddg.last.R.value"))
 }
+
+# ddg.add.abstract.node is exclusively used in .ddg.parse.commands (so far) and
+# simply serves to avoid repetition of code.
+
+# type - type of procedure node.  cmd - command string.  called (optional) - name
+# of calling function.
+
+.ddg.add.abstract.node <- function(type, cmd = NULL, env, called = ".ddg.parse.commands",
+    node.name = "") {
+    if (node.name == "") {
+        if (is.null(cmd)) {
+            node.name <- .ddg.abbrev.cmd(cmd)
+        } else {
+            node.name <- cmd@abbrev
+        }
+    }
+    if (.ddg.get("ddg.debug.lib"))
+        print(paste(called, ":  Adding", node.name, type, "node"))
+    .ddg.proc.node(type, node.name, node.name, TRUE, env = env, cmd = cmd)
+    .ddg.proc2proc()
+    return(node.name)
+}

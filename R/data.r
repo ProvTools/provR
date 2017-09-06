@@ -431,3 +431,20 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
     colnames(dinv) <- c("node", "name", "value", "type", "scope")
     return(dinv)
 }
+
+
+# Create the warning node for the saved warning and attach it to the node that
+# created the warning
+
+.ddg.record.warning <- function() {
+    # Get the saved warning
+    w <- .ddg.get(".ddg.warning")
+    # Create a message that looks like the one R creates
+    callStr <- if (is.null(w$call))
+        "" else paste("In ", head(deparse(w$call)), ": ")
+    warningMessage <- paste(callStr, w$message)
+    # Create the warning node
+    .ddg.insert.error.message(warningMessage, "warning.msg", doWarn = FALSE)
+    # Clear the saved warning
+    .ddg.set(".ddg.warning", NA)
+}
