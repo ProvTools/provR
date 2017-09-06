@@ -43,16 +43,6 @@
     .ddg.init.tables()
 }
 
-# Functions that allow us to save warnings when they occur so that we can create
-# the warning node after the node that caused the warning is created.
-# .ddg.set.warning is attached as a handler when we evaluate expressions.  It
-# saves the warning so that a warning node can be created after the procedural
-# node that corresponds to the expression that caused the warning w - the
-# simplewarning object created by R
-.ddg.set.warning <- function(w) {
-    .ddg.set(".ddg.warning", w)
-}
-
 ##### Mutators for specific common actions
 .ddg.inc <- function(var) {
     value <- .ddg.get(var)

@@ -9,6 +9,16 @@
 # <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>.  This package was
 # forked from <https://github.com/End-to-end-provenance/RDataTracker>
 
+# Functions that allow us to save warnings when they occur so that we can create
+# the warning node after the node that caused the warning is created.
+# .ddg.capture.warning is attached as a handler when we evaluate expressions.  It
+# saves the warning so that a warning node can be created after the procedural
+# node that corresponds to the expression that caused the warning w - the
+# simplewarning object created by R
+.ddg.capture.warning <- function(w) {
+    .ddg.set(".ddg.warning", w)
+}
+
 # .ddg.parse.commands takes as input a list of parsed expressions from
 # an R script and creates DDG nodes for each command. If environ is an
 # environment, it executes the commands in that environment
@@ -196,7 +206,6 @@
           if (.ddg.get("ddg.debug.lib")) print (paste (".ddg.parse.commands: Evaluating ", cmd@annotated))
 
           result <- withCallingHandlers(
-
               {
                 for (annot in cmd@annotated) {
                   # Don't set ret.value if we are calling a ddg function or we are executing an if-statement
@@ -209,7 +218,7 @@
                   }
                 }
               },
-            warning = .ddg.set.warning ,
+            warning = .ddg.capture.warning,
             error = function(e)
             {
               # create procedure node for the error-causing operation
