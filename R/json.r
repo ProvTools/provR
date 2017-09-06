@@ -38,22 +38,11 @@
     # add environment entities
     environ <- ""
     environ <- paste(environ, "\n\"environment\" : {\n", sep = "")
-
     environ <- paste(environ, .ddg.json.nv("rdt:name", "environment"), sep = "")
-
-    architecture <- R.Version()$arch
-    environ <- paste(environ, .ddg.json.nv("rdt:architecture", architecture), sep = "")
-
-    operating.system <- .Platform$OS.type
-    environ <- paste(environ, .ddg.json.nv("rdt:operatingSystem", operating.system),
-        sep = "")
-
-    language = "R"
-    environ <- paste(environ, .ddg.json.nv("rdt:language", language), sep = "")
-
-    r.version <- R.Version()$version
-    environ <- paste(environ, .ddg.json.nv("rdt:rVersion", r.version), sep = "")
-
+    environ <- paste(environ, .ddg.json.nv("rdt:architecture", R.Version()$arch), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:operatingSystem", .Platform$OS.type), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:language", "R"), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:rVersion", R.Version()$version), sep = "")
     ddg.r.script.path <- .ddg.get("ddg.r.script.path")
     if (!is.null(ddg.r.script.path)) {
         script <- ddg.r.script.path
@@ -66,23 +55,12 @@
         sourced.scripts.timestamps <- ""
     }
     environ <- paste(environ, .ddg.json.nv("rdt:script", ddg.r.script.path), sep = "")
-    environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n",
-        sep = "")
-    environ <- paste(environ, .ddg.json.nv("rdt:scriptTimeStamp", script.timestamp),
-        sep = "")
-    working.directory = getwd()
-    environ <- paste(environ, .ddg.json.nv("rdt:workingDirectory", working.directory),
-        sep = "")
-
-    ddg.directory = .ddg.get("ddg.path")
-    environ <- paste(environ, .ddg.json.nv("rdt:ddgDirectory", ddg.directory), sep = "")
-
-    ddg.timestamp <- .ddg.get("ddg.start.time")
-    environ <- paste(environ, .ddg.json.nv("rdt:ddgTimeStamp", ddg.timestamp), sep = "")
-
-    lib.version <- packageVersion("provR")
-    environ <- paste(environ, .ddg.json.nv("rdt:provRVersion", lib.version), sep = "")
-
+    environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n", sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:scriptTimeStamp", script.timestamp), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:workingDirectory", getwd()), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:ddgDirectory", .ddg.get("ddg.path")), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:ddgTimeStamp", .ddg.get("ddg.start.time")), sep = "")
+    environ <- paste(environ, .ddg.json.nv("rdt:provRVersion", packageVersion("provR")), sep = "")
     environ <- paste(environ, .ddg.installedpackages.json(), sep = "")
     environ <- paste(environ, "\n}", sep = "")
     return(environ)
