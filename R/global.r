@@ -142,7 +142,7 @@
     size <- 100
     .ddg.get.initial.env()
     .ddg.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
-        ddg.name = character(size), ddg.value = character(size), ddg.return.linked = logical(size),
+        ddg.name = character(size), ddg.value = character(size), ddg.ret.linked = logical(size),
         ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
         ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
         ddg.endCol = numeric(size), stringsAsFactors = FALSE))
@@ -175,13 +175,13 @@
     .ddg.set("ddg.checkpoint.num", 0)
     # Record last command from the preceding console block.
     .ddg.set(".ddg.last.cmd", NULL)
-    # Record value returned by calls to ddg.return.  ddg.call - the string
+    # Record value returned by calls to ddg.ret.  ddg.call - the string
     # representing the call, like 'f(a)'.  line - the line where the function is
-    # called that is now returning return.used - remembers if this function return
-    # value has been linked to the caller.  return.node.id - the id of the data node
+    # called that is now returning ret.used - remembers if this function return
+    # value has been linked to the caller.  ret.node.id - the id of the data node
     # that holds the return value.
-    .ddg.set(".ddg.return.values", data.frame(ddg.call = character(size), line = integer(size),
-        return.used = logical(size), return.node.id = integer(size), stringsAsFactors = FALSE))
+    .ddg.set(".ddg.ret.values", data.frame(ddg.call = character(size), line = integer(size),
+        ret.used = logical(size), ret.node.id = integer(size), stringsAsFactors = FALSE))
     .ddg.set(".ddg.num.returns", 0)
     # Record the current command to be opened during console execution (used when
     # executing a script using ddg.source).
