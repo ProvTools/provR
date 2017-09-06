@@ -764,7 +764,6 @@ library(jsonlite)
             ddg.proc.nodes$ddg.ret.linked[pn] <- TRUE
             .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
         }
-
         if (.ddg.get("ddg.debug.lib")) {
             print(paste("proc2data: ", pname, " ", dname, sep = ""))
             print(paste("DF ", node1, " ", node2, sep = ""))
@@ -803,10 +802,8 @@ library(jsonlite)
 
 .ddg.is.nonlocal.assign <- function(expr) {
     # <<- or ->> means that the assignment is non-local
-    if (is.call(expr)) {
-        # This also finds uses of ->>.
-        if (identical(expr[[1]], as.name("<<-")))
-            return(TRUE)
+    if (is.call(expr) && identical(expr[[1]], as.name("<<-"))) {
+      return(TRUE)
     }
     return(FALSE)
 }
@@ -853,7 +850,6 @@ library(jsonlite)
         2 + 1, new.vars.set$first.writer)
     new.vars.set$possible.first.writer <- ifelse(new.vars.set$possible.first.writer ==
         size + 1, size * 2 + 1, new.vars.set$possible.first.writer)
-
     return(new.vars.set)
 }
 
@@ -1138,8 +1134,7 @@ library(jsonlite)
 .ddg.create.file.read.nodes.and.edges <- function(cmd, env) {
     # Find all the files potentially read in this command.  This may include files
     # that are not actually read if the read are within an if-statement, for example.
-    files.read <- .ddg.find.files(cmd, .ddg.get(".ddg.file.read.functions.df"),
-                  env)
+    files.read <- .ddg.find.files(cmd, .ddg.get(".ddg.file.read.functions.df"), env)
     for (file in files.read) {
         # Only create the node and edge if there actually is a file then if the file
         # exists, it is possible that it was not read here
@@ -1161,8 +1156,7 @@ library(jsonlite)
     # Find all the files potentially written in this command.  This may include files
     # that are not actually written if the write calls are within an if-statement,
     # for example.
-    files.written <- .ddg.find.files(cmd, .ddg.get(".ddg.file.write.functions.df"),
-                      env)
+    files.written <- .ddg.find.files(cmd, .ddg.get(".ddg.file.write.functions.df"), env)
     for (file in files.written) {
         # check that the file exists.  If it does, we will assume that it was created by
         # the write call that we just found.
@@ -1197,7 +1191,6 @@ library(jsonlite)
     dev.node.name <- paste0("dev.", dev.cur())
     .ddg.data.node("Data", dev.node.name, "graph", NULL)
     .ddg.proc2data(main.object@abbrev, dev.node.name)
-
 }
 
 # Add data in and data out nodes that represent the current device.  cmd -
