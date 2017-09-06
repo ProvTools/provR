@@ -2493,55 +2493,6 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     invisible()
 }
 
-# ddg.run executes a script (r.script.path) or a function (f).  If an R error is
-# generated, the error message is captured and saved in the DDG. This function
-# includes calls to ddg.init and ddg.save, so it is not necessary to call those
-# functions from an instrumented script if ddg.run is used. Note that one of f
-# and r.script.path must be given; otherwise an error is generated.
-
-# r.script.path (optional) - the full path to the R script.  If provided, a copy
-# of the script will be saved with the DDG.  If only r.script.path is provided,
-# the script is sourced using ddg.source and a DDG is created for the script.
-# ddgdir (optional) - the directory where the DDG will be saved.  If not
-# provided, the DDG will be saved in a directory called 'ddg' in the current
-# working directory.  overwrite (optional) - if TRUE, the ddg is overwritten each
-# time the script is executed.  f (optional) - a function to run. If supplied,
-# the function f is executed with calls to ddg.init and ddg.save so that
-# provenance for the function is captured.  enable.console (optional) - if TRUE,
-# console mode is turned on.  annotate.inside.functions (optional) - if TRUE,
-# functions are annotated.  first.loop (optional) - the first loop to annotate in
-# a for, while, or repeat statement.  max.loops (optional) - the maximum number
-# of loops to annotate in a for, while, or repeat statement. If max.loops = -1
-# there is no limit.  If max.loops = 0, no loops are annotated.  If non-zero,
-# if-statements are also annotated.  max.snapshot.size (optional) - the maximum
-# size for objects that should be output to snapshot files. If 0, no snapshot
-# files are saved. If -1, all snapshot files are saved.  Size in kilobytes.  Note
-# that this tests the size of the object that will be turned into a snapshot, not
-# the size of the resulting snapshot.  debug (optional) - If TRUE, enable script
-# debugging. save.debug (optional) - If TRUE, save debug files to debug
-# directory.
-
-ddg.run <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL,
-    enable.console = TRUE, annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1,
-    max.snapshot.size = 10, debug = FALSE, save.debug = FALSE) {
-    # Initiate ddg.
-    ddg.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions,
-        first.loop, max.loops, max.snapshot.size)
-    # Set .ddg.is.sourced to TRUE if script provided.
-    if (!is.null(r.script.path))
-        .ddg.set(".ddg.is.sourced", TRUE)
-    # Save debug files to debug directory.
-    .ddg.set("ddg.save.debug", save.debug)
-    # If an R error is generated, get the error message and close the DDG.
-    tryCatch(if (!is.null(f))
-        f() else if (!is.null(r.script.path))
-        ddg.source(.ddg.get("ddg.r.script.path"), ddgdir = ddgdir, ignore.ddg.calls = FALSE,
-            ignore.init = TRUE, force.console = FALSE) else stop("r.script.path and f cannot both be NULL"), finally = {
-        ddg.save(r.script.path)
-    })
-    invisible()
-}
-
 # ddg.save inserts attribute information and the number of procedure steps at the
 # top of the DDG. It writes the DDG and the procedure nodes, data nodes, and
 # function return tables to the DDG directory.
@@ -2761,7 +2712,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     }
     # Ignore calculation of certain execution steps.
     ignores <- c("^library[(]provR[)]$", if (ignore.ddg.calls) "^ddg." else if (ignore.init) c("^ddg.init",
-        "^ddg.run") else "a^")
+        "^prov.capture") else "a^")
     # Now we can parse the commands as we normally would for a DDG.
     if (length(exprs) > 0) {
         # Turn on the console if forced to, keep track of previous setting, parse
