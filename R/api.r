@@ -20,22 +20,23 @@
 # if-statements are also annotated.  save (optional) - if TRUE information is
 # saved.
 #' @export
-prov.capture <- function(r.script.path, annotate.inside.functions = FALSE, first.loop = 1,
-    max.loops = 1, save = FALSE) {
+prov.capture <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, f = NULL,
+    enable.console = TRUE, annotate.inside.functions = FALSE, first.loop = 1, max.loops = 1,
+    max.snapshot.size = 10, debug = FALSE, save.debug = FALSE, save=FALSE) {
     # Initiate ddg.
-    ddg.init(r.script.path, NULL, FALSE, TRUE, annotate.inside.functions, first.loop,
-        max.loops, 0, save.to.disk = save)
+    ddg.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions,
+        first.loop, max.loops, max.snapshot.size, save.to.disk=save)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
         .ddg.set(".ddg.is.sourced", TRUE)
     # Save debug files to debug directory.
-    .ddg.set("ddg.save.debug", FALSE)
+    .ddg.set("ddg.save.debug", save.debug)
     # If an R error is generated, get the error message and close the DDG.
-    tryCatch(if (!is.null(r.script.path))
-        ddg.source(.ddg.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE,
-            ignore.init = TRUE, force.console = FALSE) else stop("r.script.path cannot be NULL"), finally = {
-        if (save)
-            ddg.save(r.script.path, FALSE)
+    tryCatch(if (!is.null(f))
+        f() else if (!is.null(r.script.path))
+        ddg.source(.ddg.get("ddg.r.script.path"), ddgdir = ddgdir, ignore.ddg.calls = FALSE,
+            ignore.init = TRUE, force.console = FALSE) else stop("r.script.path and f cannot both be NULL"), finally = {
+        if(save) ddg.save(r.script.path)
     })
     invisible()
 }
