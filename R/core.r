@@ -10,18 +10,13 @@
 # forked from <https://github.com/End-to-end-provenance/RDataTracker>
 
 # Create DDG environment variable.
-
 .ddg.env <- new.env(parent = emptyenv())
 
 # Set the number of lines the history file keeps (and therefore can be analyzed).
 # Note: this setting has no effect on some systems.
-
 ddg.MAX_HIST_LINES <- 2^14
 
-library(tools)
-
 # .ddg.init.environ() sets up the filesystem and R environments for use.
-
 .ddg.init.environ <- function() {
     dir.create(.ddg.get("ddg.path"), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
