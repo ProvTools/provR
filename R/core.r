@@ -19,7 +19,6 @@
 ddg.MAX_HIST_LINES <- 2^14
 
 library(tools)
-library(jsonlite)
 
 # .ddg.init.environ() sets up the filesystem and R environments for use.
 
