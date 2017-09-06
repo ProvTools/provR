@@ -108,13 +108,6 @@ library(jsonlite)
     return(sub(" ", "", formatted.time))
 }
 
-# .ddg.timestamp gets the current date and time from the system.
-
-.ddg.timestamp <- function() {
-    ts <- Sys.time()
-    return(.ddg.format.time(ts))
-}
-
 .ddg.elapsed.time <- function() {
     time <- proc.time()
     if (.ddg.is.set(".ddg.proc.start.time"))
@@ -2243,7 +2236,7 @@ library(jsonlite)
     if (save.object && full.snapshot)
         save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.get("ddg.dnum") + 1, "-", snapname,
             ".RObject", sep = ""), ascii = TRUE)
-    dtime <- .ddg.timestamp()
+    dtime <- .ddg.format.time(Sys.time())
     # Get scope if necessary.
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
@@ -2274,7 +2267,7 @@ library(jsonlite)
     # Calculate the path to the file relative to the ddg directory.  This is the
     # value stored in the node.
     dpfile <- paste("data", dfile, sep = "/")
-    dtime <- .ddg.timestamp()
+    dtime <- .ddg.format.time(Sys.time())
     # Set the node label.
     if (is.null(dname))
         dname <- file.name
@@ -3778,7 +3771,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
                 dir.create(no.overwrite.folder)
             }
             ddg.path <- paste(no.overwrite.folder, "/", basename(tools::file_path_sans_ext(r.script.path)),
-                "_ddg_", .ddg.timestamp(), sep = "")
+                "_ddg_", .ddg.format.time(Sys.time()), sep = "")
         }
         .ddg.set("ddg.path", ddg.path)
         # Remove files from DDG directory
@@ -3847,7 +3840,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     .ddg.set("ddg.first.loop", first.loop)
     .ddg.set(".ddg.proc.start.time", .ddg.elapsed.time())
     # Store time when script begins execution.
-    .ddg.set("ddg.start.time", .ddg.timestamp())
+    .ddg.set("ddg.start.time", .ddg.format.time(Sys.time()))
     invisible()
 }
 
