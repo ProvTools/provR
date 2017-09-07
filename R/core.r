@@ -2721,7 +2721,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
         if (prev.on && interactive())
             .ddg.console.node()
         if (force.console)
-            ddg.console.on()
+            .ddg.console.on()
         # Let library know that we are sourcing a file.
         prev.source <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.ddg.is.set("from.source") && .ddg.get("from.source"))
         # Initialize the tables for ddg.capture.
@@ -2735,7 +2735,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
         .ddg.set("from.source", prev.source)
         # Turn return console to previous state.
         if (!prev.on)
-            ddg.console.off() else ddg.console.on()
+            .ddg.console.off() else .ddg.console.on()
     }
     invisible()
 }
@@ -2752,9 +2752,9 @@ ddg.debug.lib.off <- function() {
     .ddg.set("ddg.debug.lib", FALSE)
 }
 
-# ddg.console.off turns off the console mode of DDG construction.
+# .ddg.console.off turns off the console mode of DDG construction.
 
-ddg.console.off <- function() {
+.ddg.console.off <- function() {
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Capture history if console was on up to this point.
@@ -2765,9 +2765,9 @@ ddg.console.off <- function() {
     .ddg.set(".ddg.enable.console", FALSE)
 }
 
-# ddg.console.on turns on the console mode of DDG construction.
+# .ddg.console.on turns on the console mode of DDG construction.
 
-ddg.console.on <- function() {
+.ddg.console.on <- function() {
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Write a new timestamp if we're turning on the console so we only capture
