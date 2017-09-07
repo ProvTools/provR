@@ -1281,7 +1281,7 @@ ddg.MAX_HIST_LINES <- 2^14
     from.env = FALSE) {
     orig.data <- data
     # Determine if we should save the entire data
-    max.snapshot.size <- ddg.max.snapshot.size()
+    max.snapshot.size <- .ddg.get("ddg.max.snapshot.size")
     if (max.snapshot.size == 0) {
         return(.ddg.data.node("Data", dname, "", dscope, from.env = from.env))
     }

@@ -5,7 +5,7 @@ export(ddg.init, ddg.annotate.on, ddg.annotate.off)
 export(ddg.source)
 export(ddg.forloop, ddg.first.loop, ddg.max.loops, ddg.loop.count, ddg.loop.count.inc, ddg.reset.loop.count)
 export(ddg.loop.annotate.on, ddg.loop.annotate.off)
-export(ddg.max.snapshot.size, ddg.details.omitted, ddg.should.run.annotated)
+export(ddg.details.omitted, ddg.should.run.annotated)
 export(ddg.set.inside.loop, ddg.not.inside.loop)
 export(prov.capture, prov.json)
 
