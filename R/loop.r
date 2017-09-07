@@ -21,12 +21,6 @@ ddg.max.loops <- function() {
     return(.ddg.get("ddg.max.loops"))
 }
 
-# ddg.max.snapshot.size returns the value of the parameter max.snapshot.size.
-
-ddg.max.snapshot.size <- function() {
-    return(.ddg.get("ddg.max.snapshot.size"))
-}
-
 # ddg.loop.annotate.on turns on loop annotation.
 ddg.loop.annotate.on <- function() {
     .ddg.set("ddg.loop.annotate", TRUE)
