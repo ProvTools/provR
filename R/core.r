@@ -2465,7 +2465,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
         .ddg.set(".ddg.history.file", ddg.history.file)
         # Empty file if it already exists, do the same with tmp file.
         file.create(ddg.history.file, showWarnings = FALSE)
-        # One timestamp keeps track of last ddg.save (the default).
+        # One timestamp keeps track of last .ddg.save (the default).
         .ddg.write.timestamp.to.history()
         # Save the history if the platform supports it.
         tryCatch(savehistory(ddg.history.file), error = function(e) {
@@ -2493,7 +2493,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     invisible()
 }
 
-# ddg.save inserts attribute information and the number of procedure steps at the
+# .ddg.save inserts attribute information and the number of procedure steps at the
 # top of the DDG. It writes the DDG and the procedure nodes, data nodes, and
 # function return tables to the DDG directory.
 
@@ -2503,7 +2503,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
 # is set to false as default since it will generally be called internally and by
 # tests, as opposed to by the user.
 
-ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
+.ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     if (interactive() && .ddg.get(".ddg.enable.console")) {
