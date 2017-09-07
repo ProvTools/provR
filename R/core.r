@@ -2740,18 +2740,6 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     invisible()
 }
 
-# ddg.debug.lib.on turns on debugging of DDG construction.
-
-ddg.debug.lib.on <- function() {
-    .ddg.set("ddg.debug.lib", TRUE)
-}
-
-# ddg.debug.lib.off turns off debugging of DDG construction.
-
-ddg.debug.lib.off <- function() {
-    .ddg.set("ddg.debug.lib", FALSE)
-}
-
 # .ddg.console.off turns off the console mode of DDG construction.
 
 .ddg.console.off <- function() {
