@@ -1,15 +1,11 @@
-export(ddg.function, ddg.procedure, ddg.start, ddg.finish, ddg.return.value, ddg.eval)
+export(ddg.function, ddg.procedure, ddg.start, ddg.finish, ddg.ret.value, ddg.eval)
 export(ddg.data, ddg.exception, ddg.url, ddg.file)
 export(ddg.data.in, ddg.data.out, ddg.exception.out, ddg.url.out, ddg.file.out, ddg.graphic.out)
-export(ddg.init, ddg.run, ddg.save, ddg.console.on, ddg.console.off, ddg.annotate.on, ddg.annotate.off)
-export(ddg.debug.lib.on, ddg.debug.lib.off)
-export(ddg.breakpoint, ddg.set.breakpoint, ddg.list.breakpoints, ddg.clear.breakpoints)
-export(ddg.flush.ddg)
+export(ddg.init, ddg.annotate.on, ddg.annotate.off)
 export(ddg.source)
 export(ddg.forloop, ddg.first.loop, ddg.max.loops, ddg.loop.count, ddg.loop.count.inc, ddg.reset.loop.count)
 export(ddg.loop.annotate.on, ddg.loop.annotate.off)
-export(ddg.max.snapshot.size, ddg.details.omitted, ddg.should.run.annotated)
-export(ddg.set.detail, ddg.get.detail, ddg.clear.detail)
+export(ddg.details.omitted, ddg.should.run.annotated)
 export(ddg.set.inside.loop, ddg.not.inside.loop)
 export(prov.capture, prov.json)
 
@@ -21,16 +17,3 @@ importFrom(devtools, session_info)
 importFrom(methods, setMethod)
 importFrom(methods, setClass)
 importFrom(tools, md5sum)
-importFrom(jsonlite, read_json)
-importFrom(jsonlite, write_json)
-
-# CRAN check gives errors if these are not included.
-# However, if we include these, ddg.run crashes R when run
-# in RStudio on Windows.  It does not crash on Mac.  It
-# also does not crash on Windows using the standard R environment.
-#importFrom("grDevices", "dev.copy", "dev.copy2pdf", "dev.cur",
-#           "dev.list", "dev.off", "dev.print", "dev.set", "pdf")
-#importFrom("methods", "new")
-#importFrom("utils", "capture.output", "getParseData", "head",
-#           "object.size", "packageVersion", "savehistory", "tail",
-#           "timestamp", "write.csv")
