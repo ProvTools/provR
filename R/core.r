@@ -2424,7 +2424,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
         }
         .ddg.set("ddg.path", ddg.path)
         # Remove files from DDG directory
-        ddg.flush.ddg()
+        .ddg.flush.ddg()
         # Create DDG directories
         .ddg.init.environ()
         # Save copy of original script.
@@ -2807,13 +2807,13 @@ ddg.annotate.off <- function(fnames = NULL) {
     .ddg.set("ddg.annotate.on", on.list)
 }
 
-# ddg.flush.ddg removes all files from the DDG directories unless the the DDG
+# .ddg.flush.ddg removes all files from the DDG directories unless the the DDG
 # directory is the working directory. If no DDG directory is specified, the
 # current DDG directory is assumed.
 
 # ddg.path (optional) - path to DDG directory.
 
-ddg.flush.ddg <- function(ddg.path = NULL) {
+.ddg.flush.ddg <- function(ddg.path = NULL) {
     # Use current DDG directories if no directory is specified.
     if (is.null(ddg.path)) {
         ddg.path <- .ddg.get("ddg.path")
