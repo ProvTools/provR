@@ -1331,32 +1331,38 @@ ddg.MAX_HIST_LINES <- 2^14
     dpfile <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
     if (.ddg.get("ddg.debug.lib"))
         print(paste("Saving snapshot in ", dpfile))
-    # Write to file .
-    if (fext == "csv")
-        write.csv(data, dpfile, row.names = FALSE) else if (fext == "xml")
-        saveXML(data, dpfile) else if (.ddg.supported.graphic(fext)) {
-        # Capture graphic.  Write out RData (this is old code, not sure if we need it).
-        .ddg.graphic.snapshot(fext, dpfile)
-    } else if (fext == "RData")
-        file.rename(paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dname, sep = ""), dpfile) else if (fext == "txt" || fext == "") {
-        # Write out text file for txt or empty fext.
-        file.create(dpfile, showWarnings = FALSE)
-        if (is.list(data) && length(data) > 0) {
-            list.as.string <- .ddg.convert.list.to.string(data)
-            write(list.as.string, dpfile)
-        } else {
-            tryCatch(write(as.character(data), dpfile), error = function(e) {
-                capture.output(data, file = dpfile)
-            })
-        }
-    } else {
-        # Write out data node object if the file format is unsupported.
-        error.msg <- paste("File extension", fext, "not recognized")
-        .ddg.insert.error.message(error.msg)
-        return(NULL)
+
+    if(.ddg.get("ddg.save.to.disk")) {
+      # Write to file .
+      if (fext == "csv") {
+        write.csv(data, dpfile, row.names = FALSE)
+      } else if (fext == "xml") {
+          saveXML(data, dpfile)
+      } else if (.ddg.supported.graphic(fext)) {
+          # Capture graphic.  Write out RData (this is old code, not sure if we need it).
+          .ddg.graphic.snapshot(fext, dpfile)
+      } else if (fext == "RData") {
+          file.rename(paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dname, sep = ""), dpfile)
+      } else if (fext == "txt" || fext == "") {
+          # Write out text file for txt or empty fext.
+          file.create(dpfile, showWarnings = FALSE)
+          if (is.list(data) && length(data) > 0) {
+              list.as.string <- .ddg.convert.list.to.string(data)
+              write(list.as.string, dpfile)
+          } else {
+              tryCatch(write(as.character(data), dpfile), error = function(e) {
+                  capture.output(data, file = dpfile)
+              })
+          }
+      } else {
+          # Write out data node object if the file format is unsupported.
+          error.msg <- paste("File extension", fext, "not recognized")
+          .ddg.insert.error.message(error.msg)
+          return(NULL)
+      }
     }
     # check to see if we want to save the object.
-    if (save.object && full.snapshot)
+    if (save.object && full.snapshot && .ddg.get("ddg.save.to.disk"))
         save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.get("ddg.dnum") + 1, "-", snapname,
             ".RObject", sep = ""), ascii = TRUE)
     dtime <- .ddg.format.time(Sys.time())
