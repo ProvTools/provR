@@ -532,3 +532,48 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
         }
     }
 }
+
+# .ddg.save.simple takes in a simple name-value pair and saves it to the DDG. It
+# does not however create any edges. Extra long strings are saved as snapshots.
+# name - data node name.  value - data node value.  scope - data node scope.
+.ddg.save.simple <- function(name, value, scope = NULL, from.env = FALSE) {
+    # Save extra long strings as snapshot.
+    if (is.character(value) && nchar(value) > 200) {
+        .ddg.snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
+    } else {
+        # Save the true value.
+        .ddg.data.node("Data", name, value, scope, from.env = from.env)
+    }
+}
+
+# .ddg.save.data takes as input the name and value of a data node that needs to
+# be created. It determines how the data should be output (or saved) and saves it
+# in that format.
+# name - name of created node.  value - value of created node.  from.env - if
+# node is from initial environment fname (optional) - name of calling function.
+# Used to generate helpful error messages if something goes wrong.  graphic.fext
+# (optional) - file extension for graphic file.  error (optional) - if TRUE,
+# raise an R error rather than a DDG error.  scope (optional) - scope of node.
+# stack (optional) - stack to use in determing scope.
+.ddg.save.data <- function(name, value, fname = ".ddg.save.data", graphic.fext = "jpeg",
+    error = FALSE, scope = NULL, from.env = FALSE, stack = NULL, env = NULL) {
+    if (is.null(scope)) {
+        scope <- .ddg.get.scope(name, calls = stack, env = env)
+    }
+    # Determine type for value, and save accordingly.
+    if (.ddg.is.graphic(value))
+        .ddg.write.graphic(name, value, graphic.fext, scope = scope, from.env = from.env) else if (.ddg.is.simple(value))
+        .ddg.save.simple(name, value, scope = scope, from.env = from.env) else if (.ddg.is.csv(value))
+        .ddg.write.csv(name, value, scope = scope, from.env = from.env) else if (is.list(value) || is.array(value))
+        .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
+            from.env = from.env) else if (.ddg.is.object(value))
+        .ddg.snapshot.node(name, "txt", value, dscope = scope, from.env = from.env) else if (.ddg.is.function(value))
+        .ddg.save.simple(name, "#ddg.function", scope = scope, from.env = from.env) else if (error)
+        stop("Unable to create data (snapshot) node. Non-Object value to", fname,
+            ".") else {
+        error.msg <- paste("Unable to create data (snapshot) node. Non-Object value to",
+            fname, ".")
+        .ddg.insert.error.message(error.msg)
+    }
+    invisible()
+}
