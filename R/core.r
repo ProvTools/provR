@@ -939,9 +939,9 @@ ddg.MAX_HIST_LINES <- 2^14
     auto.created = FALSE, env = NULL) {
     # Create the start node
     if (typeof(call[[1]]) == "closure") {
-        .ddg.add.abstract.node("Start", node.name = pname, env = env)
+        .add.abstract.node("Start", node.name = pname, env = env)
     } else {
-        .ddg.add.abstract.node("Start", node.name = paste(deparse(call), collapse = ""),
+        .add.abstract.node("Start", node.name = paste(deparse(call), collapse = ""),
             env = env)
     }
     # Tokens will contain the function name and the argument expressions.
@@ -1160,7 +1160,7 @@ ddg.MAX_HIST_LINES <- 2^14
             # one and the command is more than just the call to this function
             if (last.created[[1]] == "FALSE") {
                 if (.ddg.cur.cmd@text != paste(deparse(call), collapse = "")) {
-                  cmd.abbrev <- .ddg.add.abstract.node("Start", .ddg.cur.cmd, caller.env)
+                  cmd.abbrev <- .add.abstract.node("Start", .ddg.cur.cmd, caller.env)
                   .ddg.cur.expr.stack <- .ddg.get(".ddg.cur.expr.stack")
                   st.type <- .get.statement.type(.ddg.cur.cmd@parsed[[1]])
                   loop.statement <- (st.type == "for" || st.type == "while" || st.type ==
@@ -1226,7 +1226,7 @@ ddg.MAX_HIST_LINES <- 2^14
         # Create finish node for if loop.
         ddg.finish("if")
         # Create finish node for if statement.
-        .ddg.add.abstract.node("Finish", cmd, parent.frame())
+        .add.abstract.node("Finish", cmd, parent.frame())
         # Remove last command & start.created from stack.
         .ddg.remove.last.cmd.start.created()
         # Get last command from stack.
@@ -1238,7 +1238,7 @@ ddg.MAX_HIST_LINES <- 2^14
     loop.name <- paste(loop.type, "loop")
     ddg.finish(loop.name)
     # Create finish node for for, while, or repeat statement.
-    .ddg.add.abstract.node("Finish", cmd, parent.frame())
+    .add.abstract.node("Finish", cmd, parent.frame())
     # Remove last command & start.created from stack.
     .ddg.remove.last.cmd.start.created()
 }
@@ -1261,7 +1261,7 @@ ddg.MAX_HIST_LINES <- 2^14
         # Create finish node for if loop.
         ddg.finish("if")
         # Create finish node for if statement.
-        .ddg.add.abstract.node("Finish", cmd, parent.frame())
+        .add.abstract.node("Finish", cmd, parent.frame())
 
         # Remove last command & start.created from stack.
         .ddg.remove.last.cmd.start.created()
@@ -1657,9 +1657,9 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     }
     # Create the finish node for the function
     if (typeof(call[[1]]) == "closure") {
-        .ddg.add.abstract.node("Finish", node.name = pname, env = caller.env)
+        .add.abstract.node("Finish", node.name = pname, env = caller.env)
     } else {
-        .ddg.add.abstract.node("Finish", node.name = paste(deparse(call), collapse = ""),
+        .add.abstract.node("Finish", node.name = paste(deparse(call), collapse = ""),
             env = caller.env)
     }
     return(expr)

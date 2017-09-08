@@ -21,8 +21,8 @@
         node2 <- paste("p", ddg.pnum, sep = "")
         .ddg.record.edge(etype, node1, node2)
         if (.ddg.get("ddg.debug.lib")) {
-            pname1 <- .ddg.proc.name(ddg.pnum - 1)
-            pname2 <- .ddg.proc.name(ddg.pnum)
+            pname1 <- .proc.name(ddg.pnum - 1)
+            pname2 <- .proc.name(ddg.pnum)
             print(paste("proc2proc: ", pname1, " ", pname2))
             print(paste("CF ", node1, " ", node2, sep = ""))
         }
@@ -38,7 +38,7 @@
 .ddg.data2proc <- function(dname, dscope, pname) {
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
-    pn <- .ddg.proc.number(pname)
+    pn <- .proc.number(pname)
     # Record in edges table
     etype <- "df.in"
     node1 <- paste("d", dn, sep = "")
@@ -64,7 +64,7 @@
     dn <- .ddg.data.number(dname, dscope)
     # attach data node to the last procedure node if pname is NULL.
     if (is.null(pname) || startsWith(pname, ".ddg.") || startsWith(pname, "ddg"))
-        pn <- .ddg.last.proc.number() else pn <- .ddg.proc.number(pname, ret.value)
+        pn <- .last.proc.number() else pn <- .proc.number(pname, ret.value)
     # Create data flow edge from procedure node to data node.
     if (dn != 0 && pn != 0) {
         # Record in edges table
@@ -98,7 +98,7 @@
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
     pn <- if (all)
-        .ddg.get("ddg.pnum") else .ddg.last.proc.number()
+        .ddg.get("ddg.pnum") else .last.proc.number()
     # Record in edges table
     etype <- "df.out"
     node1 <- paste("p", pn, sep = "")
