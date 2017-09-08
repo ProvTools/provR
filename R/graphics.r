@@ -9,6 +9,14 @@
 # <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>.  This package was
 # forked from <https://github.com/End-to-end-provenance/RDataTracker>
 
+# .ddg.supported.graphic - the sole purpose of this function is to verify that
+# the input file extension is a supported graphic type. Currently supported
+# graphics types inlude: jpg, jpeg, bmp, png, tiff.
+# ext - file extension.
+.ddg.supported.graphic <- function(ext) {
+    return(ext %in% c("jpeg", "jpg", "tiff", "png", "bmp", "pdf"))
+}
+
 # .ddg.is.graphic tries to decipher if the value snapshot should be written to
 # file directly from the data or if it is a graphic which can be captured from
 # the image device. This function, as written, is basically a hack. There must be
@@ -35,7 +43,7 @@
         # Capture it as a jpeg.
         name <- if (!is.null(cmd.abbrev) && cmd.abbrev != "")
             paste0("graphic", substr(cmd.abbrev, 1, 10)) else "graphic"
-        .ddg.snapshot.node(name, fext = "jpeg", data = NULL)
+        .snapshot.node(name, fext = "jpeg", data = NULL)
         # Make the previous device active again.
         dev.set(prev.device)
         # We're done, so create the edge.
@@ -154,12 +162,12 @@
 .ddg.write.graphic <- function(name, value = NULL, fext = "jpeg", scope = NULL, from.env = FALSE) {
     # Try to output graphic value.
     tryCatch({
-        .ddg.snapshot.node(name, fext, NULL, dscope = scope, from.env = from.env)
+        .snapshot.node(name, fext, NULL, dscope = scope, from.env = from.env)
     }, error = function(e) {
         tryCatch({
-            .ddg.snapshot.node(name, "jpeg", NULL, dscope = scope, from.env = from.env)
+            .snapshot.node(name, "jpeg", NULL, dscope = scope, from.env = from.env)
         }, error = function(e) {
-            .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
+            .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
                 from.env = from.env)
         })
     })

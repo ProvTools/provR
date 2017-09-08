@@ -96,7 +96,7 @@
     # If object or a long list, try to create snapshot node.
     if (is.object(dvalue)) {
         tryCatch({
-            .ddg.snapshot.node(dname, "txt", dvalue, dscope = dscope, from.env = from.env)
+            .snapshot.node(dname, "txt", dvalue, dscope = dscope, from.env = from.env)
             return(NULL)
         }, error = function(e) {
             error.msg <- paste("Unable to create snapshot node for", dname, "Details:",
@@ -106,13 +106,13 @@
         })
 
     } else if (is.matrix(dvalue) || (is.vector(dvalue) && length(dvalue) > 20)) {
-        .ddg.snapshot.node(dname, "csv", dvalue, dscope = dscope, from.env = from.env)
+        .snapshot.node(dname, "csv", dvalue, dscope = dscope, from.env = from.env)
         return(NULL)
     }
     # Convert value to a string.
     val <- if (is.list(dvalue)) {
         tryCatch({
-            .ddg.convert.list.to.string(dvalue)
+            .convert.list.to.string(dvalue)
         }, error = function(e) {
             error.msg <- paste("Unable to convert value of", dname, "to a string.")
             .ddg.insert.error.message(error.msg)
@@ -134,7 +134,7 @@
     }
     if (grepl("\n", val)) {
         # Create snapshot node.
-        .ddg.snapshot.node(dname, "txt", val, from.env = from.env)
+        .snapshot.node(dname, "txt", val, from.env = from.env)
         return
     } else {
         # Get scope if necessary.
@@ -539,7 +539,7 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
 .ddg.save.simple <- function(name, value, scope = NULL, from.env = FALSE) {
     # Save extra long strings as snapshot.
     if (is.character(value) && nchar(value) > 200) {
-        .ddg.snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
+        .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
     } else {
         # Save the true value.
         .ddg.data.node("Data", name, value, scope, from.env = from.env)
@@ -565,9 +565,9 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
         .ddg.write.graphic(name, value, graphic.fext, scope = scope, from.env = from.env) else if (.ddg.is.simple(value))
         .ddg.save.simple(name, value, scope = scope, from.env = from.env) else if (.ddg.is.csv(value))
         .ddg.write.csv(name, value, scope = scope, from.env = from.env) else if (is.list(value) || is.array(value))
-        .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
+        .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
             from.env = from.env) else if (.ddg.is.object(value))
-        .ddg.snapshot.node(name, "txt", value, dscope = scope, from.env = from.env) else if (.ddg.is.function(value))
+        .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env) else if (.ddg.is.function(value))
         .ddg.save.simple(name, "#ddg.function", scope = scope, from.env = from.env) else if (error)
         stop("Unable to create data (snapshot) node. Non-Object value to", fname,
             ".") else {
