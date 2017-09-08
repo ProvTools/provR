@@ -128,9 +128,9 @@ ddg.MAX_HIST_LINES <- 2^14
 
 .ddg.write.csv <- function(name, value, scope = NULL, from.env = FALSE) {
     tryCatch({
-        .ddg.snapshot.node(name, "csv", value, dscope = scope, from.env = from.env)
+        .snapshot.node(name, "csv", value, dscope = scope, from.env = from.env)
     }, error = function(e) {
-        .ddg.snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
+        .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
             from.env = from.env)
     })
 }
