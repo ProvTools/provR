@@ -2404,7 +2404,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
 
 ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
     annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10,
-    save.to.disk = TRUE) {
+    save = TRUE) {
     .ddg.init.tables()
     # Setting the path for the ddg
     if (is.null(ddgdir)) {
@@ -2417,7 +2417,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
         }
     } else ddg.path <- normalizePath(ddgdir, winslash = "/", mustWork = FALSE)
 
-    if (save.to.disk) {
+    if (save) {
         .ddg.set("ddg.save.to.disk", TRUE)
         # Overwrite default is
         if (!overwrite) {

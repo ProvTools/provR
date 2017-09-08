@@ -22,15 +22,16 @@
 #' @export
 prov.capture <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE,
     enable.console = TRUE, annotate.inside.functions = FALSE, first.loop = 1, max.loops = 1,
-    max.snapshot.size = 10, debug = FALSE, save.debug = FALSE, save=FALSE) {
+    max.snapshot.size = 10, debug = FALSE, save=FALSE) {
     # Initiate ddg.
     ddg.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions,
-        first.loop, max.loops, max.snapshot.size, save.to.disk=save)
+        first.loop, max.loops, max.snapshot.size, save)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
         .ddg.set(".ddg.is.sourced", TRUE)
     # Save debug files to debug directory.
-    .ddg.set("ddg.save.debug", save.debug)
+    if (debug && save)
+      .ddg.set("ddg.save.debug", save.debug)
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(
       if (!is.null(r.script.path))
