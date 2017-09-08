@@ -36,10 +36,8 @@ prov.capture <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE,
     tryCatch(
       if (!is.null(r.script.path))
         ddg.source(.ddg.get("ddg.r.script.path"), ddgdir = ddgdir, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
-      else
-        stop("r.script.path and f cannot both be NULL")
       , finally = {
-        if(save) .ddg.save(r.script.path)
+        if(save && !is.null(r.script.path)) .ddg.save(r.script.path)
       })
     invisible()
 }
