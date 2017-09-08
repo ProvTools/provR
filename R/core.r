@@ -1594,7 +1594,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     .ddg.save.data(ret.node.name, expr, fname = "ddg.return", scope = ret.node.scope)
     caller.env = sys.frame(caller.frame)
     # check if there is a return call within this call to ddg.ret.
-    if (.ddg.has.call.to(parsed.stmt, "return")) {
+    if (.has.call.to(parsed.stmt, "return")) {
         .ddg.proc.node("Operation", ret.stmt@abbrev, ret.stmt@abbrev, console = TRUE,
             env = caller.env, cmd = ret.stmt)
         # Create control flow edge from preceding procedure node.
@@ -1623,7 +1623,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     .ddg.set(".ddg.num.returns", ddg.num.returns)
     # If it does not have return, then its parameter was a call to ddg.eval and this
     # stuff has been done already.
-    if (.ddg.has.call.to(parsed.stmt, "return")) {
+    if (.has.call.to(parsed.stmt, "return")) {
         # Create edges from variables used in the return statement
         vars.used <- ret.stmt@vars.used
         for (var in vars.used) {
