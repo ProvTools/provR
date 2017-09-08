@@ -2466,7 +2466,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     .ddg.set("prev.device", dev.cur())
     .ddg.set("possible.graphics.files.open", NULL)
     .ddg.set("ddg.open.devices", vector())
-    if (interactive() && .ddg.get(".ddg.enable.console") && save.to.disk) {
+    if (interactive() && .ddg.get(".ddg.enable.console") && save) {
         ddg.history.file <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/.ddghistory", sep = "")
         .ddg.set(".ddg.history.file", ddg.history.file)
         # Empty file if it already exists, do the same with tmp file.
