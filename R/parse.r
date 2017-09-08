@@ -177,7 +177,7 @@
           d.environ <- globalenv()
       }
       # Check for control & loop statements.
-      statement.type <- .ddg.get.statement.type(cmd@parsed[[1]])
+      statement.type <- .get.statement.type(cmd@parsed[[1]])
       control.statement <- (statement.type == "if" || statement.type == "for" || statement.type == "while" || statement.type == "repeat" || statement.type == "{")
       loop.statement <- (statement.type == "for" || statement.type == "while" || statement.type == "repeat")
       # Specifies whether or not a procedure node should be created
@@ -247,7 +247,7 @@
               {
                 for (annot in cmd@annotated) {
                   # Don't set ret.value if we are calling a ddg function or we are executing an if-statement
-                  if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.ddg.get.statement.type(annot)) == "if") {
+                  if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.get.statement.type(annot)) == "if") {
                     eval(annot, environ, NULL)
                   }
                   else {
@@ -545,7 +545,7 @@
           d.environ <- globalenv()
       }
       # Check for control & loop statements.
-      st.type <- .ddg.get.statement.type(cmd@parsed[[1]])
+      st.type <- .get.statement.type(cmd@parsed[[1]])
       control.statement <- (st.type == "if" || st.type == "for" || st.type == "while" || st.type == "repeat" || st.type == "{")
       loop.statement <- (st.type == "for" || st.type == "while" || st.type == "repeat")
       # Specifies whether or not a procedure node should be created
@@ -616,7 +616,7 @@
               {
                 for (annot in cmd@annotated) {
                   # Don't set ret.value if we are calling a ddg function or we are executing an if-statement
-                  if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.ddg.get.statement.type(annot)) == "if") {
+                  if (grepl("^ddg", annot) || grepl("^.ddg", annot) || as.character(.get.statement.type(annot)) == "if") {
                     eval(annot, environ, NULL)
                   }
                   else {
