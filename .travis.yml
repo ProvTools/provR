@@ -24,6 +24,7 @@ addons:
       r-cran-reshape2
       r-cran-rcurl
       r-cran-plyr
+      r-cran-roxygen2
 
 r_packages:
   - akima
@@ -49,6 +50,7 @@ r_packages:
   - sysfonts
   - xkcd
   - zoo
+  - roxygen2
 
 before_script:
   - "export DISPLAY=:99.0"
