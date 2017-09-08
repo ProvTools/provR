@@ -398,7 +398,7 @@
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
+  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
   ret.value <- .ddg.get (".ddg.last.R.value")
   return(ret.value)
 }
@@ -767,7 +767,7 @@
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
+  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
   ret.value <- .ddg.get (".ddg.last.R.value")
   return(ret.value)
 }

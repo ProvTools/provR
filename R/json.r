@@ -47,7 +47,7 @@
     if (!is.null(ddg.r.script.path)) {
         script <- ddg.r.script.path
         sourced.scripts <- .ddg.sourced.script.names.json()
-        script.timestamp <- .ddg.format.time(file.info(ddg.r.script.path)$mtime)
+        script.timestamp <- .format.time(file.info(ddg.r.script.path)$mtime)
     } else {
         script <- ""
         sourced.scripts <- ""
@@ -131,7 +131,7 @@
     } else {
         ss <- ss[ss$snum > 0, ]
         stimes <- file.info(ss$sname)$mtime
-        stimes <- .ddg.format.time(stimes)
+        stimes <- .format.time(stimes)
 
         scriptarray <- paste("\t{\"number\" : \"", ss[, 1], "\",
                              \"name\" : \"",
