@@ -71,6 +71,20 @@
     return(0)
 }
 
+# .ddg.replace.quotes quotes quotation characters. It also replaces return,
+# newline and tab characters with spaces.
+# str - input string.
+.ddg.replace.quotes <- function(str) {
+    if (!is.character(str))
+        return(str)
+    str <- paste("\"", str, "\"", sep = "")
+    str <- gsub("\"", "\\\\\"", str)
+    # Replace returns, new lines, and tabs with spaces.
+    str <- gsub("\r", " ", str)
+    str <- gsub("\n", " ", str)
+    str <- gsub("\t", " ", str)
+}
+
 # .ddg.data.node creates a data node of type Data. Data nodes are used for single
 # data values. The value (dvalue) is stored in the DDG.
 
@@ -447,4 +461,74 @@ ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
     .ddg.insert.error.message(warningMessage, "warning.msg", doWarn = FALSE)
     # Clear the saved warning
     .ddg.set(".ddg.warning", NA)
+}
+
+# .ddg.record.data records a data node in the data node table.
+
+# dtype - data node type.  dname - data node name.  dvalue - data node value.
+# value - the value of the data dscope - data node scope.  from.env - if object
+# is from initial environment.  dhash - the MD5 hash of original file.  drw -
+# whether the file was read or written.  dtime (optional) - timestamp of original
+# file.  dloc (optional) - path and name of original file.
+
+.ddg.record.data <- function(dtype, dname, dvalue, value, dscope, from.env = FALSE,
+    dtime = "", dloc = "", dhash = "", drw = "", dscriptpath = "") {
+    # Increment data node counter.
+    .ddg.inc("ddg.dnum")
+    ddg.dnum <- .ddg.get("ddg.dnum")
+    # Initialize dscriptpath
+    if (!is.null(.ddg.get("ddg.r.script.path"))) {
+        dscriptpath <- .ddg.get("ddg.r.script.path")
+    }
+    # If the table is full, make it bigger.
+    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+    if (nrow(ddg.data.nodes) < ddg.dnum) {
+        size = 100
+        new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
+            ddg.name = character(size), ddg.path = character(size), ddg.value = character(size),
+            ddg.val.type = character(size), ddg.scope = character(size), ddg.from.env = logical(size),
+            ddg.time = character(size), ddg.hash = character(size), ddg.rw = character(size),
+            ddg.loc = character(size), ddg.current = logical(size), stringsAsFactors = FALSE)
+        .ddg.add.rows("ddg.data.nodes", new.rows)
+        ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+    }
+    if (length(dvalue) > 1 || !is.atomic(dvalue))
+        dvalue2 <- "complex" else if (!is.null(dvalue))
+        dvalue2 <- dvalue else dvalue2 <- ""
+    # get value type
+    val.type <- .ddg.get.val.type.string(value)
+
+    ddg.data.nodes$ddg.type[ddg.dnum] <- dtype
+    ddg.data.nodes$ddg.num[ddg.dnum] <- ddg.dnum
+    ddg.data.nodes$ddg.path[ddg.dnum] <- dscriptpath
+    ddg.data.nodes$ddg.name[ddg.dnum] <- dname
+    ddg.data.nodes$ddg.value[ddg.dnum] <- dvalue2
+    ddg.data.nodes$ddg.val.type[ddg.dnum] <- val.type
+    ddg.data.nodes$ddg.scope[ddg.dnum] <- dscope
+    ddg.data.nodes$ddg.from.env[ddg.dnum] <- from.env
+    ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
+    ddg.data.nodes$ddg.rw[ddg.dnum] <- drw
+    ddg.data.nodes$ddg.time[ddg.dnum] <- dtime
+    ddg.data.nodes$ddg.loc[ddg.dnum] <- dloc
+
+    if (dtype == "File") {
+        dhash <- md5sum(dname)
+        ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
+        longpath <- paste0(getwd(), substring(.ddg.get("ddg.path"), 2))
+    }
+    ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
+    .ddg.set("ddg.data.nodes", ddg.data.nodes)
+    # Output data node.
+    .ddg.output.data.node(dscriptpath, dtype, dname, dvalue2, val.type, dscope, from.env,
+        dhash, drw, dtime, dloc)
+    if (.ddg.get("ddg.debug.lib")) {
+        if (dtype != "File") {
+            print(paste("Adding data node", ddg.dnum, "named", dname, "with scope",
+                dscope, " and value ", ddg.data.nodes$ddg.value[ddg.dnum]))
+        } else {
+            print(paste("Adding data node", ddg.dnum, "named", dname, "with scope",
+                dscope, " and value ", ddg.data.nodes$ddg.value[ddg.dnum], " that hashes to ",
+                dhash, " and performs a file ", drw))
+        }
+    }
 }

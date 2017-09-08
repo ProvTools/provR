@@ -48,6 +48,54 @@
 #   currently only used when called from ddg.eval.  Normally, ddg.parse.commands
 #   creates the DDG Statement objects.
 
+# .ddg.close.last.command.node closes the last created collapsible node stored in
+# .ddg.last.cmd properly.
+
+# env - the environment in which the close is occurring called (optional) - used
+# in debugging to identify the function which called .ddg.close.previous.command.
+# initial (optional) - if TRUE, try to close previous command node.
+
+.ddg.close.last.command.node <- function(env, called = ".ddg.parse.commands", initial = FALSE) {
+    # Get both the last command and new commands.
+    .ddg.last.cmd <- if (.ddg.is.set(".ddg.last.cmd")) {
+        .ddg.get(".ddg.last.cmd")
+    } else {
+        NULL
+    }
+    .ddg.possible.last.cmd <- if (.ddg.is.set(".ddg.possible.last.cmd")) {
+        .ddg.get(".ddg.possible.last.cmd")
+    } else {
+        NULL
+    }
+    # Only create a finish node if a new command exists (i.e., we've parsed some
+    # lines of code).
+    if (!is.null(.ddg.last.cmd) && (!is.null(.ddg.possible.last.cmd) || initial)) {
+        cmd.abbrev <- .ddg.add.abstract.node("Finish", .ddg.last.cmd, env = env,
+            called = paste(called, "-> .ddg.close.last.command.node"))
+        # Add link from a function return node if there is one.
+        .ddg.link.function.returns(.ddg.last.cmd)
+        # No previous command.
+        .ddg.set(".ddg.last.cmd", NULL)
+    }
+}
+
+# .ddg.open.new.command.node opens a new collapsible command node depending on
+# the information stored in .ddg.last.cmd.
+
+# env - the environment in which the command occurs called (optional) - name of
+# calling function.
+
+.ddg.open.new.command.node <- function(env, called = ".ddg.parse.commands") {
+    new.command <- .ddg.get(".ddg.possible.last.cmd")
+    if (!is.null(new.command)) {
+        .ddg.add.abstract.node("Start", new.command, env, called = paste(called,
+            "-> .ddg.open.new.command.node"))
+        # Now the new command becomes the last command, and new command is null.
+        .ddg.set(".ddg.last.cmd", new.command)
+        .ddg.set(".ddg.possible.last.cmd", NULL)
+    }
+}
+
 .ddg.parse.commands <- function (exprs, script.name="", script.num=NA, environ, ignore.patterns=c('^ddg.'), node.name="Console", run.commands = FALSE, echo=FALSE, print.eval=echo, max.deparse.length=150, called.from.ddg.eval=FALSE, cmds=NULL) {
   ret.value <- NULL
   # Gather all the information that we need about the statements
@@ -722,4 +770,31 @@
   if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .ddg.write.timestamp.to.history()
   ret.value <- .ddg.get (".ddg.last.R.value")
   return(ret.value)
+}
+
+# .ddg.console.node creates a console node.
+.ddg.console.node <- function() {
+    # Don't do anything if sourcing, because history isn't necessary in this case.
+    if ((.ddg.is.set("from.source") && .ddg.get("from.source")))
+        return(NULL)
+    ddg.history.file = .ddg.get(".ddg.history.file")
+    ddg.history.timestamp = .ddg.get(".ddg.history.timestamp")
+    # Only continue if these values exists.
+    if (!(is.null(ddg.history.file) || is.null(ddg.history.timestamp))) {
+        # Grab any new commands that might still be in history.
+        tryCatch({
+            # Saving history is not supported on all platforms.
+            .ddg.save.history(ddg.history.file)
+            # Load from extended history since last time we wrote out a console node.
+            new.lines <- .ddg.load.history(ddg.history.file, ddg.history.timestamp)
+            # Parse the lines into individual commands.
+            parsed.commands <- .ddg.parse.lines(new.lines)
+            # New commands since last timestamp.
+            if (!is.null(parsed.commands) && length(parsed.commands) > 0) {
+                .ddg.parse.commands(parsed.commands, environ = .GlobalEnv, run.commands = FALSE)
+            }
+        }, error = function(e) {
+        })
+
+    }
 }
