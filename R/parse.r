@@ -70,7 +70,7 @@
     # Only create a finish node if a new command exists (i.e., we've parsed some
     # lines of code).
     if (!is.null(.ddg.last.cmd) && (!is.null(.ddg.possible.last.cmd) || initial)) {
-        cmd.abbrev <- .ddg.add.abstract.node("Finish", .ddg.last.cmd, env = env,
+        cmd.abbrev <- .add.abstract.node("Finish", .ddg.last.cmd, env = env,
             called = paste(called, "-> .ddg.close.last.command.node"))
         # Add link from a function return node if there is one.
         .ddg.link.function.returns(.ddg.last.cmd)
@@ -88,7 +88,7 @@
 .ddg.open.new.command.node <- function(env, called = ".ddg.parse.commands") {
     new.command <- .ddg.get(".ddg.possible.last.cmd")
     if (!is.null(new.command)) {
-        .ddg.add.abstract.node("Start", new.command, env, called = paste(called,
+        .add.abstract.node("Start", new.command, env, called = paste(called,
             "-> .ddg.open.new.command.node"))
         # Now the new command becomes the last command, and new command is null.
         .ddg.set(".ddg.last.cmd", new.command)
@@ -130,7 +130,7 @@
   named.node.set <- FALSE
   start.node.created <- ""
   if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
-    .ddg.add.abstract.node("Start", node.name = node.name, env = environ)
+    .add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
     start.node.created <- node.name
   }
@@ -285,7 +285,7 @@
             # start.created can have one of 3 values: "TRUE", "FALSE",
             # "MATCHES_CALL". Only create the finish node if TRUE.
             if (start.created == "TRUE") {
-              .ddg.add.abstract.node("Finish", cmd, environ)
+              .add.abstract.node("Finish", cmd, environ)
               start.finish.created <- TRUE
               .ddg.link.function.returns(cmd)
               # If the number of loop iterations exceeds max.loops, add
@@ -388,7 +388,7 @@
   # is initialized (also, save).
   #
   if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
-      .ddg.add.abstract.node("Finish", node.name = node.name, env=environ)
+      .add.abstract.node("Finish", node.name = node.name, env=environ)
   }
   # Open up a new collapsible node in case we need to parse
   # further later.
@@ -498,7 +498,7 @@
   named.node.set <- FALSE
   start.node.created <- ""
   if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
-    .ddg.add.abstract.node("Start", node.name = node.name, env = environ)
+    .add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
     start.node.created <- node.name
   }
@@ -654,7 +654,7 @@
             # start.created can have one of 3 values: "TRUE", "FALSE",
             # "MATCHES_CALL". Only create the finish node if TRUE.
             if (start.created == "TRUE") {
-              .ddg.add.abstract.node("Finish", cmd, environ)
+              .add.abstract.node("Finish", cmd, environ)
               start.finish.created <- TRUE
               .ddg.link.function.returns(cmd)
               # If the number of loop iterations exceeds max.loops, add
@@ -757,7 +757,7 @@
   # is initialized (also, save).
   #
   if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
-      .ddg.add.abstract.node("Finish", node.name = node.name, env=environ)
+      .add.abstract.node("Finish", node.name = node.name, env=environ)
   }
   # Open up a new collapsible node in case we need to parse
   # further later.
