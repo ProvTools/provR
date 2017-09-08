@@ -213,7 +213,7 @@ ddg.finish <- function(pname = NULL) {
     node.name = "") {
     if (node.name == "") {
         if (is.null(cmd)) {
-            node.name <- .ddg.abbrev.cmd(cmd)
+            node.name <- .abbrev.cmd(cmd)
         } else {
             node.name <- cmd@abbrev
         }

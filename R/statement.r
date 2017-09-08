@@ -85,19 +85,19 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     # If this is a call to ddg.eval, we only want the argument to ddg.eval (which is
     # a string) to appear in the node label
     .Object@abbrev <- if (grepl("^ddg.eval", .Object@text)) {
-        .ddg.abbrev.cmd(.Object@parsed[[1]][[2]])
+        .abbrev.cmd(.Object@parsed[[1]][[2]])
     } else {
-        .ddg.abbrev.cmd(.Object@text)
+        .abbrev.cmd(.Object@text)
     }
-    vars.used <- .ddg.find.var.uses(.Object@parsed[[1]])
+    vars.used <- .find.var.uses(.Object@parsed[[1]])
     # Remove index variable in for statement (handled separately in ddg.forloop).
     if (length(parsed) > 0 && !is.symbol(parsed[[1]]) && parsed[[1]][[1]] == "for") {
         index.var <- c(parsed[[1]][[2]])
         vars.used <- vars.used[!vars.used %in% index.var]
     }
     .Object@vars.used <- vars.used
-    .Object@vars.set <- .ddg.find.simple.assign(.Object@parsed[[1]])
-    .Object@vars.possibly.set <- .ddg.find.assign(.Object@parsed[[1]])
+    .Object@vars.set <- .find.simple.assign(.Object@parsed[[1]])
+    .Object@vars.possibly.set <- .find.assign(.Object@parsed[[1]])
     # ddg.eval is treated differently than other calls to ddg functions since we will
     # execute the parameter as a command and want a node for it.
     .Object@isDdgFunc <- grepl("^ddg.", .Object@text) & !grepl("^ddg.eval", .Object@text)
@@ -118,11 +118,11 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     # functions or control statements, we will execute annotated versions of these
     # statements.  If this is a call to ddg.eval, we only want to execute the
     # argument to ddg.eval
-    .Object@contained <- .ddg.parse.contained(.Object, script.name, parseData)
+    .Object@contained <- .parse.contained(.Object, script.name, parseData)
     .Object@annotated <- if (grepl("^ddg.eval", .Object@text)) {
         parse(text = .Object@parsed[[1]][[2]])
     } else {
-        .ddg.add.annotations(.Object)
+        .add.annotations(.Object)
     }
     return(.Object)
 })
@@ -136,7 +136,7 @@ null.pos <- function() {
 # object for this statement script.name - the name of the script the statement is
 # from script.num - the script number used to find the script in the sourced
 # the object created by the parser that gives us source position information
-.ddg.construct.DDGStatement <- function(expr, pos, script.name, script.num, parseData) {
+.construct.DDGStatement <- function(expr, pos, script.name, script.num, parseData) {
     # Surprisingly, if a statement is just a number, like 1 (which could be the last
     # statement in a function, for example), the parser returns a number, rather than
     # a parse tree!
@@ -145,12 +145,10 @@ null.pos <- function() {
     return(new(Class = "DDGStatement", parsed = expr, pos, script.name, script.num, parseData))
 }
 
-# .ddg.abbrev.cmd abbreviates a command to the specified length.  Default is 60
+# .abbrev.cmd abbreviates a command to the specified length.  Default is 60
 # characters.
-
 # cmd - command string.  len (optional) - number of characters.
-
-.ddg.abbrev.cmd <- function(cmd, len = 60) {
+.abbrev.cmd <- function(cmd, len = 60) {
     if (length(cmd) > 1) {
         cmd <- paste(cmd, collapse = " ")
     }
@@ -161,15 +159,13 @@ null.pos <- function() {
         substr(cmd, 1, len) else substr(cmd, 1, len - 1)
 }
 
-# .ddg.find.var.uses returns a vector containing all the variables used in an
+# .find.var.uses returns a vector containing all the variables used in an
 # expression.  Each value is unique in the returned vector, so that if a variable
 # is used more than once, it only appears once.
-
 # main.object - input expression.
-
-.ddg.find.var.uses <- function(main.object) {
+.find.var.uses <- function(main.object) {
     # Recursive helper function.
-    .ddg.find.var.uses.rec <- function(obj) {
+    .find.var.uses.rec <- function(obj) {
         # Base cases.
         if (is.atomic(obj)) {
             return(character())  # A name is not atomic!
@@ -185,69 +181,65 @@ null.pos <- function() {
         }
         if (!is.recursive(obj))
             return(character())
-        if (.ddg.is.functiondecl(obj))
+        if (.is.functiondecl(obj))
             return(character())
         tryCatch({
-            if (.ddg.is.assign(obj)) {
+            if (.is.assign(obj)) {
                 # If assigning to a simple variable, recurse on the right hand side of the
                 # assignment.
                 # covers cases: '=', '<-', '<<-' for simple variable assignments e.g.  a <- 2
                 if (is.symbol(obj[[2]])) {
-                  unique(unlist(.ddg.find.var.uses.rec(obj[[3]])))
+                  unique(unlist(.find.var.uses.rec(obj[[3]])))
                 } else if (is.call(obj[[2]])) {
                   # If assigning to an expression (like a[b]), recurse on the indexing part of the
                   # lvalue as well as on the expression.  covers cases: storage.mode(z) a[1] <- 2,
                   # a[b] <- 3
-                  variables <- c(.ddg.find.var.uses.rec(obj[[2]][[2]]), unlist(.ddg.find.var.uses.rec(obj[[3]])))
+                  variables <- c(.find.var.uses.rec(obj[[2]][[2]]), unlist(.find.var.uses.rec(obj[[3]])))
                   # for array index cases like a[b] <- 3, where there could be a variable in the
                   # brackets
                   if (obj[[2]][[1]] == "[")
-                    append(variables, .ddg.find.var.uses.rec(obj[[2]][[3]]))
+                    append(variables, .find.var.uses.rec(obj[[2]][[3]]))
                   unique(variables)
                 } else if (is.character(obj[[2]])) {
                   # covers cases where there is a string literal.  for assign function
-                  unique(c(unlist(.ddg.find.var.uses.rec(parse(text = obj[[2]])[[1]])),
-                    unlist(.ddg.find.var.uses.rec(parse(text = obj[[3]])[[1]]))))
+                  unique(c(unlist(.find.var.uses.rec(parse(text = obj[[2]])[[1]])),
+                    unlist(.find.var.uses.rec(parse(text = obj[[3]])[[1]]))))
                 } else {
                   # not entirely sure what this catches
-                  unique(c(.ddg.find.var.uses.rec(obj[[2]]), unlist(.ddg.find.var.uses.rec(obj[[3]]))))
+                  unique(c(.find.var.uses.rec(obj[[2]]), unlist(.find.var.uses.rec(obj[[3]]))))
                 }
             } else {
                 # Not an assignment.  Recurse on all parts of the expression except the operator.
-                unique(unlist(lapply(obj[1:length(obj)], .ddg.find.var.uses.rec)))
+                unique(unlist(lapply(obj[1:length(obj)], .find.var.uses.rec)))
             }
         }, error = function(e) {
-            print(paste(".ddg.find.var.uses.rec:  Error analyzing", deparse(obj)))
+            print(paste(".find.var.uses.rec:  Error analyzing", deparse(obj)))
             character()
         })
     }
 
-    return(.ddg.find.var.uses.rec(main.object))
+    return(.find.var.uses.rec(main.object))
 }
 
 
-# .ddg.find.simple.assign returns the name of the variable assigned to if the
+# .find.simple.assign returns the name of the variable assigned to if the
 # object passed in is an expression representing an assignment statement.
 # Otherwise, it returns NULL.
-
 # obj - input expression.
-
-.ddg.find.simple.assign <- function(obj) {
-    if (.ddg.is.assign(obj)) {
-        .ddg.get.var(obj[[2]])
+.find.simple.assign <- function(obj) {
+    if (.is.assign(obj)) {
+        .get.var(obj[[2]])
     } else {
         ""
     }
 }
 
 
-# .ddg.is.assign returns TRUE if the object passed is an expression object
+# .is.assign returns TRUE if the object passed is an expression object
 # containing an assignment statement.
-
 # expr - a parsed expression.  This also finds uses of ->.  This also finds uses
 # of ->>.
-
-.ddg.is.assign <- function(expr) {
+.is.assign <- function(expr) {
     if (is.call(expr)) {
         if (identical(expr[[1]], as.name("<-")))
             return(TRUE) else if (identical(expr[[1]], as.name("<<-")))
@@ -259,59 +251,47 @@ null.pos <- function() {
 }
 
 
-# .ddg.get.var returns the variable being referenced in an expression. It should
+# .get.var returns the variable being referenced in an expression. It should
 # be passed an expression object that is either a variable, a vector access (like
 # a[1]), a list member (like a[[i]]) or a data frame access (like a$foo[i]).  For
 # all of these examples, it would return 'a'.
-
 # lvalue - a parsed expression.
-
 # for string literals e.g. when the assign function is used
-
-
-.ddg.get.var <- function(lvalue) {
+.get.var <- function(lvalue) {
     if (is.symbol(lvalue))
         deparse(lvalue) else if (is.character(lvalue))
-        .ddg.get.var(parse(text = lvalue)[[1]]) else .ddg.get.var(lvalue[[2]])
+        .get.var(parse(text = lvalue)[[1]]) else .get.var(lvalue[[2]])
 }
 
 
-# .ddg.find.assign returns a vector containing the names of all the variables
+# .find.assign returns a vector containing the names of all the variables
 # assigned in an expression.  The parameter should be an expression object. For
 # example, if obj represents the expression 'a <- (b <- 2) * 3', the vector
 # returned will contain both a and b.
-
 # obj - a parsed expression.
-
 # Assignment statement.  Add the variable being assigned to the vector and
 # recurse on the expression being assigned.
-
 # Don't look for assignments in the body of a function as those won't happen
 # until the function is called.  Don't recurse on NULL.
-
 # Not an assignment statement.  Recurse on the parts of the expression.  Base
 # case.
-
-.ddg.find.assign <- function(obj) {
+.find.assign <- function(obj) {
     if (!is.recursive(obj))
         return(character())
-    if (.ddg.is.assign(obj)) {
-        var <- .ddg.get.var(obj[[2]])
+    if (.is.assign(obj)) {
+        var <- .get.var(obj[[2]])
         if (!(is.null(obj[[3]]))) {
-            if (.ddg.is.functiondecl(obj[[3]]))
-                var else c(var, unlist(lapply(obj[[3]], .ddg.find.assign)))
+            if (.is.functiondecl(obj[[3]]))
+                var else c(var, unlist(lapply(obj[[3]], .find.assign)))
         } else var
     } else {
-        unique(unlist(lapply(obj, .ddg.find.assign)))
+        unique(unlist(lapply(obj, .find.assign)))
     }
 }
 
-
 # ddg.is.functiondecl tests to see if an expression is a function declaration.
-
 # expr - a parsed expression.
-
-.ddg.is.functiondecl <- function(expr) {
+.is.functiondecl <- function(expr) {
     if (is.symbol(expr) || !is.language(expr))
         return(FALSE)
     if (is.null(expr[[1]]) || !is.language(expr[[1]]))
@@ -319,32 +299,30 @@ null.pos <- function() {
     return(expr[[1]] == "function")
 }
 
-# .ddg.get.statement.type returns the control type (if applicable) of a parsed
+# .get.statement.type returns the control type (if applicable) of a parsed
 # statement.
-
-.ddg.get.statement.type <- function(parsed.command) {
+.get.statement.type <- function(parsed.command) {
     if (length(parsed.command) > 1)
         return(parsed.command[[1]])
     return(0)
 }
 
-# .ddg.add.annotations accepts a DDGStatement and returns an expression.  The
+# .add.annotations accepts a DDGStatement and returns an expression.  The
 # returned expression is annotated as needed.  Return if statement is empty.
 # Replace source with ddg.source.  Annotate user-defined functions.  Note that
 # this will not annotate anonymous functions, like ones that might be passed to
 # lapply, for example Is that what we want?
-
-.ddg.add.annotations <- function(command) {
+.add.annotations <- function(command) {
     parsed.command <- command@parsed[[1]]
     if (length(parsed.command) == 0)
         return(command@parsed)
     if (is.call(parsed.command) && parsed.command[[1]] == "source") {
         return(.ddg.add.ddg.source(parsed.command))
     }
-    if (.ddg.is.assign(parsed.command) && .ddg.is.functiondecl(parsed.command[[3]])) {
+    if (.is.assign(parsed.command) && .is.functiondecl(parsed.command[[3]])) {
         return(.ddg.add.function.annotations(command))
     }
-    statement.type <- as.character(.ddg.get.statement.type(parsed.command))
+    statement.type <- as.character(.get.statement.type(parsed.command))
     loop.types <- list("for", "while", "repeat")
     if (length(statement.type > 0) && !is.null(statement.type)) {
         # Move into funcs below && ddg.max.loops() > 0) { Annotate if statement.
@@ -362,33 +340,32 @@ null.pos <- function() {
     return(command@parsed)
 }
 
-# .ddg.parse.contained creates the DDGStatement objects that correspond to
+# .parse.contained creates the DDGStatement objects that correspond to
 # statements inside a function or control block (or blocks).  cmd - the
 # DDGStatement being considered script.name - the name of the script the
 # statement is from parseData - the data returned by the parser that is used to
 # extract source position information Returns a list of DDTStatements or an empty
 # list if this is not a function declaration or a control construct.
-
-.ddg.parse.contained <- function(cmd, script.name, parseData) {
+.parse.contained <- function(cmd, script.name, parseData) {
     parsed.cmd <- cmd@parsed[[1]]
     # Function declaration
-    if (.ddg.is.assign(parsed.cmd) && .ddg.is.functiondecl(parsed.cmd[[3]])) {
+    if (.is.assign(parsed.cmd) && .is.functiondecl(parsed.cmd[[3]])) {
         # Create the DDGStatement objects for the statements in the function
-        return(.ddg.parse.contained.function(cmd, script.name, parseData, parsed.cmd[[3]][[3]]))
+        return(.parse.contained.function(cmd, script.name, parseData, parsed.cmd[[3]][[3]]))
     } else if (ddg.max.loops() == 0) {
         # Check if we want to go inside loop and if-statements
         return(list())
     }
     # Control statements.
-    st.type <- as.character(.ddg.get.statement.type(parsed.cmd))
+    st.type <- as.character(.get.statement.type(parsed.cmd))
     # If statement.
     if (st.type == "if") {
-        return(.ddg.parse.contained.if(cmd, script.name, parseData, parsed.cmd))
+        return(.parse.contained.if(cmd, script.name, parseData, parsed.cmd))
     } else {
         # Other control statements
         control.types <- list("for", "while", "repeat", "{")
         if (length(st.type) > 0 && !is.null(st.type) && (st.type %in% control.types)) {
-            return(.ddg.parse.contained.control(cmd, script.name, parseData, parsed.cmd,
+            return(.parse.contained.control(cmd, script.name, parseData, parsed.cmd,
                 st.type))
         }
     }
@@ -396,7 +373,7 @@ null.pos <- function() {
     return(list())
 }
 
-.ddg.parse.contained.function <- function(cmd, script.name, parseData, func.body) {
+.parse.contained.function <- function(cmd, script.name, parseData, func.body) {
     if (func.body[[1]] == "{") {
         # The function body is a block.  Extract the statements inside the block
         func.stmts <- func.body[2:length(func.body)]
@@ -409,7 +386,7 @@ null.pos <- function() {
         cmd@pos))
 }
 
-.ddg.parse.contained.if <- function(cmd, script.name, parseData, parent) {
+.parse.contained.if <- function(cmd, script.name, parseData, parent) {
     block.stmts <- list()
     # If and else if blocks.
     while (!is.symbol(parent) && parent[[1]] == "if") {
@@ -452,7 +429,7 @@ null.pos <- function() {
 }
 
 
-.ddg.parse.contained.control <- function(cmd, script.name, parseData, parsed.cmd,
+.parse.contained.control <- function(cmd, script.name, parseData, parsed.cmd,
     st.type) {
     block.stmts <- list()
     if (st.type == "for")
@@ -717,7 +694,7 @@ null.pos <- function() {
         # this technique if there is a return call because we if tried to eval a return
         # call, we would end up returning from some code inside RDT, instead of the
         # user's function.
-        eval.cmd <- .ddg.construct.DDGStatement(parse(text = deparse(last.statement)),
+        eval.cmd <- .construct.DDGStatement(parse(text = deparse(last.statement)),
             pos = NA, script.num = NA, parseData = NULL)
         new.statement <- .ddg.create.ddg.eval.call(last.statement, parsed.stmt)
         return(call("ddg.ret.value", new.statement, function() parsed.stmt))
@@ -1051,7 +1028,7 @@ null.pos <- function() {
     if (!is.recursive(parsed.expr))
         return(FALSE)
     # If this is a function declaration, skip it
-    if (.ddg.is.functiondecl(parsed.expr))
+    if (.is.functiondecl(parsed.expr))
         return(FALSE)
     # A call to the specified function.
     if (.ddg.is.call.to(parsed.expr, func.name)) {

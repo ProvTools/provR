@@ -510,7 +510,7 @@ ddg.MAX_HIST_LINES <- 2^14
         ## It might be useful to record somehow that this function reads a file, but we
         ## wouldn't actually do the reading until the function is called, not here where
         ## it is being declared.
-        if (.ddg.is.functiondecl(obj))
+        if (.is.functiondecl(obj))
             return(NULL)
         if (is.call(obj)) {
             # Call has no arguments, so it can't be reading a function.  Recurse on the first
@@ -675,7 +675,7 @@ ddg.MAX_HIST_LINES <- 2^14
             cmds <- vector("list", (length(exprs)))
             for (i in 1:length(exprs)) {
                 expr <- as.expression(exprs[i])
-                cmds[[i]] <- .ddg.construct.DDGStatement(expr, NA, script.name, script.num, parseData)
+                cmds[[i]] <- .construct.DDGStatement(expr, NA, script.name, script.num, parseData)
             }
             return(cmds)
         }
@@ -701,7 +701,7 @@ ddg.MAX_HIST_LINES <- 2^14
         expr <- as.expression(exprs[i][[1]])
         next.expr.pos <- new(Class = "DDGStatementPos", non.comment.parse.data[next.parseData,
             ])
-        cmds[[next.cmd]] <- .ddg.construct.DDGStatement(expr, next.expr.pos, script.name,
+        cmds[[next.cmd]] <- .construct.DDGStatement(expr, next.expr.pos, script.name,
             script.num, parseData)
         next.cmd <- next.cmd + 1
         # If there are more expressions, determine where to look next in the parseData
@@ -974,7 +974,7 @@ ddg.MAX_HIST_LINES <- 2^14
                 vars.used <- character()
                 binding.node.name <- paste(formal, " <- \"", arg, "\"", sep = "")
             } else {
-                vars.used <- .ddg.find.var.uses(arg)
+                vars.used <- .find.var.uses(arg)
                 binding.node.name <- paste(formal, " <- ", paste(deparse(arg), collapse = " "))
             }
 
@@ -1162,7 +1162,7 @@ ddg.MAX_HIST_LINES <- 2^14
                 if (.ddg.cur.cmd@text != paste(deparse(call), collapse = "")) {
                   cmd.abbrev <- .ddg.add.abstract.node("Start", .ddg.cur.cmd, caller.env)
                   .ddg.cur.expr.stack <- .ddg.get(".ddg.cur.expr.stack")
-                  st.type <- .ddg.get.statement.type(.ddg.cur.cmd@parsed[[1]])
+                  st.type <- .get.statement.type(.ddg.cur.cmd@parsed[[1]])
                   loop.statement <- (st.type == "for" || st.type == "while" || st.type ==
                     "repeat")
                   control.statement <- loop.statement || st.type == "if"
@@ -1577,7 +1577,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         .ddg.dec(".ddg.func.depth")
     }
     if (is.null(cmd.func)) {
-        ret.stmt <- .ddg.construct.DDGStatement(parse(text = orig.return), pos = NA,
+        ret.stmt <- .construct.DDGStatement(parse(text = orig.return), pos = NA,
             script.num = NA)
     } else {
         ret.stmt <- cmd.func()
