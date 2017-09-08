@@ -164,7 +164,7 @@
     if (save.object && full.snapshot && .ddg.get("ddg.save.to.disk"))
         save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.get("ddg.dnum") + 1, "-", snapname,
             ".RObject", sep = ""), ascii = TRUE)
-    dtime <- .ddg.format.time(Sys.time())
+    dtime <- .format.time(Sys.time())
     # Get scope if necessary.
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)

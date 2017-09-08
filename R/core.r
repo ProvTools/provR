@@ -756,7 +756,7 @@ ddg.MAX_HIST_LINES <- 2^14
     # Calculate the path to the file relative to the ddg directory.  This is the
     # value stored in the node.
     dpfile <- paste("data", dfile, sep = "/")
-    dtime <- .ddg.format.time(Sys.time())
+    dtime <- .format.time(Sys.time())
     # Set the node label.
     if (is.null(dname))
         dname <- file.name
@@ -1786,7 +1786,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
                 dir.create(no.overwrite.folder)
             }
             ddg.path <- paste(no.overwrite.folder, "/", basename(tools::file_path_sans_ext(r.script.path)),
-                "_ddg_", .ddg.format.time(Sys.time()), sep = "")
+                "_ddg_", .format.time(Sys.time()), sep = "")
         }
         .ddg.set("ddg.path", ddg.path)
         # Remove files from DDG directory
@@ -1832,7 +1832,7 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
         # Empty file if it already exists, do the same with tmp file.
         file.create(ddg.history.file, showWarnings = FALSE)
         # One timestamp keeps track of last .ddg.save (the default).
-        .ddg.write.timestamp.to.history()
+        .write.timestamp.to.history()
         # Save the history if the platform supports it.
         tryCatch(savehistory(ddg.history.file), error = function(e) {
         })
@@ -1853,9 +1853,9 @@ ddg.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enab
     ddg.set.inside.loop()
     # Set number of first loop.
     .ddg.set("ddg.first.loop", first.loop)
-    .ddg.set(".ddg.proc.start.time", .ddg.elapsed.time())
+    .ddg.set(".ddg.proc.start.time", .elapsed.time())
     # Store time when script begins execution.
-    .ddg.set("ddg.start.time", .ddg.format.time(Sys.time()))
+    .ddg.set("ddg.start.time", .format.time(Sys.time()))
     invisible()
 }
 
@@ -2127,7 +2127,7 @@ ddg.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print
     # Write a new timestamp if we're turning on the console so we only capture
     # history from this point forward.
     if (!.ddg.get(".ddg.enable.console"))
-        .ddg.write.timestamp.to.history()
+        .write.timestamp.to.history()
     .ddg.set(".ddg.enable.console", TRUE)
 }
 

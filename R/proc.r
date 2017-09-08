@@ -53,7 +53,7 @@
         }
     }
     .ddg.set(".ddg.last.proc.node.created", paste(ptype, pname))
-    ptime <- .ddg.elapsed.time()
+    ptime <- .elapsed.time()
     # Record in procedure node table
     .ddg.record.proc(ptype, pname, pvalue, auto.created, ptime, snum, pos)
     # if (ptype == 'Finish') print(sys.calls())
