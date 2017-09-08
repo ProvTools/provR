@@ -263,7 +263,7 @@
             error = function(e)
             {
               # create procedure node for the error-causing operation
-              .ddg.proc.node("Operation", cmd@abbrev, cmd@abbrev, env=environ, console=TRUE, cmd=cmd)
+              .proc.node("Operation", cmd@abbrev, cmd@abbrev, console=TRUE, cmd=cmd)
               .ddg.proc2proc()
               # create input edges by adding variables to set
               vars.set <- .ddg.add.to.vars.set(vars.set,cmd,i)
@@ -323,7 +323,7 @@
           # Create the procedure node.
           if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding operation node for", cmd@abbrev))
 
-          .ddg.proc.node("Operation", cmd@abbrev, cmd@abbrev, env=environ, console=TRUE, cmd=cmd)
+          .proc.node("Operation", cmd@abbrev, cmd@abbrev, console=TRUE, cmd=cmd)
           .ddg.proc2proc()
           # If a warning occurred when cmd was evaluated,
           # attach a warning node
@@ -632,7 +632,7 @@
             error = function(e)
             {
               # create procedure node for the error-causing operation
-              .ddg.proc.node("Operation", cmd@abbrev, cmd@abbrev, env=environ, console=TRUE, cmd=cmd)
+              .proc.node("Operation", cmd@abbrev, cmd@abbrev, console=TRUE, cmd=cmd)
               .ddg.proc2proc()
               # create input edges by adding variables to set
               vars.set <- .ddg.add.to.vars.set(vars.set,cmd,i)
@@ -692,7 +692,7 @@
           # Create the procedure node.
           if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding operation node for", cmd@abbrev))
 
-          .ddg.proc.node("Operation", cmd@abbrev, cmd@abbrev, env=environ, console=TRUE, cmd=cmd)
+          .proc.node("Operation", cmd@abbrev, cmd@abbrev, console=TRUE, cmd=cmd)
           .ddg.proc2proc()
           # If a warning occurred when cmd was evaluated,
           # attach a warning node

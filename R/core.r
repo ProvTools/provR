@@ -978,7 +978,7 @@ ddg.MAX_HIST_LINES <- 2^14
                 binding.node.name <- paste(formal, " <- ", paste(deparse(arg), collapse = " "))
             }
 
-            .ddg.proc.node("Binding", binding.node.name, env = env)
+            .proc.node("Binding", binding.node.name)
             .ddg.proc2proc()
             for (var in vars.used) {
                 param.scope <- .ddg.get.scope(var, for.caller = TRUE, calls = stack)
@@ -1004,7 +1004,7 @@ ddg.MAX_HIST_LINES <- 2^14
             }
         })
     }
-    .ddg.proc.node("Operation", pname, pname, auto.created = auto.created, env = env)
+    .proc.node("Operation", pname, pname, auto.created = auto.created)
     # Link to the definition of the function if the function is defined in this
     # script.
     if (.ddg.data.node.exists(pname, environmentName(.GlobalEnv))) {
@@ -1215,7 +1215,7 @@ ddg.MAX_HIST_LINES <- 2^14
 
 .ddg.break.statement <- function() {
     # Create procedure node for break statement.
-    .ddg.proc.node("Operation", "break", "break")
+    .proc.node("Operation", "break", "break")
     .ddg.proc2proc()
     # Get last command from stack.
     cmd <- .ddg.get.last.cmd()
@@ -1250,7 +1250,7 @@ ddg.MAX_HIST_LINES <- 2^14
 
 .ddg.next.statement <- function() {
     # Create procedure node for next statement.
-    .ddg.proc.node("Operation", "next", "next")
+    .proc.node("Operation", "next", "next")
     .ddg.proc2proc()
     # Get last command from stack.
     cmd <- .ddg.get.last.cmd()
@@ -1441,7 +1441,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
-    .ddg.proc.node("Operation", pname, pname)
+    .proc.node("Operation", pname, pname)
     # Create control flow edge from preceding procedure node.
     .ddg.proc2proc()
     # Create the input edges if ins list provided.
@@ -1570,7 +1570,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     # If this is not a recursive call to ddg.ret.value and ddg.function was not
     # called, create the function nodes that it would have created.
     call <- sys.call(caller.frame)
-    if (!.ddg.proc.node.exists(pname)) {
+    if (!.proc.node.exists(pname)) {
         full.call <- match.call(sys.function(caller.frame), call = call)
         .ddg.create.function.nodes(pname, call, full.call, auto.created = TRUE, env = sys.frame(.ddg.get.frame.number(sys.calls())))
     } else {
@@ -1595,8 +1595,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     caller.env = sys.frame(caller.frame)
     # check if there is a return call within this call to ddg.ret.
     if (.has.call.to(parsed.stmt, "return")) {
-        .ddg.proc.node("Operation", ret.stmt@abbrev, ret.stmt@abbrev, console = TRUE,
-            env = caller.env, cmd = ret.stmt)
+        .proc.node("Operation", ret.stmt@abbrev, ret.stmt@abbrev, console = TRUE, cmd = ret.stmt)
         # Create control flow edge from preceding procedure node.
         .ddg.proc2proc()
         # Create an edge from the return statement to its return value.

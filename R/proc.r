@@ -1,14 +1,21 @@
-# .ddg.proc.node creates a procedure node.
+# Copyright (C) 2017 T. Pasquier M. Lau This program is free software: you can
+# redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.  This program is distributed in
+# the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+# the GNU General Public License for more details.  You should have received a
+# copy of the GNU General Public v2 License along with this program.  If not, see
+# <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>.  This package was
+# forked from <https://github.com/End-to-end-provenance/RDataTracker>
 
+# .proc.node creates a procedure node.
 # ptype - type of procedure node.  pname - name of procedure node.  pvalue
 # (optional) - value of procedure node.  console (optional) - if TRUE, console
 # mode is enabled.  auto.created - TRUE means that the node is being
 # automatically created when a return call is found ptime - elapsed time env -
 # the environment in which the procedure occurs
-
-# CHECK!  Looks like env parameter is not needed!
-.ddg.proc.node <- function(ptype, pname, pvalue = "", console = FALSE, auto.created = FALSE,
-    env = sys.frame(.ddg.get.frame.number(sys.calls())), cmd = NULL) {
+.proc.node <- function(ptype, pname, pvalue = "", console = FALSE, auto.created = FALSE, cmd = NULL) {
     if (.ddg.get("ddg.debug.lib")) {
         if (length(pname) > 1) {
             print(sys.calls())
@@ -72,10 +79,10 @@
         type == "Binding")
 }
 
-# .ddg.proc.node.exists returns true if there is a procedure node with the given
+# .proc.node.exists returns true if there is a procedure node with the given
 # name
 
-.ddg.proc.node.exists <- function(pname) {
+.proc.node.exists <- function(pname) {
     ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
@@ -172,7 +179,7 @@ ddg.start <- function(pname = NULL) {
     call <- sys.call(frame.number)
     .ddg.create.start.for.cur.cmd(env)
     # Create start non-operational step.
-    .ddg.proc.node("Start", pname, pname)
+    .proc.node("Start", pname, pname)
     # Create control flow edge from preceding procedure node.
     .ddg.proc2proc()
 }
@@ -195,7 +202,7 @@ ddg.finish <- function(pname = NULL) {
         .ddg.insert.error.message(msg)
     }
     # Create finish non-operational step.
-    .ddg.proc.node("Finish", pname, pname)
+    .proc.node("Finish", pname, pname)
     # Create control flow edge from preceding procedure node.
     .ddg.proc2proc()
     # ddg.finish is added to the end of blocks.  We want the block to return the
@@ -220,7 +227,7 @@ ddg.finish <- function(pname = NULL) {
     }
     if (.ddg.get("ddg.debug.lib"))
         print(paste(called, ":  Adding", node.name, type, "node"))
-    .ddg.proc.node(type, node.name, node.name, TRUE, env = env, cmd = cmd)
+    .proc.node(type, node.name, node.name, TRUE, cmd = cmd)
     .ddg.proc2proc()
     return(node.name)
 }

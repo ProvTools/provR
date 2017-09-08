@@ -75,7 +75,7 @@ ddg.forloop <- function(index.var) {
     index.name <- as.character(deparse(substitute(index.var)))
     pnode.name <- paste(index.name, "<-", index.var)
     dscope <- .ddg.get.scope(index.name)
-    .ddg.proc.node("Operation", pnode.name, pnode.name)
+    .proc.node("Operation", pnode.name, pnode.name)
     .ddg.proc2proc()
     .ddg.data.node("Data", index.name, index.var, dscope, from.env = FALSE)
     .ddg.proc2data(pnode.name, index.name)
@@ -90,7 +90,7 @@ ddg.forloop <- function(index.var) {
 
 ddg.details.omitted <- function() {
     pnode.name <- "Details Omitted"
-    .ddg.proc.node("Incomplete", pnode.name, pnode.name)
+    .proc.node("Incomplete", pnode.name, pnode.name)
     .ddg.proc2proc()
     .ddg.set("details.omitted", TRUE)
     if (.ddg.get("ddg.debug.lib")) {
