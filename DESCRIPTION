@@ -1,7 +1,6 @@
 Package: provR
 Title: Provenance Capture Package
 Version: 0.1.0
-CheckpointVersion: 1.000
 Date: 2017-08-01
 Authors@R: c( person("Emery", "Boose", role = c("aut", "cre"),
                       email = "boose@fas.harvard.edu"),
@@ -25,4 +24,5 @@ Description: Defines functions that can be used to collect data provenance as
 License: GPL-2 | file LICENSE
 URL: https://github.com/provtools/provr
 BugReports: https://github.com/provtools/provr/issues
-Imports: gtools, XML, knitr, stringr, utils, devtools, methods, jsonlite
+Imports: gtools, XML, knitr, stringr, utils, devtools, methods
+RoxygenNote: 6.0.1

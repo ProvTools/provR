@@ -30,7 +30,7 @@ installFonts <- function() {
 }
 
 # List of packages that are needed
-pkgs <- c("RDataTracker", "chron", "gWidgets", "dplR", "zoo", "ggplot2",
+pkgs <- c("provR", "chron", "gWidgets", "dplR", "zoo", "ggplot2",
 		"gdata", "grid", "gridExtra", "mgcv", "akima", "spatstat", "reshape2", "RCurl", "plyr",
     "xkcd", "sysfonts", "extrafont")
 

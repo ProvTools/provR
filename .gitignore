@@ -100,3 +100,4 @@ tests/*/sourceTest.r
 
 # Ignore package
 *.tar.gz
+*.Rcheck
