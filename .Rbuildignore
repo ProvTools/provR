@@ -5,3 +5,5 @@
 ^README\.md$
 ^tests.xml$
 ^CHANGELOG.md$
+^prepare.r
+^test.sh
