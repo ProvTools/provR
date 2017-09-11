@@ -155,61 +155,6 @@
     return(.ddg.get("ddg.proc.nodes")$ddg.name[pnum])
 }
 
-# ddg.start creates a procedure node of type Start called pname.  Users can
-# right-click on a start node in DDG Explorer and see the code between start and
-# finish nodes in the original script.
-
-# pname (optional) - the label for the node.  This can be passed as a string or
-# as a name. It can be omitted if ddg.start is called by a function, in which
-# case the name of the function will be used.
-
-ddg.start <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
-        return(invisible())
-    .ddg.lookup.function.name(pname)
-    # check for NULL.
-    if (is.null(pname)) {
-        msg <- "Cannot call ddg.start with NULL value from top-level."
-        .ddg.insert.error.message(msg)
-        return
-    }
-    # Create start node for the calling statement if one is not already created.
-    frame.number <- .ddg.get.frame.number(sys.calls())
-    env <- sys.frame(frame.number)
-    call <- sys.call(frame.number)
-    .ddg.create.start.for.cur.cmd(env)
-    # Create start non-operational step.
-    .proc.node("Start", pname, pname)
-    # Create control flow edge from preceding procedure node.
-    .ddg.proc2proc()
-}
-
-# ddg.finish creates a procedure node of type Finish called pname.  Users can
-# right-click on a finish node in DDG Explorer and see the code between start and
-# finish nodes in the original script.
-
-# pname (optional) - the label for the node. This can be passed as a string or as
-# a name. It can be omitted if ddg.finish is called by a function, in which case
-# the name of the function will be used.
-
-ddg.finish <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
-        return(invisible())
-    .ddg.lookup.function.name(pname)
-    # check for NULL.
-    if (is.null(pname)) {
-        msg <- "Cannot call ddg.finish with NULL value from top-level."
-        .ddg.insert.error.message(msg)
-    }
-    # Create finish non-operational step.
-    .proc.node("Finish", pname, pname)
-    # Create control flow edge from preceding procedure node.
-    .ddg.proc2proc()
-    # ddg.finish is added to the end of blocks.  We want the block to return the
-    # value of the last R statement.
-    return(.ddg.get(".ddg.last.R.value"))
-}
-
 # ddg.add.abstract.node is exclusively used in .ddg.parse.commands (so far) and
 # simply serves to avoid repetition of code.
 
