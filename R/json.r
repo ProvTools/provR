@@ -177,6 +177,7 @@
     # Get counter
     ddg.pnum <- .ddg.get("ddg.pnum")
     # Prepare values
+    pname <- gsub("\\\\", "\\\\\\", pname)
     pname <- gsub("\\\"", "\\\\\"", pname)
     if (pvalue != "") {
         pvalue <- gsub("\\\"", "\\\\\"", pvalue)
@@ -196,6 +197,7 @@
     # Prepare values
     if (from.env)
         dname <- paste(dname, " [ENV]", sep = "")
+    dvalue <- gsub("\\\\", "\\\\\\", dvalue)
     if (dvalue != "")
         value.str <- paste(" Value=\"", dvalue, "\"", sep = "") else value.str <- ""
     if (dscriptpath != "")
