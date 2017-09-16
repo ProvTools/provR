@@ -78,7 +78,6 @@
     if (!is.character(str))
         return(str)
     str <- paste("\"", str, "\"", sep = "")
-    str <- gsub("\"", "\\\\\"", str)
     # Replace returns, new lines, and tabs with spaces.
     str <- gsub("\r", " ", str)
     str <- gsub("\n", " ", str)
