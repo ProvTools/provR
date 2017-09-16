@@ -69,7 +69,7 @@
 # .ddg.json.procedure.node adds a procedure node to the ddg.json string.
 
 .ddg.json.procedure.node <- function(id, pname, ptype, ptime, snum, pos) {
-    pname <- toJSON(pname, auto_unbox=TRUE)
+    pname <- jsonlite::toJSON(pname, auto_unbox=TRUE)
     if (is.object(pos)) {
         jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : ", pname, ",\n\"rdt:type\" : \"",
             ptype, "\",\n\"rdt:elapsedTime\" : \"", ptime, "\",\n\"rdt:scriptNum\" : \"",
@@ -89,7 +89,7 @@
 
 .ddg.json.data.node <- function(id, dname, dvalue, val.type, dtype, dscope, from.env,
     dhash, dtime, dloc) {
-    dvalue <- toJSON(dvalue, auto_unbox=TRUE)
+    dvalue <- jsonlite::toJSON(dvalue, auto_unbox=TRUE)
     jstr <- paste("\n\"d", id, "\" : {\n\"rdt:name\" : \"", dname, "\",\n\"rdt:value\" : ",
         dvalue, ",\n\"rdt:valType\" : ", val.type, ",\n\"rdt:type\" : \"", dtype,
         "\",\n\"rdt:scope\" : \"", dscope, "\",\n\"rdt:fromEnv\" : \"", from.env,
