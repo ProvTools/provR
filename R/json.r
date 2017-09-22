@@ -69,14 +69,15 @@
 # .ddg.json.procedure.node adds a procedure node to the ddg.json string.
 
 .ddg.json.procedure.node <- function(id, pname, ptype, ptime, snum, pos) {
+    pname <- jsonlite::toJSON(pname, auto_unbox=TRUE)
     if (is.object(pos)) {
-        jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : \"", pname, "\",\n\"rdt:type\" : \"",
+        jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : ", pname, ",\n\"rdt:type\" : \"",
             ptype, "\",\n\"rdt:elapsedTime\" : \"", ptime, "\",\n\"rdt:scriptNum\" : \"",
             snum, "\",\n\"rdt:startLine\" : \"", pos@startLine, "\"", ",\n\"rdt:startCol\" : \"",
             pos@startCol, "\"", ",\n\"rdt:endLine\" : \"", pos@endLine, "\"", ",\n\"rdt:endCol\" : \"",
             pos@endCol, "\"", "\n}", sep = "")
     } else {
-        jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : \"", pname, "\",\n\"rdt:type\" : \"",
+        jstr <- paste("\n\"p", id, "\" : {\n\"rdt:name\" : ", pname, ",\n\"rdt:type\" : \"",
             ptype, "\",\n\"rdt:elapsedTime\" : \"", ptime, "\",\n\"rdt:scriptNum\" : \"",
             snum, "\",\n\"rdt:startLine\" : \"NA\"", ",\n\"rdt:startCol\" : \"NA\"",
             ",\n\"rdt:endLine\" : \"NA\"", ",\n\"rdt:endCol\" : \"NA\"", "\n}", sep = "")
@@ -88,8 +89,9 @@
 
 .ddg.json.data.node <- function(id, dname, dvalue, val.type, dtype, dscope, from.env,
     dhash, dtime, dloc) {
-    jstr <- paste("\n\"d", id, "\" : {\n\"rdt:name\" : \"", dname, "\",\n\"rdt:value\" : \"",
-        dvalue, "\",\n\"rdt:valType\" : ", val.type, ",\n\"rdt:type\" : \"", dtype,
+    dvalue <- jsonlite::toJSON(dvalue, auto_unbox=TRUE)
+    jstr <- paste("\n\"d", id, "\" : {\n\"rdt:name\" : \"", dname, "\",\n\"rdt:value\" : ",
+        dvalue, ",\n\"rdt:valType\" : ", val.type, ",\n\"rdt:type\" : \"", dtype,
         "\",\n\"rdt:scope\" : \"", dscope, "\",\n\"rdt:fromEnv\" : \"", from.env,
         "\",\n\"rdt:MD5hash\" : \"", dhash, "\",\n\"rdt:timestamp\" : \"", dtime,
         "\",\n\"rdt:location\" : \"", dloc, "\"\n}", sep = "")
@@ -176,12 +178,6 @@
     snum, pos) {
     # Get counter
     ddg.pnum <- .ddg.get("ddg.pnum")
-    # Prepare values
-    pname <- gsub("\\\"", "\\\\\"", pname)
-    if (pvalue != "") {
-        pvalue <- gsub("\\\"", "\\\\\"", pvalue)
-        value.str <- paste(" Value=\"", pvalue, "\"", sep = "")
-    } else value.str <- ""
     # Record in ddg.json
     .ddg.json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
 }

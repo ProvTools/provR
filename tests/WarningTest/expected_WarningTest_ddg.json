@@ -9,7 +9,7 @@
 "p1" : {
 "rdt:name" : "WarningTest.R",
 "rdt:type" : "Start",
-"rdt:elapsedTime" : "0.021",
+"rdt:elapsedTime" : "0.155",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -20,7 +20,7 @@
 "p2" : {
 "rdt:name" : "a <- 1",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.025",
+"rdt:elapsedTime" : "0.207",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "1",
 "rdt:startCol" : "1",
@@ -31,7 +31,7 @@
 "p3" : {
 "rdt:name" : "warning(\"foo\", call. = FALSE)",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.031",
+"rdt:elapsedTime" : "0.302",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "2",
 "rdt:startCol" : "1",
@@ -42,7 +42,7 @@
 "p4" : {
 "rdt:name" : "b <- 2",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.035",
+"rdt:elapsedTime" : "0.54",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "3",
 "rdt:startCol" : "1",
@@ -53,7 +53,7 @@
 "p5" : {
 "rdt:name" : "WarningTest.R",
 "rdt:type" : "Finish",
-"rdt:elapsedTime" : "0.04",
+"rdt:elapsedTime" : "0.6",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -66,30 +66,30 @@
 "rdt:architecture" : "x86_64",
 "rdt:operatingSystem" : "unix",
 "rdt:language" : "R",
-"rdt:rVersion" : "R version 3.3.3 (2017-03-06)",
-"rdt:script" : "[DIR]/WarningTest.R",
+"rdt:rVersion" : "R version 3.4.1 (2017-06-30)",
+"rdt:script" : "/home/vagrant/workspace/provr/tests/WarningTest/WarningTest.R",
 "rdt:sourcedScripts" : ""
 ,
-"rdt:scriptTimeStamp" : "2017-06-27T14.04.25EDT",
-"rdt:workingDirectory" : "[DIR]",
-"rdt:ddgDirectory" : "[DIR]/ddg",
-"rdt:ddgTimeStamp" : "2017-07-20T13.39.34EDT",
-"rdt:rdatatrackerVersion" : "2.26.2",
+"rdt:scriptTimeStamp" : "2017-09-13T21.31.47BST",
+"rdt:workingDirectory" : "/home/vagrant/workspace/provr/tests/WarningTest",
+"rdt:ddgDirectory" : "/home/vagrant/workspace/provr/tests/WarningTest/ddg",
+"rdt:ddgTimeStamp" : "2017-09-16T19.59.12BST",
+"rdt:provRVersion" : "0.1.0",
 "rdt:installedPackages" : [
-	{"package" : "base", "version" : "3.3.3"},
-	{"package" : "datasets", "version" : "3.3.3"},
-	{"package" : "graphics", "version" : "3.3.3"},
-	{"package" : "grDevices", "version" : "3.3.3"},
-	{"package" : "methods", "version" : "3.3.3"},
-	{"package" : "RDataTracker", "version" : "2.26.2"},
-	{"package" : "stats", "version" : "3.3.3"},
-	{"package" : "utils", "version" : "3.3.3"}]
+	{"package" : "base", "version" : "3.4.1"},
+	{"package" : "datasets", "version" : "3.4.1"},
+	{"package" : "graphics", "version" : "3.4.1"},
+	{"package" : "grDevices", "version" : "3.4.1"},
+	{"package" : "methods", "version" : "3.4.1"},
+	{"package" : "provR", "version" : "0.1.0"},
+	{"package" : "stats", "version" : "3.4.1"},
+	{"package" : "utils", "version" : "3.4.1"}]
 }},
 "entity":{
 
 "d1" : {
 "rdt:name" : "a",
-"rdt:value" : "1",
+"rdt:value" : 1,
 "rdt:valType" : {"container":"vector", "dimension":[1], "type":["numeric"]},
 "rdt:type" : "Data",
 "rdt:scope" : "R_GlobalEnv",
@@ -113,7 +113,7 @@
 
 "d3" : {
 "rdt:name" : "b",
-"rdt:value" : "2",
+"rdt:value" : 2,
 "rdt:valType" : {"container":"vector", "dimension":[1], "type":["numeric"]},
 "rdt:type" : "Data",
 "rdt:scope" : "R_GlobalEnv",

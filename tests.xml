@@ -74,7 +74,6 @@
 
   - CalculateSquareRoot
   - DailySolarRadiation
-  - HFDatasetPreview
 
   The target "test-all" will do all of the tests above.
 
@@ -197,7 +196,7 @@
 
     <!-- Delete all local environment information (except sourced scripts & installed packages) -->
     <replaceregexp flags="g">
-      <regexp pattern='(("rdt:architecture"|"rdt:operatingSystem"|"rdt:language"|"rdt:rVersion"|"rdt:script"|"rdt:scriptTimeStamp"|"rdt:workingDirectory"|"rdt:ddgDirectory"|"rdt:MD5hash"|"rdt:ddgTimeStamp"|"rdt:rdatatrackerVersion") : (.*)\r?\n(,\r?\n)?)' />
+      <regexp pattern='(("rdt:location"|"rdt:architecture"|"rdt:operatingSystem"|"rdt:language"|"rdt:rVersion"|"rdt:script"|"rdt:scriptTimeStamp"|"rdt:workingDirectory"|"rdt:ddgDirectory"|"rdt:MD5hash"|"rdt:ddgTimeStamp"|"rdt:rdatatrackerVersion") : (.*)\r?\n(,\r?\n)?)' />
       <substitution expression=""/>
       <fileset dir="${local_dir}">
         <patternset id="local_files">
@@ -764,19 +763,6 @@
     </antcall>
   </target>
 
-  <target name="HFDatasetPreview">
-    <antcall target="run-regression-test">
-      <param name="test-name" value="HFDatasetPreview" />
-    </antcall>
-    <echo>The test requires RCurl and gplots (+ dependencies) to be installed.</echo>
-  </target>
-
-  <target name="update-HFDatasetPreview">
-    <antcall target="update-regression-expected">
-      <param name="test-name" value="HFDatasetPreview" />
-    </antcall>
-  </target>
-
   <target name="SivanSamplingSmaller">
     <antcall target="run-regression-test">
       <param name="test-name" value="SivanSamplingSmaller" />
@@ -804,7 +790,7 @@
     </antcall>
   </target>
 
-  <target name="script-tests" depends="CalculateSquareRoot, DailySolarRadiation, HFDatasetPreview">
+  <target name="script-tests" depends="CalculateSquareRoot, DailySolarRadiation">
     <echo>Script tests for which output should not differ </echo>
   </target>
 
