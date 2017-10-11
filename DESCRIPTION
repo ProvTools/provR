@@ -4,19 +4,21 @@ Version: 0.1.0
 Date: 2017-08-01
 Authors@R: c( person("Emery", "Boose", role = c("aut", "cre"),
                       email = "boose@fas.harvard.edu"),
-              person("Barbara", "Lerner", role = c("aut"),
-                      email = "blerner@mtholyoke.edu"),
-              person("Luis", "Perez", role = "aut",
-                      email = "luisperez@college.harvard.edu"),
+              person("Aaron", "Ellison", role = "aut",
+                      email = "aellison@fas.harvard.edu"),
               person("Elizabeth", "Fong", role = "aut",
                       email = "fong22e@mtholyoke.edu"),
               person("Matthew", "Lau", role = "aut",
                       email = "matthewklau@fas.harvard.edu"),
+              person("Barbara", "Lerner", role = c("aut"),
+                      email = "blerner@mtholyoke.edu"),
               person("Thomas", "Pasquier", role = "aut",
                       email = "tfjmp@seas.harvard.edu"),
+              person("Luis", "Perez", role = "aut",
+                      email = "luisperez@college.harvard.edu"),
               person("Margo", "Seltzer", role = "aut",
                       email = "margo@eecs.harvard.edu"))
-Author: Emery Boose [aut, cre], Barbara Lerner [aut], Luis Perez [aut], Elizabeth Fong [aut], Matthew Lau [aut], Thomas Pasquier [aut], Margo Seltzer [aut]
+Author: Emery Boose [aut, cre], Aaron Ellison [aut], Elizabeth Fong [aut], Matthew Lau [aut], Barbara Lerner [aut], Thomas Pasquier [aut], Luis Perez [aut], Margo Seltzer [aut]
 Maintainer: Matthew Lau <matthewklau@fas.harvard.edu>
 Depends: R (>= 3.4.1)
 Description: Defines functions that can be used to collect data provenance as
