@@ -17,7 +17,7 @@ Authors@R: c( person("Emery", "Boose", role = c("aut", "cre"),
               person("Margo", "Seltzer", role = "aut",
                       email = "margo@eecs.harvard.edu"))
 Author: Emery Boose [aut, cre], Barbara Lerner [aut], Luis Perez [aut], Elizabeth Fong [aut], Matthew Lau [aut], Thomas Pasquier [aut], Margo Seltzer [aut]
-Maintainer: Emery Boose <boose@fas.harvard.edu>
+Maintainer: Matthew Lau <glomus@gmail.com>
 Depends: R (>= 3.4.1)
 Description: Defines functions that can be used to collect data provenance as
   an R script executes.
