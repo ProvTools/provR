@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # ddg.function creates a procedure node of type Operation for procedures
 # implemented as functions in the original R script.  The function name and input

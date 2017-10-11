@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .ddg.parse.commands takes as input a list of parsed expressions from
 # an R script and creates DDG nodes for each command. If environ is an

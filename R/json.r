@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 .ddg.installedpackages.json <- function() {
     installed <- .ddg.installedpackages()

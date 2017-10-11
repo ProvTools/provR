@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .ddg.data.node.exists searches the data node table for a matching data node and
 # returns TRUE if a match is found. Otherwise it searches the initial environment

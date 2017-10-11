@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .as.character.no.exception wraps an exception handler around as.character The exception
 # handler captures the print output for the value and returns that instead.

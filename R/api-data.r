@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # ddg.data creates a data node for a single or complex data value.  If the value
 # is omitted, the argument passed in for dname is evaluated in the calling

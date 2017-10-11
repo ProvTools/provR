@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .format.time reformats time string. Input format is yyyy-mm-dd hh:mm:ss.
 # Output format is (yyyy-mm-ddThh.mm.ss).

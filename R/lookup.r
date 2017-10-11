@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .ddg.lookup.function.name gets the name of the calling function and returns it
 # as a string. pname may be passed as a string or a name. If NULL, pname is

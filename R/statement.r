@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # Needed to work with S4 classes.  Normally, this library is automatically
 # loaded.  However, it is not loaded when running non-interactively, as in our

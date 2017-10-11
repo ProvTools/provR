@@ -18,7 +18,7 @@
 #
 # This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
 #
-# Contact: Matthew Lau <glomus@gmail.com>
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # prov.capture executes a script (r.script.path).  r.script.path - the full path
 # to the R script.  If provided, a copy of the script will be saved with the DDG.
