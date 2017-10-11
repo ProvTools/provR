@@ -1,13 +1,8 @@
-provR: Capture data provenance in R
-===================================
+Data Provenance Capture in R
+============================
 
-Data provenance is a formalized, automatic way to record essential
-meta-data about a computation as it's being executed. This meta-data
-can provide key information for data science transparency,
-reproducibility and benefaction. This package is the workhorse that
-provides data provenance for users to analyze with other packages,
-like those found in the [ProvTools](https://github.com/ProvTools)
-ecosystem. 
+Collect meta-data from scripts written in the R programming language.
+
 
 
 Build Status
@@ -15,42 +10,47 @@ Build Status
 
  | Branch      |Status                                                                                                                                                                                  |
  |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
- | master      | [![Master Build Status](https://api.travis-ci.org/ProvTools/provR.svg?branch=master)](https://travis-ci.org/ProvTools/provR/branches)            |
- | dev | [![Development Build Status](https://api.travis-ci.org/ProvTools/provR.svg?branch=dev)](https://travis-ci.org/ProvTools/provR/branches)  |
+ | master      | [![Master Build Status](https://api.travis-ci.org/provtools/provr.svg?branch=master)](https://travis-ci.org/provtools/provr/branches)            |
+ | development | [![Development Build Status](https://api.travis-ci.org/provtools/provr.svg?branch=dev)](https://travis-ci.org/provtools/provr/branches)  |
 
 
-Install
-=======
 
-Install the most up-to-date version using the 
-[devtools](https://github.com/hadley/devtools) package:
+
+
+To Install
+==========
+
+Install directly from github using [devtools](https://github.com/hadley/devtools):
 
 ```R
 library(devtools)
-install_github("ProvTools/provR")
+install_github("ProvTools/ProvR")
 ```
 
-Capture Provenance
+
+Collect Provenance
 ==================
 
-Once loaded, the **provR** package provides a simple API to collect
-provenance from scripts:
+Once installed a libraried, you can now easily collect provenance from
+any script:
 
 ```R
-library(provR)
-prov.capture("example.R") ### NOT RUN
+library(ProvR)
+prov.capture("example.R")
 ```
 
-This runs the script "example.R" and records data provenance as the
-script is running. The provenance is stored in memory as a
+The provenance will be stored in memory as a JSON formatted string
+following the
 [W3C PROV-JSON](https://www.w3.org/Submission/2013/SUBM-prov-json-20130424)
-formatted string, which can be accessed with:
+standard format , which can be accessed like so:
+
 
 ```R
 prov.json()
 ```
 
-If you would like to write the provenance to disk, just run:
+You can write the provenance to your hard drive by doing the
+following:
 
 ```R
 prov.capture("example.R", save = TRUE)
@@ -58,7 +58,5 @@ prov.capture("example.R", save = TRUE)
 
 
 
-**provR** is a lightweight fork of [RDataTracker](https://github.com/End-to-end-provenance/RDataTracker).
 
-
-
+**ProvR** is a simplified fork of the [RDataTracker](https://github.com/End-to-end-provenance/RDataTracker)
