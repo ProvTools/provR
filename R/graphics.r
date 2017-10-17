@@ -1,13 +1,24 @@
-# Copyright (C) 2017 T. Pasquier M. Lau This program is free software: you can
-# redistribute it and/or modify it under the terms of the GNU General Public
-# License as published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.  This program is distributed in
-# the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-# the GNU General Public License for more details.  You should have received a
-# copy of the GNU General Public v2 License along with this program.  If not, see
-# <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>.  This package was
-# forked from <https://github.com/End-to-end-provenance/RDataTracker>
+# Copyright (C) 2017 Harvard University, Mount Holyoke College
+#
+# This file is part of ProvR.
+#
+# ProvR is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# ProvR is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ProvR; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+# This package was forked from <https://github.com/End-to-end-provenance/RDataTracker>
+#
+# Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
 # .ddg.supported.graphic - the sole purpose of this function is to verify that
 # the input file extension is a supported graphic type. Currently supported
