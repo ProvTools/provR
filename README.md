@@ -1,7 +1,7 @@
 Data Provenance Capture in R
 ============================
 
-Collect meta-data from scripts written in the R programming language. 
+Collect meta-data from scripts written in the R programming language.
 
 
 
@@ -10,8 +10,8 @@ Build Status
 
  | Branch      |Status                                                                                                                                                                                  |
  |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
- | master      | [![Master Build Status](https://api.travis-ci.org/provtools/provr.svg?branch=master)](https://travis-ci.org/provtools/provr/branches)            |
- | development | [![Development Build Status](https://api.travis-ci.org/provtools/provr.svg?branch=dev)](https://travis-ci.org/provtools/provr/branches)  |
+ | master      | [![Master Build Status](https://travis-ci.org/ProvTools/provR.svg?branch=master)](https://travis-ci.org/ProvTools/provR/branches)            |
+ | development | [![Development Build Status](https://travis-ci.org/ProvTools/provR.svg?branch=dev)](https://travis-ci.org/ProvTools/provR/branches)  |
 
 
 
@@ -60,5 +60,3 @@ prov.capture("example.R", save = TRUE)
 
 
 **ProvR** is a simplified fork of the [RDataTracker](https://github.com/End-to-end-provenance/RDataTracker)
-
-
