@@ -463,7 +463,7 @@ null.pos <- function() {
 
 .replace.source <- function(parsed.command) {
     script.name <- deparse(parsed.command[[2]])
-    parsed.command.txt <- paste("ddg.source(", script.name, ")", sep = "")
+    parsed.command.txt <- paste("prov.source(", script.name, ")", sep = "")
     return(parse(text = parsed.command.txt))
 }
 
