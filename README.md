@@ -53,7 +53,8 @@ You can write the provenance to your hard drive by doing the
 following:
 
 ```R
-prov.capture("example.R", save = TRUE)
+prov.capture("example.R")
+cat(prov.json(),file="./prov.json",sep="")
 ```
 
 

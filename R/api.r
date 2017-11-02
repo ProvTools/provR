@@ -31,25 +31,20 @@
 # if-statements are also annotated.  save (optional) - if TRUE information is
 # saved.
 #' @export
-prov.capture <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE,
+prov.capture <- function(r.script.path = NULL,
     enable.console = TRUE, annotate.inside.functions = FALSE, first.loop = 1, max.loops = 1,
-    max.snapshot.size = 10, debug = FALSE, save=FALSE) {
+    max.snapshot.size = 10, debug = FALSE) {
     # Initiate ddg.
-    prov.init(r.script.path, ddgdir, overwrite, enable.console, annotate.inside.functions,
-        first.loop, max.loops, max.snapshot.size, save)
+    prov.init(r.script.path, NULL, FALSE, enable.console, annotate.inside.functions,
+        first.loop, max.loops, max.snapshot.size, FALSE)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
         .ddg.set(".ddg.is.sourced", TRUE)
-    # Save debug files to debug directory.
-    if (debug && save)
-      .ddg.set("ddg.save.debug", save.debug)
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(
       if (!is.null(r.script.path))
-        prov.source(.ddg.get("ddg.r.script.path"), ddgdir = ddgdir, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
-      , finally = {
-        if(save && !is.null(r.script.path)) .ddg.save(r.script.path)
-      })
+        prov.source(.ddg.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
+    )
     invisible()
 }
 

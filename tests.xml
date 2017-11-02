@@ -164,11 +164,6 @@
                     replace="${script-file}"
                     flags="g"
     />
-    <replaceregexp  file="${dir}/sourceTest.r"
-                        match="\[DIR_DDG\]"
-                        replace="${FILE.basedir}/${dir}/ddg"
-                        flags="g"
-    />
 
     <!-- Execute the R Script (delete ddg directory first) -->
     <exec executable="Rscript" dir="${dir}" output="${FILE.basedir}/${out}" >

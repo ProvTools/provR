@@ -22,7 +22,7 @@ startTime <- Sys.time()
 invisible(force(startTime))
 
 # Run the script
-prov.capture("[SCRIPT]", "[DIR_DDG]", annotate.inside.functions=TRUE)
+prov.capture("[SCRIPT]", annotate.inside.functions=TRUE)
 cat(prov.json(),file="./prov.json",sep="")
 
 # Calculate total time of execution
