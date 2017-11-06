@@ -43,7 +43,6 @@
   When basicTest works, move on to "normal-tests" which will run the following
   test cases:
 
-  - basicTest
   - S4ObjectTest
   - ScopeTest
   - ReturnTest
@@ -165,14 +164,8 @@
                     replace="${script-file}"
                     flags="g"
     />
-    <replaceregexp  file="${dir}/sourceTest.r"
-                        match="\[DIR_DDG\]"
-                        replace="${FILE.basedir}/${dir}/ddg"
-                        flags="g"
-    />
 
     <!-- Execute the R Script (delete ddg directory first) -->
-    <delete dir="${dir}/ddg" quiet="true" />
     <exec executable="Rscript" dir="${dir}" output="${FILE.basedir}/${out}" >
       <arg line="sourceTest.r" />
     </exec>
@@ -185,19 +178,17 @@
     <!-- Make copy of output files (.out and ddg.json) as well as expected
          outputs for diff. Append .local to all files -->
     <copy todir="${local_dir}" overwrite="true">
-      <!-- Executed ddg.json file -->
-      <fileset file="${dir}/ddg/ddg.json" />
-      <!-- all .out files and files ending in _ddg.json in the test directory -->
+      <!-- all .out files and files ending in .json in the test directory -->
       <fileset dir="${dir}">
         <include name="*.out" />
-        <include name="*_ddg.json" />
+        <include name="*.json" />
       </fileset>
       <globmapper from="*" to="*.local"/>
     </copy>
 
     <!-- Delete all local environment information (except sourced scripts & installed packages) -->
     <replaceregexp flags="g">
-      <regexp pattern='(("rdt:architecture"|"rdt:operatingSystem"|"rdt:language"|"rdt:rVersion"|"rdt:script"|"rdt:scriptTimeStamp"|"rdt:workingDirectory"|"rdt:ddgDirectory"|"rdt:MD5hash"|"rdt:ddgTimeStamp"|"rdt:rdatatrackerVersion") : (.*)\r?\n(,\r?\n)?)' />
+      <regexp pattern='(("rdt:location"|"rdt:architecture"|"rdt:operatingSystem"|"rdt:language"|"rdt:rVersion"|"rdt:script"|"rdt:scriptTimeStamp"|"rdt:workingDirectory"|"rdt:ddgDirectory"|"rdt:MD5hash"|"rdt:ddgTimeStamp"|"rdt:rdatatrackerVersion") : (.*)\r?\n(,\r?\n)?)' />
       <substitution expression=""/>
       <fileset dir="${local_dir}">
         <patternset id="local_files">
@@ -414,8 +405,7 @@
 
     <!-- Make copy of ddg.json and the .out file into the expected folder -->
     <copy todir="${expected_dir}" overwrite="true">
-      <!-- Executed ddg.json file -->
-      <fileset file="${dir}/ddg/ddg.json" />
+      <fileset file="${dir}/ddg.json" />
       <fileset file="${FILE.basedir}/${out}" />
     </copy>
 
@@ -447,19 +437,6 @@
 
 
   <!--########################## Start Basic TESTS ##########################-->
-
-  	<target name="basicTest">
-  		<antcall target="run-regression-test">
-  			<param name="test-name" value="basicTest" />
-  		</antcall>
-  	</target>
-
-	<target name="update-basicTest">
-	  <antcall target="update-regression-expected">
-	  	<param name="test-name" value="basicTest" />
-	 	</antcall>
-	</target>
-
   	<target name="S4ObjectTest">
   		<antcall target="run-regression-test">
   			<param name="test-name" value="S4ObjectTest" />
@@ -640,11 +617,11 @@
 	 	</antcall>
 	</target>
 
-    <target name="RMarkdownTest">
-      <antcall target="run-regression-test-Rmd">
-        <param name="test-name" value="RMarkdownTest" />
-      </antcall>
-    </target>
+  <target name="RMarkdownTest">
+    <antcall target="run-regression-test-Rmd">
+      <param name="test-name" value="RMarkdownTest" />
+    </antcall>
+  </target>
 
 	<target name="update-RMarkdownTest">
     <antcall target="update-regression-expected">
@@ -653,10 +630,10 @@
 
   </target>
 
-	<target name="normal-tests" depends="basicTest, S4ObjectTest,
+	<target name="normal-tests" depends="S4ObjectTest,
 		ScopeTest, ReturnTest, OddParameterTest, FunctionAnnotationTest,
 		ControlConstructTest, WarningTest, PlotTest, Plot2Test, NoDevOffTest, DataTypeTest,
-		HigherOrderFuncTest, AssignmentOperatorsTest, RMarkdownTest, DDGStatementTest">
+		HigherOrderFuncTest, AssignmentOperatorsTest, DDGStatementTest">
 		<echo>
 
       ##############################################
