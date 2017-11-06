@@ -103,7 +103,7 @@
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
     # Record in data node table
-    .ddg.record.data(dtype, dname, "NothingForNow", orig.data,
+    .ddg.record.data(dtype, dname, "complex value", orig.data,
         dscope, from.env = from.env, dtime)
     if (.ddg.get("ddg.debug.lib"))
         print(paste("snapshot.node: ", dname))

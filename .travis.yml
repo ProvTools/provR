@@ -58,7 +58,6 @@ before_script:
   - sleep 3
 
 script:
-  - Rscript prepare.r
   - ./test.sh
 
 notifications:
