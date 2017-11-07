@@ -302,18 +302,22 @@
     }
     # Determine type for value, and save accordingly.
     if (.ddg.is.graphic(value))
-        .ddg.write.graphic(name, value, graphic.fext, scope = scope, from.env = from.env) else if (.ddg.is.simple(value))
-        .ddg.save.simple(name, value, scope = scope, from.env = from.env) else if (.ddg.is.csv(value))
-        .ddg.write.csv(name, value, scope = scope, from.env = from.env) else if (is.list(value) || is.array(value))
-        .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
-            from.env = from.env) else if (.ddg.is.object(value))
-        .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env) else if (.ddg.is.function(value))
-        .ddg.save.simple(name, "#ddg.function", scope = scope, from.env = from.env) else if (error)
-        stop("Unable to create data (snapshot) node. Non-Object value to", fname,
-            ".") else {
-        error.msg <- paste("Unable to create data (snapshot) node. Non-Object value to",
-            fname, ".")
-        .ddg.insert.error.message(error.msg)
+      .ddg.write.graphic(name, value, graphic.fext, scope = scope, from.env = from.env)
+    else if (.ddg.is.simple(value))
+      .ddg.save.simple(name, value, scope = scope, from.env = from.env)
+    else if (.ddg.is.csv(value))
+      .ddg.write.csv(name, value, scope = scope, from.env = from.env)
+    else if (is.list(value) || is.array(value))
+      .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
+    else if (.ddg.is.object(value))
+      .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
+    else if (.ddg.is.function(value))
+      .ddg.save.simple(name, "#ddg.function", scope = scope, from.env = from.env)
+    else if (error)
+      stop("Unable to create data (snapshot) node. Non-Object value to", fname, ".")
+    else {
+      error.msg <- paste("Unable to create data (snapshot) node. Non-Object value to", fname, ".")
+      .ddg.insert.error.message(error.msg)
     }
     invisible()
 }

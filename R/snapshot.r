@@ -50,7 +50,7 @@
 # dname - name of data node.  fext - file extension.  data - value of data node.
 # save.object (optional) - if TRUE, also save as an R object.  dscope (optional)
 # - scope of data node.
-.snapshot.node <- function(dname, fext, data, save.object = FALSE, dscope = NULL,
+.snapshot.node <- function(dname, fext, data, dscope = NULL,
     from.env = FALSE) {
     orig.data <- data
     # Determine if we should save the entire data
