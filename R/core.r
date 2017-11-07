@@ -254,8 +254,14 @@ ddg.MAX_HIST_LINES <- 2^14
     ddg.edges$ddg.from[ddg.enum] <- node1
     ddg.edges$ddg.to[ddg.enum] <- node2
     .ddg.set("ddg.edges", ddg.edges)
-    # Output control flow or data flow edge.
-    .ddg.output.edge(etype, node1, node2)
+
+    # Record in ddg.json
+    if (etype == "cf")
+      .ddg.json.control.edge(ddg.enum, node1, node2) 
+    else if (etype == "df.in")
+      .ddg.json.data.in.edge(ddg.enum, node1, node2)
+    else
+      .ddg.json.data.out.edge(ddg.enum, node1, node2)
 
     if (.ddg.get("ddg.debug.lib")) {
         if (etype == "cf")

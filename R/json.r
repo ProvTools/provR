@@ -179,13 +179,3 @@
     ddg.json <- .ddg.json.current()
     write(ddg.json, fileout)
 }
-
-# .ddg.output.edge outputs a control flow or data flow edge.
-.ddg.output.edge <- function(etype, node1, node2) {
-    # Get counter
-    ddg.enum <- .ddg.get("ddg.enum")
-    # Record in ddg.json
-    if (etype == "cf")
-        .ddg.json.control.edge(ddg.enum, node1, node2) else if (etype == "df.in")
-        .ddg.json.data.in.edge(ddg.enum, node1, node2) else .ddg.json.data.out.edge(ddg.enum, node1, node2)
-}
