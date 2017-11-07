@@ -254,9 +254,13 @@
     }
     ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
     .ddg.set("ddg.data.nodes", ddg.data.nodes)
-    # Output data node.
-    .ddg.output.data.node(dscriptpath, dtype, dname, dvalue2, val.type, dscope, from.env,
-        dhash, drw, dtime, dloc)
+
+    # Prepare values
+    if (from.env)
+        dname <- paste(dname, " [ENV]", sep = "")
+      # Output data node.
+    .ddg.json.data.node(ddg.dnum, dname, dvalue2, val.type, dtype, dscope, from.env,
+        dhash, dtime, dloc)
     if (.ddg.get("ddg.debug.lib")) {
         if (dtype != "File") {
             print(paste("Adding data node", ddg.dnum, "named", dname, "with scope",

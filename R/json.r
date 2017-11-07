@@ -197,36 +197,6 @@
     .ddg.json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
 }
 
-
-# .ddg.output.data.node outputs a data node.
-
-.ddg.output.data.node <- function(dscriptpath, dtype, dname, dvalue, val.type, dscope,
-    from.env, dhash, drw, dtime, dloc) {
-    # Get counter
-    ddg.dnum <- .ddg.get("ddg.dnum")
-    # Prepare values
-    if (from.env)
-        dname <- paste(dname, " [ENV]", sep = "")
-    if (dvalue != "")
-        value.str <- paste(" Value=\"", dvalue, "\"", sep = "") else value.str <- ""
-    if (dscriptpath != "")
-        dscriptpath.str <- paste(" Script Path=\"", dscriptpath, "\"", sep = "") else dscriptpath.str <- ""
-    if (val.type != "")
-        val.type.str <- paste(" ValType=\"", .ddg.replace.quotes(val.type), "\"",
-            sep = "") else val.type.str <- ""
-    if (dtime != "")
-        time.str <- paste(" Time=\"", dtime, "\"", sep = "") else time.str <- ""
-    if (dloc != "")
-        loc.str <- paste(" Location=\"", dloc, "\"", sep = "") else loc.str <- ""
-    if (dhash != "" && !is.na(dhash))
-        dhash.str <- paste(" MD5 Hash=\"", dhash, "\"", sep = "") else dhash.str <- ""
-    if (drw != "")
-        drw.str <- paste(" RW=\"", drw, "\"", sep = "") else drw.str <- ""
-    # Record in ddg.json
-    .ddg.json.data.node(ddg.dnum, dname, dvalue, val.type, dtype, dscope, from.env,
-        dhash, dtime, dloc)
-}
-
 # .ddg.output.edge outputs a control flow or data flow edge.
 
 .ddg.output.edge <- function(etype, node1, node2) {
