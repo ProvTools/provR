@@ -234,7 +234,7 @@
     .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
     pname <- gsub("\\\"", "\\\\\"", pname)
     # Output procedure node.
-    .ddg.json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
+    .json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
     if (.ddg.get("ddg.debug.lib")) {
         print(paste("Adding procedure node", ddg.pnum, "named", pname))
     }

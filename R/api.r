@@ -52,8 +52,8 @@ prov.capture <- function(r.script.path = NULL,
 # script.
 #' @export
 prov.json <- function() {
-    ddg.json <- .ddg.json.current()
-    return(ddg.json)
+    json <- .json.current()
+    return(json)
 }
 
 # ddg.annotate.on enables annotation for the specified functions. Functions not

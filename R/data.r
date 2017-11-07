@@ -259,7 +259,7 @@
     if (from.env)
         dname <- paste(dname, " [ENV]", sep = "")
       # Output data node.
-    .ddg.json.data.node(ddg.dnum, dname, dvalue2, val.type, dtype, dscope, from.env,
+    .json.data.node(ddg.dnum, dname, dvalue2, val.type, dtype, dscope, from.env,
         dhash, dtime, dloc)
     if (.ddg.get("ddg.debug.lib")) {
         if (dtype != "File") {

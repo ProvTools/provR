@@ -138,11 +138,11 @@
 
     # Record in ddg.json
     if (etype == "cf")
-      .ddg.json.control.edge(ddg.enum, node1, node2)
+      .json.control.edge(ddg.enum, node1, node2)
     else if (etype == "df.in")
-      .ddg.json.data.in.edge(ddg.enum, node1, node2)
+      .json.data.in.edge(ddg.enum, node1, node2)
     else
-      .ddg.json.data.out.edge(ddg.enum, node1, node2)
+      .json.data.out.edge(ddg.enum, node1, node2)
 
     if (.ddg.get("ddg.debug.lib")) {
         if (etype == "cf")
