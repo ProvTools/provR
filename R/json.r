@@ -173,7 +173,6 @@
 
 # .ddg.json.write writes the current ddg.json string to the file ddg.json on the
 # ddg directory.
-
 .ddg.json.write <- function() {
     fileout <- paste(.ddg.get("ddg.path"), "/ddg.json", sep = "")
     # if (interactive()) print(paste('Saving DDG in ', fileout))
@@ -181,24 +180,7 @@
     write(ddg.json, fileout)
 }
 
-# .ddg.output.procedure.node outputs a procedure node.
-
-.ddg.output.procedure.node <- function(ptype, pname, pvalue, auto.created, ptime,
-    snum, pos) {
-    # Get counter
-    ddg.pnum <- .ddg.get("ddg.pnum")
-    # Prepare values
-    pname <- gsub("\\\"", "\\\\\"", pname)
-    if (pvalue != "") {
-        pvalue <- gsub("\\\"", "\\\\\"", pvalue)
-        value.str <- paste(" Value=\"", pvalue, "\"", sep = "")
-    } else value.str <- ""
-    # Record in ddg.json
-    .ddg.json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
-}
-
 # .ddg.output.edge outputs a control flow or data flow edge.
-
 .ddg.output.edge <- function(etype, node1, node2) {
     # Get counter
     ddg.enum <- .ddg.get("ddg.enum")
