@@ -170,12 +170,3 @@
         wasGeneratedBy, "},\n", "\"used\":{\n", used, "}\n", "}", sep = "")
     return(ddg.json)
 }
-
-# .ddg.json.write writes the current ddg.json string to the file ddg.json on the
-# ddg directory.
-.ddg.json.write <- function() {
-    fileout <- paste(.ddg.get("ddg.path"), "/ddg.json", sep = "")
-    # if (interactive()) print(paste('Saving DDG in ', fileout))
-    ddg.json <- .ddg.json.current()
-    write(ddg.json, fileout)
-}
