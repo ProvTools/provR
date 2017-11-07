@@ -38,8 +38,7 @@
 # resulting snapshot.  Addition : overwrite (optional) - default TRUE, if FALSE,
 # generates timestamp for ddg directory
 prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
-    annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10,
-    save = TRUE) {
+    annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10) {
     .ddg.init.tables()
     # Setting the path for the ddg
     if (is.null(ddgdir)) {
@@ -52,28 +51,8 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
         }
     } else ddg.path <- normalizePath(ddgdir, winslash = "/", mustWork = FALSE)
 
-    if (save) {
-        .ddg.set("ddg.save.to.disk", TRUE)
-        # Overwrite default is
-        if (!overwrite) {
-            no.overwrite.folder <- paste(ddg.path, "_timestamps", sep = "")
-            if (!dir.exists(no.overwrite.folder)) {
-                dir.create(no.overwrite.folder)
-            }
-            ddg.path <- paste(no.overwrite.folder, "/", basename(tools::file_path_sans_ext(r.script.path)),
-                "_ddg_", .format.time(Sys.time()), sep = "")
-        }
-        .ddg.set("ddg.path", ddg.path)
-        # Remove files from DDG directory
-        .ddg.delete.save()
-        # Create DDG directories
-        .ddg.init.environ()
-        # Save copy of original script.
-        file.copy(r.script.path, paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(r.script.path),
-            sep = ""))
-    } else {
-        .ddg.set("ddg.save.to.disk", FALSE)
-    }
+
+    .ddg.set("ddg.save.to.disk", FALSE)
     # Reset r.script.path if RMarkdown file
     if (!is.null(r.script.path) && tools::file_ext(r.script.path) == "Rmd") {
         output.path <- paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
@@ -101,17 +80,6 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     .ddg.set("prev.device", dev.cur())
     .ddg.set("possible.graphics.files.open", NULL)
     .ddg.set("ddg.open.devices", vector())
-    if (interactive() && .ddg.get(".ddg.enable.console") && save) {
-        ddg.history.file <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/.ddghistory", sep = "")
-        .ddg.set(".ddg.history.file", ddg.history.file)
-        # Empty file if it already exists, do the same with tmp file.
-        file.create(ddg.history.file, showWarnings = FALSE)
-        # One timestamp keeps track of last .ddg.save (the default).
-        .write.timestamp.to.history()
-        # Save the history if the platform supports it.
-        tryCatch(savehistory(ddg.history.file), error = function(e) {
-        })
-    }
     # Store value of annotate.inside.
     .ddg.set("ddg.annotate.inside", annotate.inside.functions)
     # Store maximum number of loops to annotate.
