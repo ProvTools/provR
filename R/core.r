@@ -230,52 +230,9 @@ ddg.MAX_HIST_LINES <- 2^14
     return(NULL)
 }
 
-
-# .ddg.record.edge records a control flow edge or a data flow edge in the edges
-# table.
-
-# etype - type of edge node1 - name of first node node1 - name of second node
-
-.ddg.record.edge <- function(etype, node1, node2) {
-    # Increment edge counter.
-    .ddg.inc("ddg.enum")
-    ddg.enum <- .ddg.get("ddg.enum")
-    # If the table is full, make it bigger.
-    ddg.edges <- .ddg.get("ddg.edges")
-    if (nrow(ddg.edges) < ddg.enum) {
-        size = 100
-        new.rows <- data.frame(ddg.num = numeric(size), ddg.type = character(size),
-            ddg.from = character(size), ddg.to = character(size), stringsAsFactors = FALSE)
-        .ddg.add.rows("ddg.edges", new.rows)
-        ddg.edges <- .ddg.get("ddg.edges")
-    }
-    ddg.edges$ddg.num[ddg.enum] <- ddg.enum
-    ddg.edges$ddg.type[ddg.enum] <- etype
-    ddg.edges$ddg.from[ddg.enum] <- node1
-    ddg.edges$ddg.to[ddg.enum] <- node2
-    .ddg.set("ddg.edges", ddg.edges)
-
-    # Record in ddg.json
-    if (etype == "cf")
-      .ddg.json.control.edge(ddg.enum, node1, node2) 
-    else if (etype == "df.in")
-      .ddg.json.data.in.edge(ddg.enum, node1, node2)
-    else
-      .ddg.json.data.out.edge(ddg.enum, node1, node2)
-
-    if (.ddg.get("ddg.debug.lib")) {
-        if (etype == "cf")
-            etype.long <- "control flow" else if (etype == "df.in")
-            etype.long <- "data flow in" else etype.long <- "data flow out"
-        print(paste("Adding", etype.long, "edge", ddg.enum, "for", node1, "to", node2))
-    }
-}
-
 # .ddg.is.nonlocal.assign returns TRUE if the object passed is an expression
 # object containing a non-local assignment.
-
 # expr - input expression.
-
 .ddg.is.nonlocal.assign <- function(expr) {
     # <<- or ->> means that the assignment is non-local
     if (is.call(expr) && identical(expr[[1]], as.name("<<-"))) {
