@@ -37,28 +37,6 @@
     paste("[[", positions, "]]", values, collapse = "\n")
 }
 
-# .graphic.snapshot provides factoring of snapshot code.
-# fext - file extension.  dpfile - path and name of file.
-.graphic.snapshot <- function(fext, dpfile) {
-    # pdfs require a separate procedure.
-    if (fext == "pdf")
-        dev.copy2pdf(file = dpfile) else {
-        # At the moment, all other graphic types can be done by constructing a similar
-        # function.
-        # If jpg, we need to change it to jpeg for the function call.
-        fext = ifelse(fext == "jpg", "jpeg", fext)
-        # First, we create a string, then convert it to an actual R expression and use
-        # that as the function.
-        strFun <- paste(fext, "(filename=dpfile, width=800, height=500)", sep = "")
-        parseFun <- function() {
-            eval(parse(text = strFun))
-        }
-        dev.copy(parseFun)
-        # Turn it off (this switches back to prev device).
-        dev.off()
-    }
-}
-
 # .snapshot.node creates a data node of type Snapshot. Snapshots are used for
 # complex data values not written to file by the main script. The contents of
 # data are written to the file dname.fext in the DDG directory. Snapshots are
@@ -72,7 +50,7 @@
 # dname - name of data node.  fext - file extension.  data - value of data node.
 # save.object (optional) - if TRUE, also save as an R object.  dscope (optional)
 # - scope of data node.
-.snapshot.node <- function(dname, fext, data, save.object = FALSE, dscope = NULL,
+.snapshot.node <- function(dname, fext, data, dscope = NULL,
     from.env = FALSE) {
     orig.data <- data
     # Determine if we should save the entire data
@@ -119,55 +97,14 @@
             data <- summary(data)
         })
     }
-    # Default file extensions.
-    dfile <- if (fext == "" || is.null(fext))
-        paste(.ddg.get("ddg.dnum") + 1, "-", snapname, sep = "") else paste(.ddg.get("ddg.dnum") + 1, "-", snapname, ".", fext, sep = "")
-    # Get path plus file name.
-    dpfile <- paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
-    if (.ddg.get("ddg.debug.lib"))
-        print(paste("Saving snapshot in ", dpfile))
 
-    if(.ddg.get("ddg.save.to.disk")) {
-      # Write to file .
-      if (fext == "csv") {
-        write.csv(data, dpfile, row.names = FALSE)
-      } else if (fext == "xml") {
-          saveXML(data, dpfile)
-      } else if (.ddg.supported.graphic(fext)) {
-          # Capture graphic.  Write out RData (this is old code, not sure if we need it).
-          .graphic.snapshot(fext, dpfile)
-      } else if (fext == "RData") {
-          file.rename(paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", dname, sep = ""), dpfile)
-      } else if (fext == "txt" || fext == "") {
-          # Write out text file for txt or empty fext.
-          file.create(dpfile, showWarnings = FALSE)
-          if (is.list(data) && length(data) > 0) {
-              list.as.string <- .convert.list.to.string(data)
-              write(list.as.string, dpfile)
-          } else {
-              tryCatch(write(as.character(data), dpfile), error = function(e) {
-                  capture.output(data, file = dpfile)
-              })
-          }
-      } else {
-          # Write out data node object if the file format is unsupported.
-          error.msg <- paste("File extension", fext, "not recognized")
-          .ddg.insert.error.message(error.msg)
-          return(NULL)
-      }
-    }
-    # check to see if we want to save the object.
-    if (save.object && full.snapshot && .ddg.get("ddg.save.to.disk"))
-        save(data, file = paste(paste(.ddg.get("ddg.path"), "/data", sep = ""), "/", .ddg.get("ddg.dnum") + 1, "-", snapname,
-            ".RObject", sep = ""), ascii = TRUE)
     dtime <- .format.time(Sys.time())
     # Get scope if necessary.
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
     # Record in data node table
-    .ddg.record.data(dtype, dname, paste("data", dfile, sep = "/"), orig.data,
+    .ddg.record.data(dtype, dname, "complex value", orig.data,
         dscope, from.env = from.env, dtime)
     if (.ddg.get("ddg.debug.lib"))
         print(paste("snapshot.node: ", dname))
-    return(dpfile)
 }

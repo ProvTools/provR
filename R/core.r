@@ -230,46 +230,9 @@ ddg.MAX_HIST_LINES <- 2^14
     return(NULL)
 }
 
-
-# .ddg.record.edge records a control flow edge or a data flow edge in the edges
-# table.
-
-# etype - type of edge node1 - name of first node node1 - name of second node
-
-.ddg.record.edge <- function(etype, node1, node2) {
-    # Increment edge counter.
-    .ddg.inc("ddg.enum")
-    ddg.enum <- .ddg.get("ddg.enum")
-    # If the table is full, make it bigger.
-    ddg.edges <- .ddg.get("ddg.edges")
-    if (nrow(ddg.edges) < ddg.enum) {
-        size = 100
-        new.rows <- data.frame(ddg.num = numeric(size), ddg.type = character(size),
-            ddg.from = character(size), ddg.to = character(size), stringsAsFactors = FALSE)
-        .ddg.add.rows("ddg.edges", new.rows)
-        ddg.edges <- .ddg.get("ddg.edges")
-    }
-    ddg.edges$ddg.num[ddg.enum] <- ddg.enum
-    ddg.edges$ddg.type[ddg.enum] <- etype
-    ddg.edges$ddg.from[ddg.enum] <- node1
-    ddg.edges$ddg.to[ddg.enum] <- node2
-    .ddg.set("ddg.edges", ddg.edges)
-    # Output control flow or data flow edge.
-    .ddg.output.edge(etype, node1, node2)
-
-    if (.ddg.get("ddg.debug.lib")) {
-        if (etype == "cf")
-            etype.long <- "control flow" else if (etype == "df.in")
-            etype.long <- "data flow in" else etype.long <- "data flow out"
-        print(paste("Adding", etype.long, "edge", ddg.enum, "for", node1, "to", node2))
-    }
-}
-
 # .ddg.is.nonlocal.assign returns TRUE if the object passed is an expression
 # object containing a non-local assignment.
-
 # expr - input expression.
-
 .ddg.is.nonlocal.assign <- function(expr) {
     # <<- or ->> means that the assignment is non-local
     if (is.call(expr) && identical(expr[[1]], as.name("<<-"))) {
@@ -1430,71 +1393,7 @@ ddg.should.run.annotated <- function(func.name) {
     return(.ddg.get("ddg.annotate.inside"))
 }
 
-# .ddg.save inserts attribute information and the number of procedure steps at the
-# top of the DDG. It writes the DDG and the procedure nodes, data nodes, and
-# function return tables to the DDG directory.
-
-# r.script.path (optional) - Path to the R script.  save.debug (optional) - If
-# TRUE, save debug files to debug directory.  Used in console mode.  quit
-# (optional) - If TRUE, remove all DDG files from memory.  Unlike ddg.run, this
-# is set to false as default since it will generally be called internally and by
-# tests, as opposed to by the user.
-
-.ddg.save <- function(r.script.path = NULL, save.debug = FALSE, quit = FALSE) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
-        return(invisible())
-    if (interactive() && .ddg.get(".ddg.enable.console")) {
-        # Get the final commands
-        .ddg.console.node()
-    }
-    # If there is a display device open, grab what is on the display
-    if (length(dev.list()) >= 1) {
-        tryCatch(.ddg.capture.graphics(basename(.ddg.get("ddg.r.script.path")), called.from.save = TRUE),
-            error = function(e) print(e))
-    }
-    # Save ddg.json to file.
-    .ddg.json.write()
-    if (interactive())
-        print(paste("Saving ddg.json in ", .ddg.get("ddg.path"), sep = ""))
-    # Save sourced scripts (if any). First row is main script.
-    ddg.sourced.scripts <- .ddg.get(".ddg.sourced.scripts")
-    if (!is.null(ddg.sourced.scripts)) {
-        if (nrow(ddg.sourced.scripts) > 1) {
-            for (i in 1:nrow(ddg.sourced.scripts)) {
-                sname <- ddg.sourced.scripts[i, "sname"]
-                if (.ddg.get("ddg.save.to.disk")) {
-                  file.copy(sname, paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), basename(sname), sep = "/"))
-                }
-            }
-        }
-    }
-    # Save debug files to debug directory.
-    if (save.debug | .ddg.get("ddg.save.debug")) {
-        .ddg.save.debug.files()
-    }
-    # Clear DDGStatements from ddg environment.
-    .ddg.set("ddg.statement.num", 0)
-    .ddg.set("ddg.statements", list())
-    # Clear loop information from ddg environment.
-    .ddg.set("ddg.loop.num", 0)
-    .ddg.set("ddg.loops", list())
-    # By convention, this is the final call to ddg.save.
-    if (quit) {
-        # Restore history settings.
-        if (.ddg.is.set("ddg.original.hist.size"))
-            Sys.setenv(R_HISTSIZE = .ddg.get("ddg.original.hist.size"))
-        # Delete temporary files.
-        .ddg.delete.temp()
-        # Capture current graphics device.
-        .ddg.auto.graphic.node(dev.to.capture = dev.cur)
-        # Shut down the DDG.
-        .ddg.clear()
-    }
-    invisible()
-}
-
 # .ddg.console.off turns off the console mode of DDG construction.
-
 .ddg.console.off <- function() {
     if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())

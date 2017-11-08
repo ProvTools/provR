@@ -178,8 +178,7 @@
         tryCatch({
             .snapshot.node(name, "jpeg", NULL, dscope = scope, from.env = from.env)
         }, error = function(e) {
-            .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
-                from.env = from.env)
+            .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
         })
     })
 }

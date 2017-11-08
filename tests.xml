@@ -294,14 +294,14 @@
 
     <!-- Exectute diff on .json files -->
     <echo>
-      Diff of (1) ddg.json.local and (2) ${ddg_name}.local:
+      Diff of (1) prov.json.local and (2) ${ddg_name}.local:
     </echo>
 
     <exec executable="diff">
-      <arg line="--strip-trailing-cr ${local_dir}/ddg.json.local ${local_dir}/${ddg_name}.local" />
+      <arg line="--strip-trailing-cr ${local_dir}/prov.json.local ${local_dir}/${ddg_name}.local" />
     </exec>
 
-    <echo>cmp (1) ddg.json.local and (2) ${ddg_name}.local:</echo>
+    <echo>cmp (1) prov.json.local and (2) ${ddg_name}.local:</echo>
 
     <exec executable="cmp" failonerror="false" resultproperty="return.code.out">
       <arg value="${local_dir}/${out_name}.local" />
@@ -309,7 +309,7 @@
     </exec>
 
     <exec executable="cmp" failonerror="false" resultproperty="return.code.json">
-      <arg value="${local_dir}/ddg.json.local" />
+      <arg value="${local_dir}/prov.json.local" />
       <arg value="${local_dir}/${ddg_name}.local" />
     </exec>
 
@@ -405,7 +405,7 @@
 
     <!-- Make copy of ddg.json and the .out file into the expected folder -->
     <copy todir="${expected_dir}" overwrite="true">
-      <fileset file="${dir}/ddg.json" />
+      <fileset file="${dir}/prov.json" />
       <fileset file="${FILE.basedir}/${out}" />
     </copy>
 
@@ -417,7 +417,7 @@
     </replaceregexp>
 
     <!-- Move the edited files up to become the new expected results -->
-    <copy file="${expected_dir}/ddg.json" tofile="${expected_ddg}" overwrite="true" />
+    <copy file="${expected_dir}/prov.json" tofile="${expected_ddg}" overwrite="true" />
     <basename property="out_name" file="${out}" />
     <copy file="${expected_dir}/${out_name}" tofile="${expected_out}" overwrite="true" />
   </target>
