@@ -254,13 +254,13 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
     if (length(exprs) > 0) {
         # Turn on the console if forced to, keep track of previous setting, parse
         # previous commands if necessary.
-        prev.on <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
+        prev.on <- (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
         if (prev.on && interactive())
             .ddg.console.node()
         if (force.console)
             .ddg.console.on()
         # Let library know that we are sourcing a file.
-        prev.source <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.ddg.is.set("from.source") && .ddg.get("from.source"))
+        prev.source <- (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.global.is.set("from.source") && .ddg.get("from.source"))
         # Initialize the tables for ddg.capture.
         .global.set("from.source", TRUE)
         # Parse the commands into a console node.

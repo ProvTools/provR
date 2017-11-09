@@ -58,7 +58,7 @@
 
 .ddg.save.history <- function(hist.file) {
     # USED TO STORE ENTIRE HISTORY IN SEP. FILE.  Write history out to temporary file
-    if (.ddg.is.set(".ddg.history.file") && is.character(.ddg.get(".ddg.history.file")) &&
+    if (.global.is.set(".ddg.history.file") && is.character(.ddg.get(".ddg.history.file")) &&
         .ddg.get(".ddg.history.file") == hist.file) {
         savehistory(hist.file)
     }

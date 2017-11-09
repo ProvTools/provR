@@ -36,7 +36,7 @@
     if (.ddg.get(".ddg.enable.console")) {
         # Capture graphic output of previous procedure node.  Comment out this
         # function??? .ddg.auto.graphic.node()
-        if (!console && !(.ddg.is.set("from.source") && .ddg.get("from.source")) && interactive()) {
+        if (!console && !(.global.is.set("from.source") && .ddg.get("from.source")) && interactive()) {
             .ddg.console.node()
         }
     }

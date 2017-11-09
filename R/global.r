@@ -34,12 +34,12 @@
     return(invisible(.ddg.env[[var]]))
 }
 
-.ddg.is.set <- function(var) {
+.global.is.set <- function(var) {
     return(exists(var, envir = .ddg.env))
 }
 
 .ddg.get <- function(var) {
-    if (!.ddg.is.set(var)) {
+    if (!.global.is.set(var)) {
         error.msg <- paste("No binding for", var, ". DDG may be incorrect!")
         .ddg.insert.error.message(error.msg)
         return(NULL)
@@ -164,13 +164,13 @@
     .global.set("ddg.wasGeneratedBy", "")
     .global.set("ddg.used", "")
     # Used to control debugging output.  If already defined, don't change its value.
-    if (!.ddg.is.set("ddg.debug.lib"))
+    if (!.global.is.set("ddg.debug.lib"))
         .global.set("ddg.debug.lib", FALSE)
     # Used to control script debugging.
     .global.set("ddg.break", FALSE)
     .global.set("ddg.break.ignore", FALSE)
     # Used to control sourcing. If already defined, don't change its value.
-    if (!.ddg.is.set("from.source"))
+    if (!.global.is.set("from.source"))
         .global.set("from.source", FALSE)
     # Set current number of checkpoints.
     .global.set("ddg.checkpoint.num", 0)
@@ -224,7 +224,7 @@
     # Loop annotation
     .global.set("ddg.loop.annotate", TRUE)
     # Set max.snapshot.size for console mode.
-    if (!.ddg.is.set("ddg.max.snapshot.size")) {
+    if (!.global.is.set("ddg.max.snapshot.size")) {
         .global.set("ddg.max.snapshot.size", 100)
     }
     # List of files read and written

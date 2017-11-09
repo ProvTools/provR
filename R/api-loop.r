@@ -43,7 +43,7 @@ ddg.loop.annotate.off <- function() {
 }
 
 ddg.set.inside.loop <- function() {
-    if (!.ddg.is.set("ddg.inside.loop")) {
+    if (!.global.is.set("ddg.inside.loop")) {
         .global.set("ddg.inside.loop", 0)
     } else {
         .global.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") + 1)

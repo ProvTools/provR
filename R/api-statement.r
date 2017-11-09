@@ -35,7 +35,7 @@
 
 ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception = NULL,
     outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.inc(".ddg.func.depth")
     pname <- NULL
@@ -73,7 +73,7 @@ ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception =
 ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NULL,
     outs.exception = NULL, outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
 
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     .proc.node("Operation", pname, pname)
@@ -136,7 +136,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
 # as a name. It can be omitted if ddg.start is called by a function, in which
 # case the name of the function will be used.
 ddg.start <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     # check for NULL.
@@ -163,7 +163,7 @@ ddg.start <- function(pname = NULL) {
 # a name. It can be omitted if ddg.finish is called by a function, in which case
 # the name of the function will be used.
 ddg.finish <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     # check for NULL.
@@ -190,7 +190,7 @@ ddg.finish <- function(pname = NULL) {
 # are created for the assignment.
 # expr - the value returned by the function.
 ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(expr)
     dev.file <- NULL
     parsed.stmt <- NULL
@@ -359,10 +359,10 @@ ddg.eval <- function(statement, cmd.func = NULL) {
         print(paste("ddg.eval: statement =", statement))
     frame.num <- .ddg.get.frame.number(sys.calls())
     env <- sys.frame(frame.num)
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized"))) {
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized"))) {
         return(eval(parsed.statement, env))
     }
-    if (interactive() && .ddg.get(".ddg.enable.console") && !(.ddg.is.set("from.source") && .ddg.get("from.source"))) {
+    if (interactive() && .ddg.get(".ddg.enable.console") && !(.global.is.set("from.source") && .ddg.get("from.source"))) {
         .ddg.console.node()
     }
 

@@ -30,7 +30,7 @@
 # (optional) - the file extention to be used for saving the variable if it is a
 # graphical output. Otherwise ignored. Default is jpeg.
 ddg.data <- function(dname, dvalue = NULL, graphic.fext = "jpeg") {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Look up the value if one was not provided.
     env <- parent.frame()
@@ -50,7 +50,7 @@ ddg.data <- function(dname, dvalue = NULL, graphic.fext = "jpeg") {
 # environment to determine the value.
 
 ddg.exception <- function(dname, dvalue = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Look up the value if one was not provided.
     env <- parent.frame()
@@ -77,7 +77,7 @@ ddg.exception <- function(dname, dvalue = NULL) {
 # calling environment to determine the value.
 
 ddg.url <- function(dname, dvalue = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Look up the value if one was not provided.
     env <- parent.frame()
@@ -101,7 +101,7 @@ ddg.url <- function(dname, dvalue = NULL) {
 # omitted, the filename, minus the directory path, is used as the label.
 
 ddg.file <- function(filename, dname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     scope <- if (!is.null(dname))
         .ddg.get.scope(dname) else NULL
@@ -118,7 +118,7 @@ ddg.file <- function(filename, dname = NULL) {
 # will be used.
 
 ddg.data.in <- function(dname, pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
 
@@ -170,7 +170,7 @@ ddg.data.in <- function(dname, pname = NULL) {
 # graphic.
 
 ddg.data.out <- function(dname, dvalue = NULL, pname = NULL, graphic.fext = "jpeg") {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # If no value is provided, get value in calling environment.
     env <- parent.frame()
@@ -197,7 +197,7 @@ ddg.data.out <- function(dname, dvalue = NULL, pname = NULL, graphic.fext = "jpe
 # function will be used.
 
 ddg.exception.out <- function(dname, dvalue = NULL, pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # If no value is provided, get value in calling environment.
     env <- parent.frame()
@@ -221,7 +221,7 @@ ddg.exception.out <- function(dname, dvalue = NULL, pname = NULL) {
 # in which case the name of the function will be used.
 
 ddg.url.out <- function(dname, dvalue = NULL, pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # If no value is provided, get value in calling environment.
     env <- parent.frame()
@@ -254,7 +254,7 @@ ddg.url.out <- function(dname, dvalue = NULL, pname = NULL) {
 # used.
 
 ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     if (is.null(dname)) {
         dname <- basename(filename)
@@ -283,7 +283,7 @@ ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
 # be used for the captured image file. If omitted, this value defaults to jpeg.
 
 ddg.graphic.out <- function(dname, pname = NULL, graphic.fext = "jpeg") {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return
     # Write out the graphic.
     .ddg.write.graphic(dname, "Graphical Plot. Not saved in script.", graphic.fext)

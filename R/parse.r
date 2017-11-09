@@ -68,12 +68,12 @@
 
 .ddg.close.last.command.node <- function(env, called = ".ddg.parse.commands", initial = FALSE) {
     # Get both the last command and new commands.
-    .ddg.last.cmd <- if (.ddg.is.set(".ddg.last.cmd")) {
+    .ddg.last.cmd <- if (.global.is.set(".ddg.last.cmd")) {
         .ddg.get(".ddg.last.cmd")
     } else {
         NULL
     }
-    .ddg.possible.last.cmd <- if (.ddg.is.set(".ddg.possible.last.cmd")) {
+    .ddg.possible.last.cmd <- if (.global.is.set(".ddg.possible.last.cmd")) {
         .ddg.get(".ddg.possible.last.cmd")
     } else {
         NULL
@@ -123,7 +123,7 @@
   inside.func <- (.ddg.get(".ddg.func.depth") > 0)
   # Attempt to close the previous collapsible command node if a ddg
   # exists
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
   # Get the last command in the new commands and check to see if
   # we need to create a new .ddg.last.cmd node for future reference.
   if (!inside.func) {
@@ -140,7 +140,7 @@
   # command in the history or execution.
   named.node.set <- FALSE
   start.node.created <- ""
-  if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
+  if (num.cmds > 0 && (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
     .add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
     start.node.created <- node.name
@@ -174,7 +174,7 @@
     for (i in 1:length(cmds)) {
       cmd <- cmds[[i]]
       if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
-      if ((.ddg.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
+      if ((.global.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
         }
@@ -198,7 +198,7 @@
       # a procedure node is created for each statement inside a control
       # block, so there is no need to create additional nodes for the
       # control statement itself.
-      create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.get("ddg.loop.annotate") && ddg.max.loops() > 0)
+      create <- !cmd@isDdgFunc && (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.get("ddg.loop.annotate") && ddg.max.loops() > 0)
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
       # If the command does not match one of the ignored patterns.
@@ -326,7 +326,7 @@
         # node). Matching a last command means that the last command
         # is set, is not NULL, and is equal to the current command.
         last.proc.node.created <-
-            if (.ddg.is.set (".ddg.last.proc.node.created")).ddg.get(".ddg.last.proc.node.created")
+            if (.global.is.set (".ddg.last.proc.node.created")).ddg.get(".ddg.last.proc.node.created")
             else ""
         create.procedure <- create && (!cur.cmd.closed || !named.node.set) && !start.finish.created  && !grepl("^ddg.source", cmd@text)
         # We want to create a procedure node for this command.
@@ -338,7 +338,7 @@
           .ddg.proc2proc()
           # If a warning occurred when cmd was evaluated,
           # attach a warning node
-          if ((.ddg.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))) {
+          if ((.global.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))) {
             .ddg.record.warning()
           }
           # Store information on the last procedure node in this
@@ -398,7 +398,7 @@
   # Close the console block if we processed anything and the DDG
   # is initialized (also, save).
   #
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
       .add.abstract.node("Finish", node.name = node.name, env=environ)
   }
   # Open up a new collapsible node in case we need to parse
@@ -409,7 +409,7 @@
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
   ret.value <- .ddg.get (".ddg.last.R.value")
   return(ret.value)
 }
@@ -491,7 +491,7 @@
   inside.func <- (.ddg.get(".ddg.func.depth") > 0)
   # Attempt to close the previous collapsible command node if a ddg
   # exists
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func) .ddg.close.last.command.node(environ, initial=TRUE)
   # Get the last command in the new commands and check to see if
   # we need to create a new .ddg.last.cmd node for future reference.
   if (!inside.func) {
@@ -508,7 +508,7 @@
   # command in the history or execution.
   named.node.set <- FALSE
   start.node.created <- ""
-  if (num.cmds > 0 && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
+  if (num.cmds > 0 && (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !inside.func && !called.from.ddg.eval) {
     .add.abstract.node("Start", node.name = node.name, env = environ)
     named.node.set <- TRUE
     start.node.created <- node.name
@@ -542,7 +542,7 @@
     for (i in 1:length(cmds)) {
       cmd <- cmds[[i]]
       if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Processing", cmd@abbrev))
-      if ((.ddg.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
+      if ((.global.is.set("from.source") && .ddg.get("from.source")) && grepl("^ddg.eval", cmd@text) && .ddg.get(".ddg.enable.console")) {
         if (is.null(.ddg.last.cmd)) {
           .ddg.last.cmd <- cmd
         }
@@ -566,7 +566,7 @@
       # a procedure node is created for each statement inside a control
       # block, so there is no need to create additional nodes for the
       # control statement itself.
-      create <- !cmd@isDdgFunc && (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.get("ddg.loop.annotate") && ddg.max.loops() > 0)
+      create <- !cmd@isDdgFunc && (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console") && !(control.statement && .ddg.get("ddg.loop.annotate") && ddg.max.loops() > 0)
       start.finish.created <- FALSE
       cur.cmd.closed <- FALSE
       # If the command does not match one of the ignored patterns.
@@ -695,7 +695,7 @@
         # node). Matching a last command means that the last command
         # is set, is not NULL, and is equal to the current command.
         last.proc.node.created <-
-            if (.ddg.is.set (".ddg.last.proc.node.created")).ddg.get(".ddg.last.proc.node.created")
+            if (.global.is.set (".ddg.last.proc.node.created")).ddg.get(".ddg.last.proc.node.created")
             else ""
         create.procedure <- create && (!cur.cmd.closed || !named.node.set) && !start.finish.created  && !grepl("^ddg.source", cmd@text)
         # We want to create a procedure node for this command.
@@ -707,7 +707,7 @@
           .ddg.proc2proc()
           # If a warning occurred when cmd was evaluated,
           # attach a warning node
-          if ((.ddg.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))) {
+          if ((.global.is.set(".ddg.warning") && !is.na(.ddg.get(".ddg.warning")))) {
             .ddg.record.warning()
           }
           # Store information on the last procedure node in this
@@ -767,7 +767,7 @@
   # Close the console block if we processed anything and the DDG
   # is initialized (also, save).
   #
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && named.node.set && !inside.func) {
       .add.abstract.node("Finish", node.name = node.name, env=environ)
   }
   # Open up a new collapsible node in case we need to parse
@@ -778,7 +778,7 @@
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.
-  if ((.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
+  if ((.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && !.ddg.get(".ddg.is.sourced")) .write.timestamp.to.history()
   ret.value <- .ddg.get (".ddg.last.R.value")
   return(ret.value)
 }
@@ -786,7 +786,7 @@
 # .ddg.console.node creates a console node.
 .ddg.console.node <- function() {
     # Don't do anything if sourcing, because history isn't necessary in this case.
-    if ((.ddg.is.set("from.source") && .ddg.get("from.source")))
+    if ((.global.is.set("from.source") && .ddg.get("from.source")))
         return(NULL)
     ddg.history.file = .ddg.get(".ddg.history.file")
     ddg.history.timestamp = .ddg.get(".ddg.history.timestamp")

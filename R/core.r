@@ -794,7 +794,7 @@ ddg.MAX_HIST_LINES <- 2^14
 
 .ddg.delete.temp <- function() {
     # Delete the temporary history file if we made it.
-    if (.ddg.is.set("ddg.history.file"))
+    if (.global.is.set("ddg.history.file"))
         unlink(.ddg.get("ddg.history.file"))
     # Clear the environment.
     .ddg.env <- new.env(parent = emptyenv())
@@ -1124,7 +1124,7 @@ ddg.MAX_HIST_LINES <- 2^14
 # Creates a start node for the current command if one has not been created
 # already.
 .ddg.create.start.for.cur.cmd <- function(call, caller.env) {
-    if (.ddg.is.set(".ddg.cur.cmd")) {
+    if (.global.is.set(".ddg.cur.cmd")) {
         .ddg.cur.cmd <- .ddg.get(".ddg.cur.cmd")
         .ddg.cur.cmd.stack <- .ddg.get(".ddg.cur.cmd.stack")
         stack.length <- length(.ddg.cur.cmd.stack)
@@ -1395,7 +1395,7 @@ ddg.should.run.annotated <- function(func.name) {
 
 # .ddg.console.off turns off the console mode of DDG construction.
 .ddg.console.off <- function() {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Capture history if console was on up to this point.
     if (interactive() && .ddg.get(".ddg.enable.console")) {
@@ -1408,7 +1408,7 @@ ddg.should.run.annotated <- function(func.name) {
 # .ddg.console.on turns on the console mode of DDG construction.
 
 .ddg.console.on <- function() {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
         return(invisible())
     # Write a new timestamp if we're turning on the console so we only capture
     # history from this point forward.
