@@ -767,7 +767,7 @@ null.pos <- function() {
     .ddg.inc("ddg.statement.num")
     num <- .ddg.get("ddg.statement.num")
     ddg.statements <- c(.ddg.get("ddg.statements"), parsed.stmt)
-    .ddg.set("ddg.statements", ddg.statements)
+    .global.set("ddg.statements", ddg.statements)
     return(call("ddg.eval", paste(deparse(statement), collapse = ""), num))
 }
 
@@ -945,7 +945,7 @@ null.pos <- function() {
         parsed.command <- command@parsed[[1]]
         # Add new loop & get loop number.
         ddg.loops <- c(.ddg.get("ddg.loops"), 0)
-        .ddg.set("ddg.loops", ddg.loops)
+        .global.set("ddg.loops", ddg.loops)
         .ddg.inc("ddg.loop.num")
         ddg.loop.num <- .ddg.get("ddg.loop.num")
         # Get statements in block.

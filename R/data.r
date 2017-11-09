@@ -196,7 +196,7 @@
     # Create the warning node
     .ddg.insert.error.message(warningMessage, "warning.msg", doWarn = FALSE)
     # Clear the saved warning
-    .ddg.set(".ddg.warning", NA)
+    .global.set(".ddg.warning", NA)
 }
 
 # .ddg.record.data records a data node in the data node table.
@@ -253,7 +253,7 @@
         longpath <- paste0(getwd(), substring(.ddg.get("ddg.path"), 2))
     }
     ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
-    .ddg.set("ddg.data.nodes", ddg.data.nodes)
+    .global.set("ddg.data.nodes", ddg.data.nodes)
 
     # Prepare values
     if (from.env)

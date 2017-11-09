@@ -86,7 +86,7 @@
         # Add link from a function return node if there is one.
         .ddg.link.function.returns(.ddg.last.cmd)
         # No previous command.
-        .ddg.set(".ddg.last.cmd", NULL)
+        .global.set(".ddg.last.cmd", NULL)
     }
 }
 
@@ -102,8 +102,8 @@
         .add.abstract.node("Start", new.command, env, called = paste(called,
             "-> .ddg.open.new.command.node"))
         # Now the new command becomes the last command, and new command is null.
-        .ddg.set(".ddg.last.cmd", new.command)
-        .ddg.set(".ddg.possible.last.cmd", NULL)
+        .global.set(".ddg.last.cmd", new.command)
+        .global.set(".ddg.possible.last.cmd", NULL)
     }
 }
 
@@ -147,7 +147,7 @@
   }
   # Don't set .ddg.last.cmd.  We want it to have the value from
   # the last call. We set it at the end of this function:
-  # .ddg.set(".ddg.last.cmd", .ddg.last.cmd)
+  # .global.set(".ddg.last.cmd", .ddg.last.cmd)
 
   # Create an operation node for each command.  We can't use lapply
   # here because we need to process the commands in order and
@@ -218,8 +218,8 @@
           # this command as a possible abstraction node but only
           # if it's not a call that itself creates abstract nodes.
           if (!cmd@isDdgFunc && cmd@text != "next") {
-            .ddg.set(".ddg.possible.last.cmd", cmd)
-            .ddg.set (".ddg.cur.cmd", cmd)
+            .global.set(".ddg.possible.last.cmd", cmd)
+            .global.set (".ddg.cur.cmd", cmd)
             # Remember the current statement on the stack so that we
             # will be able to create a corresponding Finish node later
             # if needed.
@@ -231,14 +231,14 @@
             else {
               .ddg.cur.cmd.stack <- c(.ddg.get(".ddg.cur.cmd.stack"), cmd, FALSE)
             }
-            .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack)
+            .global.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack)
           } else if (grepl("^ddg.(procedure|start|finish|restore)", cmd@text)) {
             # is procedure cmd?
-            .ddg.set(".ddg.possible.last.cmd", NULL)
+            .global.set(".ddg.possible.last.cmd", NULL)
           }
           # Need to get this number before evaluating the command so that
           # when we evaluate a dev.off call we know which device was closed
-          .ddg.set(".ddg.dev.number", dev.cur())
+          .global.set(".ddg.dev.number", dev.cur())
           if (cmd@has.dev.off && !cmd@createsGraphics && is.null(.ddg.get ("possible.graphics.files.open"))) {
             dev.file.created <- .ddg.capture.current.graphics()
           }
@@ -263,13 +263,13 @@
                   }
                   else {
                     ret.value <- eval(annot, environ, NULL)
-                    .ddg.set (".ddg.last.R.value", ret.value)
+                    .global.set (".ddg.last.R.value", ret.value)
                   }
                 }
               },
             warning = function(w)
             {
-              .ddg.set(".ddg.warning", w)
+              .global.set(".ddg.warning", w)
             },
             error = function(e)
             {
@@ -304,17 +304,17 @@
               if (loop.statement && .ddg.get("details.omitted")) {
                 vars.set2 <- .ddg.add.to.vars.set(vars.set, cmd, i)
                 .ddg.create.data.node.for.possible.writes(vars.set2, cmd, environ)
-                .ddg.set("details.omitted", FALSE)
+                .global.set("details.omitted", FALSE)
               }
             }
             # Remove the last command & start.created values pushed
             # onto the stack
             cur.cmd.closed <- (.ddg.cur.cmd.stack[stack.length] == "MATCHES_CALL")
             if (stack.length == 2) {
-              .ddg.set(".ddg.cur.cmd.stack", vector())
+              .global.set(".ddg.cur.cmd.stack", vector())
             }
             else {
-              .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length-2)])
+              .global.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length-2)])
             }
           }
           # Print evaluation.
@@ -360,7 +360,7 @@
           .ddg.create.data.set.edges.for.cmd(vars.set, cmd, i, d.environ)
           if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding output data nodes for", cmd@abbrev))
           if (cmd@writesFile) .ddg.create.file.write.nodes.and.edges (cmd, environ)
-          if (cmd@createsGraphics) .ddg.set.graphics.files (cmd, environ)
+          if (cmd@createsGraphics) .global.set.graphics.files (cmd, environ)
           if (cmd@updatesGraphics) .ddg.add.graphics.io (cmd)
           if (cmd@has.dev.off) {
             .ddg.capture.graphics(cmd)
@@ -404,8 +404,8 @@
   # Open up a new collapsible node in case we need to parse
   # further later.
   if (!execute) {
-    .ddg.set(".ddg.possible.last.cmd", .ddg.last.cmd)
-    .ddg.set(".ddg.last.cmd", .ddg.last.cmd)
+    .global.set(".ddg.possible.last.cmd", .ddg.last.cmd)
+    .global.set(".ddg.last.cmd", .ddg.last.cmd)
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.
@@ -515,7 +515,7 @@
   }
   # Don't set .ddg.last.cmd.  We want it to have the value from
   # the last call. We set it at the end of this function:
-  # .ddg.set(".ddg.last.cmd", .ddg.last.cmd)
+  # .global.set(".ddg.last.cmd", .ddg.last.cmd)
 
   # Create an operation node for each command.  We can't use lapply
   # here because we need to process the commands in order and
@@ -586,8 +586,8 @@
           # this command as a possible abstraction node but only
           # if it's not a call that itself creates abstract nodes.
           if (!cmd@isDdgFunc && cmd@text != "next") {
-            .ddg.set(".ddg.possible.last.cmd", cmd)
-            .ddg.set (".ddg.cur.cmd", cmd)
+            .global.set(".ddg.possible.last.cmd", cmd)
+            .global.set (".ddg.cur.cmd", cmd)
             # Remember the current statement on the stack so that we
             # will be able to create a corresponding Finish node later
             # if needed.
@@ -599,14 +599,14 @@
             else {
               .ddg.cur.cmd.stack <- c(.ddg.get(".ddg.cur.cmd.stack"), cmd, FALSE)
             }
-            .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack)
+            .global.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack)
           } else if (grepl("^ddg.(procedure|start|finish|restore)", cmd@text)) {
             # is procedure cmd?
-            .ddg.set(".ddg.possible.last.cmd", NULL)
+            .global.set(".ddg.possible.last.cmd", NULL)
           }
           # Need to get this number before evaluating the command so that
           # when we evaluate a dev.off call we know which device was closed
-          .ddg.set(".ddg.dev.number", dev.cur())
+          .global.set(".ddg.dev.number", dev.cur())
           if (cmd@has.dev.off && !cmd@createsGraphics && is.null(.ddg.get ("possible.graphics.files.open"))) {
             dev.file.created <- .ddg.capture.current.graphics()
           }
@@ -632,13 +632,13 @@
                   }
                   else {
                     ret.value <- eval(annot, environ, NULL)
-                    .ddg.set (".ddg.last.R.value", ret.value)
+                    .global.set (".ddg.last.R.value", ret.value)
                   }
                 }
               },
             warning = function(w)
             {
-                .ddg.set(".ddg.warning", w)
+                .global.set(".ddg.warning", w)
             },
             error = function(e)
             {
@@ -673,17 +673,17 @@
               if (loop.statement && .ddg.get("details.omitted")) {
                 vars.set2 <- .ddg.add.to.vars.set(vars.set, cmd, i)
                 .ddg.create.data.node.for.possible.writes(vars.set2, cmd, environ)
-                .ddg.set("details.omitted", FALSE)
+                .global.set("details.omitted", FALSE)
               }
             }
             # Remove the last command & start.created values pushed
             # onto the stack
             cur.cmd.closed <- (.ddg.cur.cmd.stack[stack.length] == "MATCHES_CALL")
             if (stack.length == 2) {
-              .ddg.set(".ddg.cur.cmd.stack", vector())
+              .global.set(".ddg.cur.cmd.stack", vector())
             }
             else {
-              .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length-2)])
+              .global.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length-2)])
             }
           }
           # Print evaluation.
@@ -729,7 +729,7 @@
           .ddg.create.data.set.edges.for.cmd(vars.set, cmd, i, d.environ)
           if (.ddg.get("ddg.debug.lib")) print(paste(".ddg.parse.commands: Adding output data nodes for", cmd@abbrev))
           if (cmd@writesFile) .ddg.create.file.write.nodes.and.edges (cmd, environ)
-          if (cmd@createsGraphics) .ddg.set.graphics.files (cmd, environ)
+          if (cmd@createsGraphics) .global.set.graphics.files (cmd, environ)
           if (cmd@updatesGraphics) .ddg.add.graphics.io (cmd)
           if (cmd@has.dev.off) {
             .ddg.capture.graphics(cmd)
@@ -773,8 +773,8 @@
   # Open up a new collapsible node in case we need to parse
   # further later.
   if (!execute) {
-    .ddg.set(".ddg.possible.last.cmd", .ddg.last.cmd)
-    .ddg.set(".ddg.last.cmd", .ddg.last.cmd)
+    .global.set(".ddg.possible.last.cmd", .ddg.last.cmd)
+    .global.set(".ddg.last.cmd", .ddg.last.cmd)
     .ddg.open.new.command.node(environ)
   }
   # Write time stamp to history.

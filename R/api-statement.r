@@ -283,8 +283,8 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     ddg.cur.cmd.stack <- .ddg.get(".ddg.cur.cmd.stack")
     ddg.ret.values$line[ddg.num.returns] <- if (length(ddg.cur.cmd.stack) == 0)
         NA else ddg.cur.cmd.stack[length(ddg.cur.cmd.stack) - 1][[1]]@pos@startLine
-    .ddg.set(".ddg.ret.values", ddg.ret.values)
-    .ddg.set(".ddg.num.returns", ddg.num.returns)
+    .global.set(".ddg.ret.values", ddg.ret.values)
+    .global.set(".ddg.num.returns", ddg.num.returns)
     # If it does not have return, then its parameter was a call to ddg.eval and this
     # stuff has been done already.
     if (.has.call.to(parsed.stmt, "return")) {
@@ -317,7 +317,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         .ddg.create.file.read.nodes.and.edges(ret.stmt, env)
         .ddg.create.file.write.nodes.and.edges(ret.stmt, env)
         if (ret.stmt@createsGraphics) {
-            .ddg.set.graphics.files(ret.stmt, env)
+            .global.set.graphics.files(ret.stmt, env)
         }
     }
     # Create the finish node for the function

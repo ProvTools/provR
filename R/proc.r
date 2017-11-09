@@ -51,7 +51,7 @@
     if (ptype == "Start") {
         .ddg.starts.open <- .ddg.get(".ddg.starts.open")
         .ddg.starts.open <- c(.ddg.starts.open, pname)
-        .ddg.set(".ddg.starts.open", .ddg.starts.open)
+        .global.set(".ddg.starts.open", .ddg.starts.open)
     } else if (ptype == "Finish") {
         .ddg.starts.open <- .ddg.get(".ddg.starts.open")
         num.starts.open <- length(.ddg.starts.open)
@@ -62,7 +62,7 @@
             } else {
                 .ddg.starts.open <- vector()
             }
-            .ddg.set(".ddg.starts.open", .ddg.starts.open)
+            .global.set(".ddg.starts.open", .ddg.starts.open)
             if (last.start.open != pname) {
                 .ddg.insert.error.message("Start and finish nodes do not match")
             }
@@ -70,7 +70,7 @@
             .ddg.insert.error.message("Attempting to create a finish node when there are no open blocks")
         }
     }
-    .ddg.set(".ddg.last.proc.node.created", paste(ptype, pname))
+    .global.set(".ddg.last.proc.node.created", paste(ptype, pname))
     ptime <- .elapsed.time()
     # Record in procedure node table
     .record.proc(ptype, pname, pvalue, auto.created, ptime, snum, pos)
@@ -231,7 +231,7 @@
         ddg.proc.nodes$ddg.endLine[ddg.pnum] <- NA
         ddg.proc.nodes$ddg.endCol[ddg.pnum] <- NA
     }
-    .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
+    .global.set("ddg.proc.nodes", ddg.proc.nodes)
     pname <- gsub("\\\"", "\\\\\"", pname)
     # Output procedure node.
     .json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)

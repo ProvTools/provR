@@ -66,11 +66,11 @@
 # Given a parse tree, this function returns a list containing the expressions
 # that correspond to the filename argument of the calls to functions that create
 # graphics devices.  If there are none, it returns NULL.
-.ddg.set.graphics.files <- function(main.object, env) {
+.global.set.graphics.files <- function(main.object, env) {
     # Allows dev.print to work when we want to save the plot.
     tryCatch(dev.control("enable"), error = function(e) return())
     # Add the newly-opened graphics device to the list of open devices
-    .ddg.set("ddg.open.devices", union(.ddg.get("ddg.open.devices"), dev.cur()))
+    .global.set("ddg.open.devices", union(.ddg.get("ddg.open.devices"), dev.cur()))
     # Find all the graphics files that have potentially been opened.  Remember these
     # file names until we find the dev.off call and then determine which was written.
     new.possible.graphics.files.open <- .ddg.find.files(main.object, .ddg.get(".ddg.graphics.functions.df"),
@@ -78,10 +78,10 @@
     if (!is.null(new.possible.graphics.files.open)) {
         if (!is.null(.ddg.get("possible.graphics.files.open"))) {
             possible.graphics.files.open <- .ddg.get("possible.graphics.files.open")
-            .ddg.set("possible.graphics.files.open", c(new.possible.graphics.files.open,
+            .global.set("possible.graphics.files.open", c(new.possible.graphics.files.open,
                 possible.graphics.files.open))
         } else {
-            .ddg.set("possible.graphics.files.open", new.possible.graphics.files.open)
+            .global.set("possible.graphics.files.open", new.possible.graphics.files.open)
         }
     }
     dev.node.name <- paste0("dev.", dev.cur())
@@ -101,7 +101,7 @@
         .ddg.data2proc(dev.node.name, NULL, cmd@abbrev)
     } else {
         # Add the newly-opened graphics device to the list of open devices
-        .ddg.set("ddg.open.devices", union(.ddg.get("ddg.open.devices"), dev.cur()))
+        .global.set("ddg.open.devices", union(.ddg.get("ddg.open.devices"), dev.cur()))
     }
     # Add an output node with the same name
     .ddg.data.node("Data", dev.node.name, "graph", NULL)
@@ -114,7 +114,7 @@
         NULL else if (is.character(cmd))
         cmd else cmd@abbrev
     dev.number <- .ddg.get(".ddg.dev.number")
-    .ddg.set("ddg.open.devices", setdiff(.ddg.get("ddg.open.devices"), dev.number))
+    .global.set("ddg.open.devices", setdiff(.ddg.get("ddg.open.devices"), dev.number))
     if (!is.null(.ddg.get("possible.graphics.files.open")) && !is.null(proc.node.name)) {
         possible.graphics.files.open <- .ddg.get("possible.graphics.files.open")
         # Find the most recent file
@@ -132,7 +132,7 @@
             if (.ddg.data.node.exists(dev.node.name)) {
                 .ddg.data2proc(dev.node.name, NULL, proc.node.name)
             }
-            .ddg.set("possible.graphics.files.open", NULL)
+            .global.set("possible.graphics.files.open", NULL)
         }
         return(possible.graphics.files.open[latest.file.date.row])
     }
@@ -160,7 +160,7 @@
     }
     # Save the graphic to a file temporarily
     dev.print(device = pdf, file = file)
-    .ddg.set("possible.graphics.files.open", file)
+    .global.set("possible.graphics.files.open", file)
     return(file)
 }
 

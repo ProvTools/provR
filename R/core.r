@@ -34,7 +34,7 @@ ddg.MAX_HIST_LINES <- 2^14
     dir.create(paste(.ddg.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
     dir.create(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), showWarnings = FALSE)
     if (interactive() && .ddg.get(".ddg.enable.console")) {
-        .ddg.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
+        .global.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
         Sys.setenv(R_HISTSIZE = ddg.MAX_HIST_LINES)
     }
 }
@@ -120,7 +120,7 @@ ddg.MAX_HIST_LINES <- 2^14
     # We've switched devices .
     if (prev.device != curr.device) {
         # Update device.
-        .ddg.set("prev.device", curr.device)
+        .global.set("prev.device", curr.device)
         # Previous device still accessible.
         if (prev.device %in% device.list)
             return(prev.device)
@@ -625,7 +625,7 @@ ddg.MAX_HIST_LINES <- 2^14
         }
         # Set the return value as being used.
         returns$ret.used[returns$ret.node.id == data.num] <- TRUE
-        .ddg.set(".ddg.ret.values", returns)
+        .global.set(".ddg.ret.values", returns)
     })
 }
 
@@ -1148,10 +1148,10 @@ ddg.MAX_HIST_LINES <- 2^14
                   }
                   # Mark the start node as created on the stack.  Mark it even if we did not create
                   # the abstract node above, because we will create it below.
-                  .ddg.set(".ddg.cur.cmd.stack", c(.ddg.cur.cmd.stack[1:stack.length -
+                  .global.set(".ddg.cur.cmd.stack", c(.ddg.cur.cmd.stack[1:stack.length -
                     1], TRUE))
                 } else {
-                  .ddg.set(".ddg.cur.cmd.stack", c(.ddg.cur.cmd.stack[1:stack.length -
+                  .global.set(".ddg.cur.cmd.stack", c(.ddg.cur.cmd.stack[1:stack.length -
                     1], "MATCHES_CALL"))
                 }
             }
@@ -1175,9 +1175,9 @@ ddg.MAX_HIST_LINES <- 2^14
     stack.length <- length(.ddg.cur.cmd.stack)
 
     if (stack.length == 2) {
-        .ddg.set(".ddg.cur.cmd.stack", vector())
+        .global.set(".ddg.cur.cmd.stack", vector())
     } else {
-        .ddg.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length - 2)])
+        .global.set(".ddg.cur.cmd.stack", .ddg.cur.cmd.stack[1:(stack.length - 2)])
     }
 }
 
@@ -1402,7 +1402,7 @@ ddg.should.run.annotated <- function(func.name) {
         .ddg.console.node()
     }
     # Set the console to off.
-    .ddg.set(".ddg.enable.console", FALSE)
+    .global.set(".ddg.enable.console", FALSE)
 }
 
 # .ddg.console.on turns on the console mode of DDG construction.
@@ -1414,7 +1414,7 @@ ddg.should.run.annotated <- function(func.name) {
     # history from this point forward.
     if (!.ddg.get(".ddg.enable.console"))
         .write.timestamp.to.history()
-    .ddg.set(".ddg.enable.console", TRUE)
+    .global.set(".ddg.enable.console", TRUE)
 }
 
 # .ddg.delete.save removes all files from the DDG directories unless the the DDG

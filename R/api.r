@@ -39,7 +39,7 @@ prov.capture <- function(r.script.path = NULL,
         first.loop, max.loops, max.snapshot.size)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
-        .ddg.set(".ddg.is.sourced", TRUE)
+        .global.set(".ddg.is.sourced", TRUE)
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(
       if (!is.null(r.script.path))
@@ -62,18 +62,18 @@ prov.json <- function() {
 # fnames - a list of one or more function names passed in as strings.
 ddg.annotate.on <- function(fnames = NULL) {
     if (is.null(fnames)) {
-        .ddg.set("ddg.annotate.off", vector())
-        .ddg.set("ddg.annotate.inside", TRUE)
+        .global.set("ddg.annotate.off", vector())
+        .global.set("ddg.annotate.inside", TRUE)
         return()
     }
     # Add to the on list
     on.list <- .ddg.get("ddg.annotate.on")
     on.list <- union(on.list, fnames)
-    .ddg.set("ddg.annotate.on", on.list)
+    .global.set("ddg.annotate.on", on.list)
     # Remove from the off list
     off.list <- .ddg.get("ddg.annotate.off")
     off.list <- Filter(function(off) !(off %in% fnames), off.list)
-    .ddg.set("ddg.annotate.off", off.list)
+    .global.set("ddg.annotate.off", off.list)
 }
 
 # ddg.annotate.off disables annotation for the specified functions.  Functions
@@ -81,18 +81,18 @@ ddg.annotate.on <- function(fnames = NULL) {
 # annotated fnames - a list of one or more function names passed in as strings.
 ddg.annotate.off <- function(fnames = NULL) {
     if (is.null(fnames)) {
-        .ddg.set("ddg.annotate.on", vector())
-        .ddg.set("ddg.annotate.inside", FALSE)
+        .global.set("ddg.annotate.on", vector())
+        .global.set("ddg.annotate.inside", FALSE)
         return()
     }
     # Add to the off list
     off.list <- .ddg.get("ddg.annotate.off")
     off.list <- union(off.list, fnames)
-    .ddg.set("ddg.annotate.off", off.list)
+    .global.set("ddg.annotate.off", off.list)
     # Remove from the on list
     on.list <- .ddg.get("ddg.annotate.on")
     on.list <- Filter(function(on) !(on %in% fnames), on.list)
-    .ddg.set("ddg.annotate.on", on.list)
+    .global.set("ddg.annotate.on", on.list)
 }
 
 # ddg.source reads in an R script and executes it in the provided enviroment.
@@ -124,7 +124,7 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
     } else {
         df <- rbind(.ddg.get(".ddg.sourced.scripts"), c(snum, sname))
     }
-    .ddg.set(".ddg.sourced.scripts", df)
+    .global.set(".ddg.sourced.scripts", df)
     # Increment script number.
     .ddg.inc(".ddg.next.script.num")
 
@@ -262,14 +262,14 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
         # Let library know that we are sourcing a file.
         prev.source <- (.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.ddg.is.set("from.source") && .ddg.get("from.source"))
         # Initialize the tables for ddg.capture.
-        .ddg.set("from.source", TRUE)
+        .global.set("from.source", TRUE)
         # Parse the commands into a console node.
         .ddg.parse.commands(exprs, sname, snum, environ = envir, ignore.patterns = ignores,
             node.name = sname, echo = echo, print.eval = print.eval, max.deparse.length = max.deparse.length,
             run.commands = TRUE)
         # Save the DDG among other things, but don't return any values, TODO - should we
         # do this?  ddg.save()
-        .ddg.set("from.source", prev.source)
+        .global.set("from.source", prev.source)
         # Turn return console to previous state.
         if (!prev.on)
             .ddg.console.off() else .ddg.console.on()

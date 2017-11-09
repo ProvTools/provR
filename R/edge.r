@@ -83,7 +83,7 @@
         if (ret.value) {
             ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
             ddg.proc.nodes$ddg.ret.linked[pn] <- TRUE
-            .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
+            .global.set("ddg.proc.nodes", ddg.proc.nodes)
         }
         if (.ddg.get("ddg.debug.lib")) {
             print(paste("proc2data: ", pname, " ", dname, sep = ""))
@@ -134,7 +134,7 @@
     ddg.edges$ddg.type[ddg.enum] <- etype
     ddg.edges$ddg.from[ddg.enum] <- node1
     ddg.edges$ddg.to[ddg.enum] <- node2
-    .ddg.set("ddg.edges", ddg.edges)
+    .global.set("ddg.edges", ddg.edges)
 
     # Record in ddg.json
     if (etype == "cf")

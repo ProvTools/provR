@@ -34,24 +34,24 @@ ddg.max.loops <- function() {
 
 # ddg.loop.annotate.on turns on loop annotation.
 ddg.loop.annotate.on <- function() {
-    .ddg.set("ddg.loop.annotate", TRUE)
+    .global.set("ddg.loop.annotate", TRUE)
 }
 
 # ddg.loop.annotate.off turns off loop annotation.
 ddg.loop.annotate.off <- function() {
-    .ddg.set("ddg.loop.annotate", FALSE)
+    .global.set("ddg.loop.annotate", FALSE)
 }
 
 ddg.set.inside.loop <- function() {
     if (!.ddg.is.set("ddg.inside.loop")) {
-        .ddg.set("ddg.inside.loop", 0)
+        .global.set("ddg.inside.loop", 0)
     } else {
-        .ddg.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") + 1)
+        .global.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") + 1)
     }
 }
 
 ddg.not.inside.loop <- function() {
-    .ddg.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") - 1)
+    .global.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") - 1)
 }
 
 # ddg.loop.count returns the current count for the specified loop.
@@ -67,7 +67,7 @@ ddg.loop.count <- function(loop.num) {
 ddg.loop.count.inc <- function(loop.num) {
     ddg.loops <- .ddg.get("ddg.loops")
     ddg.loops[[loop.num]] <- ddg.loops[[loop.num]] + 1
-    .ddg.set("ddg.loops", ddg.loops)
+    .global.set("ddg.loops", ddg.loops)
     return(ddg.loops[[loop.num]])
 }
 
@@ -76,7 +76,7 @@ ddg.loop.count.inc <- function(loop.num) {
 ddg.reset.loop.count <- function(loop.num) {
     ddg.loops <- .ddg.get("ddg.loops")
     ddg.loops[loop.num] <- 0
-    .ddg.set("ddg.loops", ddg.loops)
+    .global.set("ddg.loops", ddg.loops)
 }
 
 # ddg.for.loop inserts a procedure node and a data node in a for loop, indicating
@@ -103,7 +103,7 @@ ddg.details.omitted <- function() {
     pnode.name <- "Details Omitted"
     .proc.node("Incomplete", pnode.name, pnode.name)
     .ddg.proc2proc()
-    .ddg.set("details.omitted", TRUE)
+    .global.set("details.omitted", TRUE)
     if (.ddg.get("ddg.debug.lib")) {
         print("Adding Details Omitted node")
     }

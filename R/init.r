@@ -52,42 +52,42 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     } else ddg.path <- normalizePath(ddgdir, winslash = "/", mustWork = FALSE)
 
 
-    .ddg.set("ddg.save.to.disk", FALSE)
+    .global.set("ddg.save.to.disk", FALSE)
     # Reset r.script.path if RMarkdown file
     if (!is.null(r.script.path) && tools::file_ext(r.script.path) == "Rmd") {
         output.path <- paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
             ".R", sep = "")
         .ddg.markdown(r.script.path, output.path)
-        .ddg.set("ddg.r.script.path", output.path)
+        .global.set("ddg.r.script.path", output.path)
     } else {
-        .ddg.set("ddg.r.script.path", if (is.null(r.script.path))
+        .global.set("ddg.r.script.path", if (is.null(r.script.path))
             NULL else normalizePath(r.script.path, winslash = "/"))
     }
     # Set environment constants.
-    .ddg.set(".ddg.enable.console", enable.console)
-    .ddg.set(".ddg.func.depth", 0)
-    .ddg.set(".ddg.explorer.port", 6096)
-    .ddg.set("details.omitted", FALSE)
+    .global.set(".ddg.enable.console", enable.console)
+    .global.set(".ddg.func.depth", 0)
+    .global.set(".ddg.explorer.port", 6096)
+    .global.set("details.omitted", FALSE)
     # Initialize the information about the open start-finish blocks
-    .ddg.set(".ddg.starts.open", vector())
+    .global.set(".ddg.starts.open", vector())
     # Initialize the stack of commands and environments being executed in active
     # functions
-    .ddg.set(".ddg.cur.cmd.stack", vector())
-    .ddg.set(".ddg.cur.expr.stack", vector())
+    .global.set(".ddg.cur.cmd.stack", vector())
+    .global.set(".ddg.cur.expr.stack", vector())
     # Mark graph as initilized.
-    .ddg.set(".ddg.initialized", TRUE)
+    .global.set(".ddg.initialized", TRUE)
     # Store the starting graphics device.
-    .ddg.set("prev.device", dev.cur())
-    .ddg.set("possible.graphics.files.open", NULL)
-    .ddg.set("ddg.open.devices", vector())
+    .global.set("prev.device", dev.cur())
+    .global.set("possible.graphics.files.open", NULL)
+    .global.set("ddg.open.devices", vector())
     # Store value of annotate.inside.
-    .ddg.set("ddg.annotate.inside", annotate.inside.functions)
+    .global.set("ddg.annotate.inside", annotate.inside.functions)
     # Store maximum number of loops to annotate.
     if (max.loops < 0)
         max.loops <- 10^10
-    .ddg.set("ddg.max.loops", max.loops)
+    .global.set("ddg.max.loops", max.loops)
     # Store maximum snapshot size.
-    .ddg.set("ddg.max.snapshot.size", max.snapshot.size)
+    .global.set("ddg.max.snapshot.size", max.snapshot.size)
     # If loops are not annotated, do not annotate functions called from inside a
     # loop.
     if (max.loops == 0)
@@ -95,9 +95,9 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     # Initialize the counter that keeps track of nested levels of ifs and loops
     ddg.set.inside.loop()
     # Set number of first loop.
-    .ddg.set("ddg.first.loop", first.loop)
-    .ddg.set(".ddg.proc.start.time", .elapsed.time())
+    .global.set("ddg.first.loop", first.loop)
+    .global.set(".ddg.proc.start.time", .elapsed.time())
     # Store time when script begins execution.
-    .ddg.set("ddg.start.time", .format.time(Sys.time()))
+    .global.set("ddg.start.time", .format.time(Sys.time()))
     invisible()
 }
