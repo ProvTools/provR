@@ -239,7 +239,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         full.call <- match.call(sys.function(caller.frame), call = call)
         .ddg.create.function.nodes(pname, call, full.call, auto.created = TRUE, env = sys.frame(.ddg.get.frame.number(sys.calls())))
     } else {
-        .ddg.dec(".ddg.func.depth")
+        .global.dec(".ddg.func.depth")
     }
     if (is.null(cmd.func)) {
         ret.stmt <- .construct.DDGStatement(parse(text = orig.return), pos = NA,

@@ -54,7 +54,7 @@
     .global.set(var, value + 1)
 }
 
-.ddg.dec <- function(var) {
+.global.dec <- function(var) {
     value <- .global.get(var)
     .global.set(var, value - 1)
 }
