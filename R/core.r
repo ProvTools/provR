@@ -1417,31 +1417,6 @@ ddg.should.run.annotated <- function(func.name) {
     .global.set(".ddg.enable.console", TRUE)
 }
 
-# .ddg.delete.save removes all files from the DDG directories unless the the DDG
-# directory is the working directory. If no DDG directory is specified, the
-# current DDG directory is assumed.
-
-# ddg.path (optional) - path to DDG directory.
-
-.ddg.delete.save <- function(ddg.path = NULL) {
-    # Use current DDG directories if no directory is specified.
-    if (is.null(ddg.path)) {
-        ddg.path <- .global.get("ddg.path")
-        ddg.path.data <- paste(.global.get("ddg.path"), "/data", sep = "")
-        ddg.path.debug <- paste(.global.get("ddg.path"), "/debug", sep = "")
-        ddg.path.scripts <- paste(.global.get("ddg.path"), "/scripts", sep = "")
-    }
-    # Remove files unless the DDG directory is the working directory.
-    if (ddg.path != getwd()) {
-        unlink(paste(ddg.path, "*.*", sep = "/"))
-        unlink(paste(ddg.path.data, "*.*", sep = "/"))
-        unlink(paste(ddg.path.data, ".ddghistory", sep = "/"))
-        unlink(paste(ddg.path.debug, "*.*", sep = "/"))
-        unlink(paste(ddg.path.scripts, "*.*", sep = "/"))
-    }
-    invisible()
-}
-
 
 .ddg.add.rows <- function(df, new.rows) {
     table <- .global.get(df)
