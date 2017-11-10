@@ -1441,3 +1441,9 @@ ddg.should.run.annotated <- function(func.name) {
     }
     invisible()
 }
+
+
+.ddg.add.rows <- function(df, new.rows) {
+    table <- .global.get(df)
+    .global.set(df, rbind(table, new.rows))
+}

@@ -51,8 +51,3 @@
     value <- .global.get(var)
     .global.set(var, value - 1)
 }
-
-.ddg.add.rows <- function(df, new.rows) {
-    table <- .global.get(df)
-    .global.set(df, rbind(table, new.rows))
-}
