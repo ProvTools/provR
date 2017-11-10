@@ -92,7 +92,11 @@
             snum, "\",\n\"rdt:startLine\" : \"NA\"", ",\n\"rdt:startCol\" : \"NA\"",
             ",\n\"rdt:endLine\" : \"NA\"", ",\n\"rdt:endCol\" : \"NA\"", "\n}", sep = "")
     }
-    .ddg.append.activity(jstr)
+    text <- .global.get("ddg.activity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.activity", paste(text, jstr, sep = ""))
 }
 
 # .json.data.node adds a data node to the ddg.json string.
@@ -104,7 +108,11 @@
         "\",\n\"rdt:scope\" : \"", dscope, "\",\n\"rdt:fromEnv\" : \"", from.env,
         "\",\n\"rdt:MD5hash\" : \"", dhash, "\",\n\"rdt:timestamp\" : \"", dtime,
         "\",\n\"rdt:location\" : \"", dloc, "\"\n}", sep = "")
-    .ddg.append.entity(jstr)
+    text <- .global.get("ddg.entity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.entity", paste(text, jstr, sep = ""))
 }
 
 # .json.control.edge adds a control flow edge to the ddg.json string.
@@ -112,7 +120,11 @@
 .json.control.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:informant\" : \"", node1, "\",\n\"prov:informed\" : \"",
         node2, "\"\n}", sep = "")
-    .ddg.append.wasInformedBy(jstr)
+    text <- .global.get("ddg.wasInformedBy")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.wasInformedBy", paste(text, jstr, sep = ""))
 }
 
 # .json.data.out.edge adds an output data flow edge to the ddg.json string.
@@ -120,7 +132,11 @@
 .json.data.out.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:entity\" : \"", node2, "\",\n\"prov:activity\" : \"",
         node1, "\"\n}", sep = "")
-    .ddg.append.wasGeneratedBy(jstr)
+    text <- .global.get("ddg.wasGeneratedBy")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.wasGeneratedBy", paste(text, jstr, sep = ""))
 }
 
 # .json.data.in.edge adds an input data flow edge to the ddg.json string.
@@ -128,7 +144,11 @@
 .json.data.in.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:activity\" : \"", node2, "\",\n\"prov:entity\" : \"",
         node1, "\"\n}", sep = "")
-    .ddg.append.used(jstr)
+    text <- .global.get("ddg.used")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.used", paste(text, jstr, sep = ""))
 }
 
 # .ddg.sourced.script.names.json returns sourced script names, numbers and
@@ -158,8 +178,14 @@
 
 .json.current <- function() {
     prefix <- .json.prefix()
+
     environ <- .json.environ()
-    .ddg.append.activity(environ)
+    text <- .global.get("ddg.activity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.activity", paste(text, environ, sep = ""))
+
     activity <- .global.get("ddg.activity")
     entity <- .global.get("ddg.entity")
     wasInformedBy <- .global.get("ddg.wasInformedBy")

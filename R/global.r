@@ -59,46 +59,6 @@
     .global.set(var, value - 1)
 }
 
-.ddg.append.activity <- function(...) {
-    text <- .global.get("ddg.activity")
-    if (text != "") {
-        text <- paste(text, ",\n")
-    }
-    .global.set("ddg.activity", paste(text, ..., sep = ""))
-}
-
-.ddg.append.entity <- function(...) {
-    text <- .global.get("ddg.entity")
-    if (text != "") {
-        text <- paste(text, ",\n")
-    }
-    .global.set("ddg.entity", paste(text, ..., sep = ""))
-}
-
-.ddg.append.wasInformedBy <- function(...) {
-    text <- .global.get("ddg.wasInformedBy")
-    if (text != "") {
-        text <- paste(text, ",\n")
-    }
-    .global.set("ddg.wasInformedBy", paste(text, ..., sep = ""))
-}
-
-.ddg.append.wasGeneratedBy <- function(...) {
-    text <- .global.get("ddg.wasGeneratedBy")
-    if (text != "") {
-        text <- paste(text, ",\n")
-    }
-    .global.set("ddg.wasGeneratedBy", paste(text, ..., sep = ""))
-}
-
-.ddg.append.used <- function(...) {
-    text <- .global.get("ddg.used")
-    if (text != "") {
-        text <- paste(text, ",\n")
-    }
-    .global.set("ddg.used", paste(text, ..., sep = ""))
-}
-
 .ddg.add.rows <- function(df, new.rows) {
     table <- .global.get(df)
     .global.set(df, rbind(table, new.rows))
