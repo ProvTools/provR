@@ -37,7 +37,7 @@ ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception =
     outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
     if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(invisible())
-    .ddg.inc(".ddg.func.depth")
+    .global.inc(".ddg.func.depth")
     pname <- NULL
     .ddg.lookup.function.name(pname)
     if (interactive() && .global.get(".ddg.enable.console"))

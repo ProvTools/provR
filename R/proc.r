@@ -197,7 +197,7 @@
 .record.proc <- function(ptype, pname, pvalue, auto.created = FALSE, ptime, snum = NA,
     pos = NA) {
     # Increment procedure node counter.
-    .ddg.inc("ddg.pnum")
+    .global.inc("ddg.pnum")
     ddg.pnum <- .global.get("ddg.pnum")
     # If the table is full, make it bigger.
     ddg.proc.nodes <- .global.get("ddg.proc.nodes")

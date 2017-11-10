@@ -764,7 +764,7 @@ null.pos <- function() {
 
 .create.block.ddg.eval.call <- function(statement, parsed.stmt) {
     # Get the next DDGStatement number and store parsed.stmt at this location.
-    .ddg.inc("ddg.statement.num")
+    .global.inc("ddg.statement.num")
     num <- .global.get("ddg.statement.num")
     ddg.statements <- c(.global.get("ddg.statements"), parsed.stmt)
     .global.set("ddg.statements", ddg.statements)
@@ -946,7 +946,7 @@ null.pos <- function() {
         # Add new loop & get loop number.
         ddg.loops <- c(.global.get("ddg.loops"), 0)
         .global.set("ddg.loops", ddg.loops)
-        .ddg.inc("ddg.loop.num")
+        .global.inc("ddg.loop.num")
         ddg.loop.num <- .global.get("ddg.loop.num")
         # Get statements in block.
         if (loop.type == "for") {

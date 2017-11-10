@@ -210,7 +210,7 @@
 .ddg.record.data <- function(dtype, dname, dvalue, value, dscope, from.env = FALSE,
     dtime = "", dloc = "", dhash = "", drw = "", dscriptpath = "") {
     # Increment data node counter.
-    .ddg.inc("ddg.dnum")
+    .global.inc("ddg.dnum")
     ddg.dnum <- .global.get("ddg.dnum")
     # Initialize dscriptpath
     if (!is.null(.global.get("ddg.r.script.path"))) {

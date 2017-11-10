@@ -119,7 +119,7 @@
 # etype - type of edge node1 - name of first node node1 - name of second node
 .ddg.record.edge <- function(etype, node1, node2) {
     # Increment edge counter.
-    .ddg.inc("ddg.enum")
+    .global.inc("ddg.enum")
     ddg.enum <- .global.get("ddg.enum")
     # If the table is full, make it bigger.
     ddg.edges <- .global.get("ddg.edges")

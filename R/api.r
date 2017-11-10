@@ -126,7 +126,7 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
     }
     .global.set(".ddg.sourced.scripts", df)
     # Increment script number.
-    .ddg.inc(".ddg.next.script.num")
+    .global.inc(".ddg.next.script.num")
 
     ### CODE IN THIS SECTION IS BASICALLY REPLICATION OF source FUNCTION ###
 

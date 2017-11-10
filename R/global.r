@@ -49,7 +49,7 @@
 }
 
 ##### Mutators for specific common actions
-.ddg.inc <- function(var) {
+.global.inc <- function(var) {
     value <- .global.get(var)
     .global.set(var, value + 1)
 }
