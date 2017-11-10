@@ -48,12 +48,6 @@
     }
 }
 
-# .ddg.clear removes all objects from the .ddg.env environment.
-.ddg.clear <- function() {
-    # reinitialize tables
-    .ddg.init.tables()
-}
-
 ##### Mutators for specific common actions
 .ddg.inc <- function(var) {
     value <- .global.get(var)
