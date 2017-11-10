@@ -56,11 +56,3 @@
     table <- .global.get(df)
     .global.set(df, rbind(table, new.rows))
 }
-
-.ddg.push <- function(x, value) {
-    return(assign(as.character(substitute(x)), c(x, value), parent.frame()))
-}
-
-.ddg.pop <- function(x) {
-    return(assign(as.character(substitute(x)), x[-length(x)], parent.frame()))
-}
