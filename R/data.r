@@ -190,8 +190,9 @@
     # Get the saved warning
     w <- .global.get(".ddg.warning")
     # Create a message that looks like the one R creates
-    callStr <- if (is.null(w$call))
-        "" else paste("In ", head(deparse(w$call)), ": ")
+    callStr <- ""
+    if (!is.null(w$call))
+      callStr <- paste("In ", head(deparse(w$call)), ": ")
     warningMessage <- paste(callStr, w$message)
     # Create the warning node
     .ddg.insert.error.message(warningMessage, "warning.msg", doWarn = FALSE)

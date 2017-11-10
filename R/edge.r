@@ -101,8 +101,10 @@
 .ddg.lastproc2data <- function(dname, all = TRUE, dscope = NULL) {
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
-    pn <- if (all)
-        .global.get("ddg.pnum") else .last.proc.number()
+    if (all)
+      pn <- .global.get("ddg.pnum")
+    else
+      pn <- .last.proc.number()
     # Record in edges table
     etype <- "df.out"
     node1 <- paste("p", pn, sep = "")

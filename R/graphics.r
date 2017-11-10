@@ -52,8 +52,11 @@
         prev.device <- dev.cur()
         dev.set(num.dev.to.capture)
         # Capture it as a jpeg.
-        name <- if (!is.null(cmd.abbrev) && cmd.abbrev != "")
-            paste0("graphic", substr(cmd.abbrev, 1, 10)) else "graphic"
+
+        if (!is.null(cmd.abbrev) && cmd.abbrev != "")
+          name <- paste0("graphic", substr(cmd.abbrev, 1, 10))
+        else
+          name <- "graphic"
         .snapshot.node(name, fext = "jpeg", data = NULL)
         # Make the previous device active again.
         dev.set(prev.device)
@@ -110,9 +113,12 @@
 }
 
 .ddg.capture.graphics <- function(cmd, called.from.save = FALSE) {
-    proc.node.name <- if (is.null(cmd))
-        NULL else if (is.character(cmd))
-        cmd else cmd@abbrev
+    if (is.null(cmd))
+      proc.node.name <- NULL
+    else if (is.character(cmd))
+      proc.node.name <- cmd
+    else
+      proc.node.name <- cmd@abbrev
     dev.number <- .global.get(".ddg.dev.number")
     .global.set("ddg.open.devices", setdiff(.global.get("ddg.open.devices"), dev.number))
     if (!is.null(.global.get("possible.graphics.files.open")) && !is.null(proc.node.name)) {

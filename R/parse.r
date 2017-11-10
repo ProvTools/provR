@@ -68,16 +68,13 @@
 
 .ddg.close.last.command.node <- function(env, called = ".ddg.parse.commands", initial = FALSE) {
     # Get both the last command and new commands.
-    .ddg.last.cmd <- if (.global.is.set(".ddg.last.cmd")) {
-        .global.get(".ddg.last.cmd")
-    } else {
-        NULL
-    }
-    .ddg.possible.last.cmd <- if (.global.is.set(".ddg.possible.last.cmd")) {
-        .global.get(".ddg.possible.last.cmd")
-    } else {
-        NULL
-    }
+    .ddg.last.cmd <- NULL
+    if (.global.is.set(".ddg.last.cmd"))
+      .ddg.last.cmd <- .global.get(".ddg.last.cmd")
+
+    .ddg.possible.last.cmd <- NULL
+    if (.global.is.set(".ddg.possible.last.cmd"))
+      .ddg.possible.last.cmd <- .global.get(".ddg.possible.last.cmd")
     # Only create a finish node if a new command exists (i.e., we've parsed some
     # lines of code).
     if (!is.null(.ddg.last.cmd) && (!is.null(.ddg.possible.last.cmd) || initial)) {

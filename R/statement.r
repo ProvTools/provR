@@ -95,10 +95,10 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     .Object@text <- paste(deparse(.Object@parsed[[1]]), collapse = "")
     # If this is a call to ddg.eval, we only want the argument to ddg.eval (which is
     # a string) to appear in the node label
-    .Object@abbrev <- if (grepl("^ddg.eval", .Object@text)) {
-        .abbrev.cmd(.Object@parsed[[1]][[2]])
+    if (grepl("^ddg.eval", .Object@text)) {
+        .Object@abbrev <- .abbrev.cmd(.Object@parsed[[1]][[2]])
     } else {
-        .abbrev.cmd(.Object@text)
+        .Object@abbrev <- .abbrev.cmd(.Object@text)
     }
     vars.used <- .find.var.uses(.Object@parsed[[1]])
     # Remove index variable in for statement (handled separately in ddg.forloop).
@@ -117,23 +117,24 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     .Object@createsGraphics <- .creates.graphics(.Object@parsed[[1]])
     .Object@updatesGraphics <- .updates.graphics(.Object@parsed[[1]])
     .Object@has.dev.off <- .has.call.to(.Object@parsed[[1]], "dev.off")
-    .Object@pos <- if (is.object(pos)) {
-        pos
+    if (is.object(pos)) {
+        .Object@pos <- pos
     } else {
-        null.pos()
+        .Object@pos <- null.pos()
     }
-    .Object@script.num <- if (is.na(script.num))
-        -1 else script.num
+    .Object@script.num <- -1
+    if (!is.na(script.num))
+      .Object@script.num <- script.num
     # The contained field is a list of DDGStatements for all statements inside the
     # function or control statement.  If we are collecting provenance inside
     # functions or control statements, we will execute annotated versions of these
     # statements.  If this is a call to ddg.eval, we only want to execute the
     # argument to ddg.eval
     .Object@contained <- .parse.contained(.Object, script.name, parseData)
-    .Object@annotated <- if (grepl("^ddg.eval", .Object@text)) {
-        parse(text = .Object@parsed[[1]][[2]])
+    if (grepl("^ddg.eval", .Object@text)) {
+        .Object@annotated <- parse(text = .Object@parsed[[1]][[2]])
     } else {
-        .add.annotations(.Object)
+        .Object@annotated <- .add.annotations(.Object)
     }
     return(.Object)
 })
