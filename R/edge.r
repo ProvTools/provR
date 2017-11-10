@@ -23,14 +23,14 @@
 # .ddg.proc2proc creates a control flow edge from the preceding procedure node to
 # the current procedure node.
 .ddg.proc2proc <- function() {
-    ddg.pnum <- .ddg.get("ddg.pnum")
+    ddg.pnum <- .global.get("ddg.pnum")
     if (ddg.pnum > 1) {
         # Record in edges table
         etype <- "cf"
         node1 <- paste("p", ddg.pnum - 1, sep = "")
         node2 <- paste("p", ddg.pnum, sep = "")
         .ddg.record.edge(etype, node1, node2)
-        if (.ddg.get("ddg.debug.lib")) {
+        if (.global.get("ddg.debug.lib")) {
             pname1 <- .proc.name(ddg.pnum - 1)
             pname2 <- .proc.name(ddg.pnum)
             print(paste("proc2proc: ", pname1, " ", pname2))
@@ -52,7 +52,7 @@
     node1 <- paste("d", dn, sep = "")
     node2 <- paste("p", pn, sep = "")
     .ddg.record.edge(etype, node1, node2)
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         print(paste("data2proc: ", dname, " ", pname, sep = ""))
         print(paste("DF ", node1, " ", node2, sep = ""))
     }
@@ -81,11 +81,11 @@
         # Record that the function is linked to a return value.  This is necessary for
         # recursive functions to get linked to their return values correctly.
         if (ret.value) {
-            ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+            ddg.proc.nodes <- .global.get("ddg.proc.nodes")
             ddg.proc.nodes$ddg.ret.linked[pn] <- TRUE
             .global.set("ddg.proc.nodes", ddg.proc.nodes)
         }
-        if (.ddg.get("ddg.debug.lib")) {
+        if (.global.get("ddg.debug.lib")) {
             print(paste("proc2data: ", pname, " ", dname, sep = ""))
             print(paste("DF ", node1, " ", node2, sep = ""))
         }
@@ -102,13 +102,13 @@
     # Get data & procedure numbers.
     dn <- .ddg.data.number(dname, dscope)
     pn <- if (all)
-        .ddg.get("ddg.pnum") else .last.proc.number()
+        .global.get("ddg.pnum") else .last.proc.number()
     # Record in edges table
     etype <- "df.out"
     node1 <- paste("p", pn, sep = "")
     node2 <- paste("d", dn, sep = "")
     .ddg.record.edge(etype, node1, node2)
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         print(paste("lastproc2data:", dname))
         print(paste("DF ", node1, " ", node2, sep = ""))
     }
@@ -120,15 +120,15 @@
 .ddg.record.edge <- function(etype, node1, node2) {
     # Increment edge counter.
     .ddg.inc("ddg.enum")
-    ddg.enum <- .ddg.get("ddg.enum")
+    ddg.enum <- .global.get("ddg.enum")
     # If the table is full, make it bigger.
-    ddg.edges <- .ddg.get("ddg.edges")
+    ddg.edges <- .global.get("ddg.edges")
     if (nrow(ddg.edges) < ddg.enum) {
         size = 100
         new.rows <- data.frame(ddg.num = numeric(size), ddg.type = character(size),
             ddg.from = character(size), ddg.to = character(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.edges", new.rows)
-        ddg.edges <- .ddg.get("ddg.edges")
+        ddg.edges <- .global.get("ddg.edges")
     }
     ddg.edges$ddg.num[ddg.enum] <- ddg.enum
     ddg.edges$ddg.type[ddg.enum] <- etype
@@ -144,7 +144,7 @@
     else
       .json.data.out.edge(ddg.enum, node1, node2)
 
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         if (etype == "cf")
             etype.long <- "control flow" else if (etype == "df.in")
             etype.long <- "data flow in" else etype.long <- "data flow out"

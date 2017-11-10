@@ -31,7 +31,7 @@
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
     # Search data nodes table.
-    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+    ddg.data.nodes <- .global.get("ddg.data.nodes")
     rows <- nrow(ddg.data.nodes)
     for (i in rows:1) {
         if (ddg.data.nodes$ddg.current[i]) {
@@ -65,7 +65,7 @@
 .ddg.data.number <- function(dname, dscope = NULL) {
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
-    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+    ddg.data.nodes <- .global.get("ddg.data.nodes")
     rows <- nrow(ddg.data.nodes)
     for (i in rows:1) {
         if (ddg.data.nodes$ddg.current[i]) {
@@ -154,7 +154,7 @@
         # Record in data node table
         .ddg.record.data(dtype, dname, val, val, dscope, from.env = from.env)
 
-        if (.ddg.get("ddg.debug.lib"))
+        if (.global.get("ddg.debug.lib"))
             print(paste("data.node:", dtype, dname))
     }
     invisible()
@@ -168,9 +168,9 @@
 
 .ddg.data.objects <- function() {
     # Get data node, procedure node, and edge tables.
-    dnodes <- .ddg.get("ddg.data.nodes")
+    dnodes <- .global.get("ddg.data.nodes")
     # Subset data node table
-    dnum <- .ddg.get("ddg.dnum")
+    dnum <- .global.get("ddg.dnum")
     dinv <- dnodes[1:dnum, c("ddg.num", "ddg.name", "ddg.value", "ddg.type", "ddg.scope")]
     # Replace scope with ENV if from initial environment
     index <- which(dnodes$ddg.from.env == TRUE)
@@ -188,7 +188,7 @@
 
 .ddg.record.warning <- function() {
     # Get the saved warning
-    w <- .ddg.get(".ddg.warning")
+    w <- .global.get(".ddg.warning")
     # Create a message that looks like the one R creates
     callStr <- if (is.null(w$call))
         "" else paste("In ", head(deparse(w$call)), ": ")
@@ -211,13 +211,13 @@
     dtime = "", dloc = "", dhash = "", drw = "", dscriptpath = "") {
     # Increment data node counter.
     .ddg.inc("ddg.dnum")
-    ddg.dnum <- .ddg.get("ddg.dnum")
+    ddg.dnum <- .global.get("ddg.dnum")
     # Initialize dscriptpath
-    if (!is.null(.ddg.get("ddg.r.script.path"))) {
-        dscriptpath <- .ddg.get("ddg.r.script.path")
+    if (!is.null(.global.get("ddg.r.script.path"))) {
+        dscriptpath <- .global.get("ddg.r.script.path")
     }
     # If the table is full, make it bigger.
-    ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+    ddg.data.nodes <- .global.get("ddg.data.nodes")
     if (nrow(ddg.data.nodes) < ddg.dnum) {
         size = 100
         new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
@@ -226,7 +226,7 @@
             ddg.time = character(size), ddg.hash = character(size), ddg.rw = character(size),
             ddg.loc = character(size), ddg.current = logical(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.data.nodes", new.rows)
-        ddg.data.nodes <- .ddg.get("ddg.data.nodes")
+        ddg.data.nodes <- .global.get("ddg.data.nodes")
     }
     if (length(dvalue) > 1 || !is.atomic(dvalue))
         dvalue2 <- "complex" else if (!is.null(dvalue))
@@ -250,7 +250,7 @@
     if (dtype == "File") {
         dhash <- md5sum(dname)
         ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
-        longpath <- paste0(getwd(), substring(.ddg.get("ddg.path"), 2))
+        longpath <- paste0(getwd(), substring(.global.get("ddg.path"), 2))
     }
     ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
     .global.set("ddg.data.nodes", ddg.data.nodes)
@@ -261,7 +261,7 @@
       # Output data node.
     .json.data.node(ddg.dnum, dname, dvalue2, val.type, dtype, dscope, from.env,
         dhash, dtime, dloc)
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         if (dtype != "File") {
             print(paste("Adding data node", ddg.dnum, "named", dname, "with scope",
                 dscope, " and value ", ddg.data.nodes$ddg.value[ddg.dnum]))

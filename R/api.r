@@ -43,7 +43,7 @@ prov.capture <- function(r.script.path = NULL,
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(
       if (!is.null(r.script.path))
-        prov.source(.ddg.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
+        prov.source(.global.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
     )
     invisible()
 }
@@ -67,11 +67,11 @@ ddg.annotate.on <- function(fnames = NULL) {
         return()
     }
     # Add to the on list
-    on.list <- .ddg.get("ddg.annotate.on")
+    on.list <- .global.get("ddg.annotate.on")
     on.list <- union(on.list, fnames)
     .global.set("ddg.annotate.on", on.list)
     # Remove from the off list
-    off.list <- .ddg.get("ddg.annotate.off")
+    off.list <- .global.get("ddg.annotate.off")
     off.list <- Filter(function(off) !(off %in% fnames), off.list)
     .global.set("ddg.annotate.off", off.list)
 }
@@ -86,11 +86,11 @@ ddg.annotate.off <- function(fnames = NULL) {
         return()
     }
     # Add to the off list
-    off.list <- .ddg.get("ddg.annotate.off")
+    off.list <- .global.get("ddg.annotate.off")
     off.list <- union(off.list, fnames)
     .global.set("ddg.annotate.off", off.list)
     # Remove from the on list
-    on.list <- .ddg.get("ddg.annotate.on")
+    on.list <- .global.get("ddg.annotate.on")
     on.list <- Filter(function(on) !(on %in% fnames), on.list)
     .global.set("ddg.annotate.on", on.list)
 }
@@ -117,12 +117,12 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
     verbose = getOption("verbose"), max.deparse.length = 150, chdir = FALSE, encoding = getOption("encoding"),
     ignore.ddg.calls = TRUE, ignore.init = ignore.ddg.calls, force.console = ignore.init) {
     # Store script number & name.
-    snum <- .ddg.get(".ddg.next.script.num")
+    snum <- .global.get(".ddg.next.script.num")
     sname <- basename(file)
     if (snum == 0) {
         df <- data.frame(snum, sname, stringsAsFactors = FALSE)
     } else {
-        df <- rbind(.ddg.get(".ddg.sourced.scripts"), c(snum, sname))
+        df <- rbind(.global.get(".ddg.sourced.scripts"), c(snum, sname))
     }
     .global.set(".ddg.sourced.scripts", df)
     # Increment script number.
@@ -254,13 +254,13 @@ prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, prin
     if (length(exprs) > 0) {
         # Turn on the console if forced to, keep track of previous setting, parse
         # previous commands if necessary.
-        prev.on <- (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && .ddg.get(".ddg.enable.console")
+        prev.on <- (.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")) && .global.get(".ddg.enable.console")
         if (prev.on && interactive())
             .ddg.console.node()
         if (force.console)
             .ddg.console.on()
         # Let library know that we are sourcing a file.
-        prev.source <- (.global.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")) && (.global.is.set("from.source") && .ddg.get("from.source"))
+        prev.source <- (.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")) && (.global.is.set("from.source") && .global.get("from.source"))
         # Initialize the tables for ddg.capture.
         .global.set("from.source", TRUE)
         # Parse the commands into a console node.

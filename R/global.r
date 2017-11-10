@@ -38,7 +38,7 @@
     return(exists(var, envir = .ddg.env))
 }
 
-.ddg.get <- function(var) {
+.global.get <- function(var) {
     if (!.global.is.set(var)) {
         error.msg <- paste("No binding for", var, ". DDG may be incorrect!")
         .ddg.insert.error.message(error.msg)
@@ -56,17 +56,17 @@
 
 ##### Mutators for specific common actions
 .ddg.inc <- function(var) {
-    value <- .ddg.get(var)
+    value <- .global.get(var)
     .global.set(var, value + 1)
 }
 
 .ddg.dec <- function(var) {
-    value <- .ddg.get(var)
+    value <- .global.get(var)
     .global.set(var, value - 1)
 }
 
 .ddg.append.activity <- function(...) {
-    text <- .ddg.get("ddg.activity")
+    text <- .global.get("ddg.activity")
     if (text != "") {
         text <- paste(text, ",\n")
     }
@@ -74,7 +74,7 @@
 }
 
 .ddg.append.entity <- function(...) {
-    text <- .ddg.get("ddg.entity")
+    text <- .global.get("ddg.entity")
     if (text != "") {
         text <- paste(text, ",\n")
     }
@@ -82,7 +82,7 @@
 }
 
 .ddg.append.wasInformedBy <- function(...) {
-    text <- .ddg.get("ddg.wasInformedBy")
+    text <- .global.get("ddg.wasInformedBy")
     if (text != "") {
         text <- paste(text, ",\n")
     }
@@ -90,7 +90,7 @@
 }
 
 .ddg.append.wasGeneratedBy <- function(...) {
-    text <- .ddg.get("ddg.wasGeneratedBy")
+    text <- .global.get("ddg.wasGeneratedBy")
     if (text != "") {
         text <- paste(text, ",\n")
     }
@@ -98,7 +98,7 @@
 }
 
 .ddg.append.used <- function(...) {
-    text <- .ddg.get("ddg.used")
+    text <- .global.get("ddg.used")
     if (text != "") {
         text <- paste(text, ",\n")
     }
@@ -106,7 +106,7 @@
 }
 
 .ddg.add.rows <- function(df, new.rows) {
-    table <- .ddg.get(df)
+    table <- .global.get(df)
     .global.set(df, rbind(table, new.rows))
 }
 

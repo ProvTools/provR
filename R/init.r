@@ -55,7 +55,7 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     .global.set("ddg.save.to.disk", FALSE)
     # Reset r.script.path if RMarkdown file
     if (!is.null(r.script.path) && tools::file_ext(r.script.path) == "Rmd") {
-        output.path <- paste(paste(.ddg.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
+        output.path <- paste(paste(.global.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
             ".R", sep = "")
         .ddg.markdown(r.script.path, output.path)
         .global.set("ddg.r.script.path", output.path)

@@ -35,7 +35,7 @@
 .elapsed.time <- function() {
     time <- proc.time()
     if (.global.is.set(".ddg.proc.start.time"))
-      start <- .ddg.get(".ddg.proc.start.time")
+      start <- .global.get(".ddg.proc.start.time")
     else
       start <- 0
     elapsed <- time[1] + time[2] - start

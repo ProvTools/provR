@@ -54,7 +54,7 @@
     environ <- paste(environ, .json.nv("rdt:operatingSystem", .Platform$OS.type), sep = "")
     environ <- paste(environ, .json.nv("rdt:language", "R"), sep = "")
     environ <- paste(environ, .json.nv("rdt:rVersion", R.Version()$version), sep = "")
-    ddg.r.script.path <- .ddg.get("ddg.r.script.path")
+    ddg.r.script.path <- .global.get("ddg.r.script.path")
     if (!is.null(ddg.r.script.path)) {
         script <- ddg.r.script.path
         sourced.scripts <- .ddg.sourced.script.names.json()
@@ -69,8 +69,8 @@
     environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n", sep = "")
     environ <- paste(environ, .json.nv("rdt:scriptTimeStamp", script.timestamp), sep = "")
     environ <- paste(environ, .json.nv("rdt:workingDirectory", getwd()), sep = "")
-    environ <- paste(environ, .json.nv("rdt:ddgDirectory", .ddg.get("ddg.path")), sep = "")
-    environ <- paste(environ, .json.nv("rdt:ddgTimeStamp", .ddg.get("ddg.start.time")), sep = "")
+    environ <- paste(environ, .json.nv("rdt:ddgDirectory", .global.get("ddg.path")), sep = "")
+    environ <- paste(environ, .json.nv("rdt:ddgTimeStamp", .global.get("ddg.start.time")), sep = "")
     environ <- paste(environ, .json.nv("rdt:provRVersion", packageVersion("provR")), sep = "")
     environ <- paste(environ, .json.installedpackages(), sep = "")
     environ <- paste(environ, "\n}", sep = "")
@@ -135,7 +135,7 @@
 # timestamps for the JSON file.
 
 .ddg.sourced.script.names.json <- function() {
-    ss <- .ddg.get(".ddg.sourced.scripts")
+    ss <- .global.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1) {
         output <- "\"\"\n"
@@ -160,11 +160,11 @@
     prefix <- .json.prefix()
     environ <- .json.environ()
     .ddg.append.activity(environ)
-    activity <- .ddg.get("ddg.activity")
-    entity <- .ddg.get("ddg.entity")
-    wasInformedBy <- .ddg.get("ddg.wasInformedBy")
-    wasGeneratedBy <- .ddg.get("ddg.wasGeneratedBy")
-    used <- .ddg.get("ddg.used")
+    activity <- .global.get("ddg.activity")
+    entity <- .global.get("ddg.entity")
+    wasInformedBy <- .global.get("ddg.wasInformedBy")
+    wasGeneratedBy <- .global.get("ddg.wasGeneratedBy")
+    used <- .global.get("ddg.used")
     ddg.json <- paste("{\n\n", prefix, "\"activity\":{\n", activity, "},\n", "\"entity\":{\n",
         entity, "},\n", "\"wasInformedBy\":{\n", wasInformedBy, "},\n", "\"wasGeneratedBy\":{\n",
         wasGeneratedBy, "},\n", "\"used\":{\n", used, "}\n", "}", sep = "")

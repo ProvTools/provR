@@ -27,16 +27,16 @@
 # automatically created when a return call is found ptime - elapsed time env -
 # the environment in which the procedure occurs
 .proc.node <- function(ptype, pname, pvalue = "", console = FALSE, auto.created = FALSE, cmd = NULL) {
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         if (length(pname) > 1) {
             print(sys.calls())
         }
     }
     # We're not in a console node but we're capturing data automatically.
-    if (.ddg.get(".ddg.enable.console")) {
+    if (.global.get(".ddg.enable.console")) {
         # Capture graphic output of previous procedure node.  Comment out this
         # function??? .ddg.auto.graphic.node()
-        if (!console && !(.global.is.set("from.source") && .ddg.get("from.source")) && interactive()) {
+        if (!console && !(.global.is.set("from.source") && .global.get("from.source")) && interactive()) {
             .ddg.console.node()
         }
     }
@@ -49,11 +49,11 @@
     }
     # Record start & finish information
     if (ptype == "Start") {
-        .ddg.starts.open <- .ddg.get(".ddg.starts.open")
+        .ddg.starts.open <- .global.get(".ddg.starts.open")
         .ddg.starts.open <- c(.ddg.starts.open, pname)
         .global.set(".ddg.starts.open", .ddg.starts.open)
     } else if (ptype == "Finish") {
-        .ddg.starts.open <- .ddg.get(".ddg.starts.open")
+        .ddg.starts.open <- .global.get(".ddg.starts.open")
         num.starts.open <- length(.ddg.starts.open)
         if (num.starts.open > 0) {
             last.start.open <- .ddg.starts.open[num.starts.open]
@@ -75,7 +75,7 @@
     # Record in procedure node table
     .record.proc(ptype, pname, pvalue, auto.created, ptime, snum, pos)
     # if (ptype == 'Finish') print(sys.calls())
-    if (.ddg.get("ddg.debug.lib"))
+    if (.global.get("ddg.debug.lib"))
         print(paste("proc.node:", ptype, pname))
 }
 
@@ -94,7 +94,7 @@
 # name
 
 .proc.node.exists <- function(pname) {
-    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -114,7 +114,7 @@
 # value
 
 .proc.number <- function(pname, find.unreturned.function = FALSE) {
-    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -130,7 +130,7 @@
     }
     # Error message if no match is found.
     error.msg <- paste("No procedure node found for", pname)
-    if (.ddg.get("ddg.debug.lib"))
+    if (.global.get("ddg.debug.lib"))
         print(sys.calls())
     .ddg.insert.error.message(error.msg)
     return(0)
@@ -141,7 +141,7 @@
 # .is.proc.node above.
 
 .last.proc.number <- function() {
-    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
     rows <- nrow(ddg.proc.nodes)
     for (i in rows:1) {
         type <- ddg.proc.nodes$ddg.type[i]
@@ -158,12 +158,12 @@
 # pnum - node number in procedure node table.
 
 .proc.name <- function(pnum) {
-    if (pnum < 1 || pnum > .ddg.get("ddg.pnum")) {
+    if (pnum < 1 || pnum > .global.get("ddg.pnum")) {
         error.msg <- paste("No name found for procedure number", pnum)
         .ddg.insert.error.message(error.msg)
         return("")
     }
-    return(.ddg.get("ddg.proc.nodes")$ddg.name[pnum])
+    return(.global.get("ddg.proc.nodes")$ddg.name[pnum])
 }
 
 # ddg.add.abstract.node is exclusively used in .ddg.parse.commands (so far) and
@@ -181,7 +181,7 @@
             node.name <- cmd@abbrev
         }
     }
-    if (.ddg.get("ddg.debug.lib"))
+    if (.global.get("ddg.debug.lib"))
         print(paste(called, ":  Adding", node.name, type, "node"))
     .proc.node(type, node.name, node.name, TRUE, cmd = cmd)
     .ddg.proc2proc()
@@ -198,9 +198,9 @@
     pos = NA) {
     # Increment procedure node counter.
     .ddg.inc("ddg.pnum")
-    ddg.pnum <- .ddg.get("ddg.pnum")
+    ddg.pnum <- .global.get("ddg.pnum")
     # If the table is full, make it bigger.
-    ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
     if (nrow(ddg.proc.nodes) < ddg.pnum) {
         size = 100
         new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
@@ -209,7 +209,7 @@
             ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
             ddg.endCol = numeric(size), stringsAsFactors = FALSE)
         .ddg.add.rows("ddg.proc.nodes", new.rows)
-        ddg.proc.nodes <- .ddg.get("ddg.proc.nodes")
+        ddg.proc.nodes <- .global.get("ddg.proc.nodes")
     }
 
     ddg.proc.nodes$ddg.type[ddg.pnum] <- ptype
@@ -235,7 +235,7 @@
     pname <- gsub("\\\"", "\\\\\"", pname)
     # Output procedure node.
     .json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         print(paste("Adding procedure node", ddg.pnum, "named", pname))
     }
 }

@@ -23,13 +23,13 @@
 # ddg.first.loop returns the value of the parameter first.loop.
 
 ddg.first.loop <- function() {
-    return(.ddg.get("ddg.first.loop"))
+    return(.global.get("ddg.first.loop"))
 }
 
 # ddg.max.loops returns the value of the parameter max.loops.
 
 ddg.max.loops <- function() {
-    return(.ddg.get("ddg.max.loops"))
+    return(.global.get("ddg.max.loops"))
 }
 
 # ddg.loop.annotate.on turns on loop annotation.
@@ -46,18 +46,18 @@ ddg.set.inside.loop <- function() {
     if (!.global.is.set("ddg.inside.loop")) {
         .global.set("ddg.inside.loop", 0)
     } else {
-        .global.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") + 1)
+        .global.set("ddg.inside.loop", .global.get("ddg.inside.loop") + 1)
     }
 }
 
 ddg.not.inside.loop <- function() {
-    .global.set("ddg.inside.loop", .ddg.get("ddg.inside.loop") - 1)
+    .global.set("ddg.inside.loop", .global.get("ddg.inside.loop") - 1)
 }
 
 # ddg.loop.count returns the current count for the specified loop.
 
 ddg.loop.count <- function(loop.num) {
-    ddg.loops <- .ddg.get("ddg.loops")
+    ddg.loops <- .global.get("ddg.loops")
     return(ddg.loops[[loop.num]])
 }
 
@@ -65,7 +65,7 @@ ddg.loop.count <- function(loop.num) {
 # returns the incremented value.
 
 ddg.loop.count.inc <- function(loop.num) {
-    ddg.loops <- .ddg.get("ddg.loops")
+    ddg.loops <- .global.get("ddg.loops")
     ddg.loops[[loop.num]] <- ddg.loops[[loop.num]] + 1
     .global.set("ddg.loops", ddg.loops)
     return(ddg.loops[[loop.num]])
@@ -74,7 +74,7 @@ ddg.loop.count.inc <- function(loop.num) {
 # ddg.reset.loop.count sets the current count for the specified loop to zero.
 
 ddg.reset.loop.count <- function(loop.num) {
-    ddg.loops <- .ddg.get("ddg.loops")
+    ddg.loops <- .global.get("ddg.loops")
     ddg.loops[loop.num] <- 0
     .global.set("ddg.loops", ddg.loops)
 }
@@ -104,7 +104,7 @@ ddg.details.omitted <- function() {
     .proc.node("Incomplete", pnode.name, pnode.name)
     .ddg.proc2proc()
     .global.set("details.omitted", TRUE)
-    if (.ddg.get("ddg.debug.lib")) {
+    if (.global.get("ddg.debug.lib")) {
         print("Adding Details Omitted node")
     }
 }
