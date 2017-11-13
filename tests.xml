@@ -58,7 +58,6 @@
   - HigherOrderFuncTest
   - AssignmentOperatorsTest
   - RMarkdownTest
-  - DDGStatementTest
 
   The target "source-tests" will run the following tests cases:
 
@@ -605,18 +604,6 @@
 		</antcall>
 	</target>
 
-  	<target name="DDGStatementTest">
-  		<antcall target="run-regression-test">
-  			<param name="test-name" value="DDGStatementTest" />
-  		</antcall>
-  	</target>
-
-	<target name="update-DDGStatementTest">
-	  <antcall target="update-regression-expected">
-	  	<param name="test-name" value="DDGStatementTest" />
-	 	</antcall>
-	</target>
-
   <target name="RMarkdownTest">
     <antcall target="run-regression-test-Rmd">
       <param name="test-name" value="RMarkdownTest" />
@@ -633,7 +620,7 @@
 	<target name="normal-tests" depends="S4ObjectTest,
 		ScopeTest, ReturnTest, OddParameterTest, FunctionAnnotationTest,
 		ControlConstructTest, WarningTest, PlotTest, Plot2Test, NoDevOffTest, DataTypeTest,
-		HigherOrderFuncTest, AssignmentOperatorsTest, DDGStatementTest">
+		HigherOrderFuncTest, AssignmentOperatorsTest">
 		<echo>
 
       ##############################################

@@ -129,23 +129,6 @@ ddg.MAX_HIST_LINES <- 2^14
     return(0)
 }
 
-
-
-# .ddg.write.csv takes as input a name-value pair for a variable and attempts to
-# save the data as a csv file. It does not create any edges but does add the node
-# to the DDG. Edge creation should occur from wherever this function is called.
-
-# name - data node name.  value - data node value.  scope - data node scope.
-
-.ddg.write.csv <- function(name, value, scope = NULL, from.env = FALSE) {
-    tryCatch({
-        .snapshot.node(name, "csv", value, dscope = scope, from.env = from.env)
-    }, error = function(e) {
-        .snapshot.node(name, "txt", value, save.object = TRUE, dscope = scope,
-            from.env = from.env)
-    })
-}
-
 # Returns a string representation of the type information of the given value.
 .ddg.get.val.type.string <- function(value) {
     val.type <- .ddg.get.val.type(value)

@@ -294,7 +294,7 @@
     else if (.ddg.is.simple(value))
       .ddg.data.node("Data", name, value, scope, from.env)
     else if (.ddg.is.csv(value))
-      .ddg.write.csv(name, value, scope = scope, from.env = from.env)
+      .ddg.data.node("CSV", name, value, scope, from.env)
     else if (is.list(value) || is.array(value))
       .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
     else if (.ddg.is.object(value))
