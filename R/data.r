@@ -274,19 +274,6 @@
     }
 }
 
-# .ddg.save.simple takes in a simple name-value pair and saves it to the DDG. It
-# does not however create any edges. Extra long strings are saved as snapshots.
-# name - data node name.  value - data node value.  scope - data node scope.
-.ddg.save.simple <- function(name, value, scope = NULL, from.env = FALSE) {
-    # Save extra long strings as snapshot.
-    if (is.character(value) && nchar(value) > 200) {
-        .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
-    } else {
-        # Save the true value.
-        .ddg.data.node("Data", name, value, scope, from.env = from.env)
-    }
-}
-
 # .ddg.save.data takes as input the name and value of a data node that needs to
 # be created. It determines how the data should be output (or saved) and saves it
 # in that format.
@@ -305,7 +292,7 @@
     if (.ddg.is.graphic(value))
       .ddg.write.graphic(name, value, graphic.fext, scope = scope, from.env = from.env)
     else if (.ddg.is.simple(value))
-      .ddg.save.simple(name, value, scope = scope, from.env = from.env)
+      .ddg.data.node("Data", name, value, scope, from.env)
     else if (.ddg.is.csv(value))
       .ddg.write.csv(name, value, scope = scope, from.env = from.env)
     else if (is.list(value) || is.array(value))
@@ -313,7 +300,7 @@
     else if (.ddg.is.object(value))
       .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
     else if (.ddg.is.function(value))
-      .ddg.save.simple(name, "#ddg.function", scope = scope, from.env = from.env)
+      .ddg.data.node("Data", name, "#ddg.function", scope, from.env)
     else if (error)
       stop("Unable to create data (snapshot) node. Non-Object value to", fname, ".")
     else {

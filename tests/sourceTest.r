@@ -11,6 +11,7 @@
 # Author @Luis Perez
 
 library(methods)
+library(jsonlite)
 library(provR)
 
 ## Directories
@@ -23,7 +24,13 @@ invisible(force(startTime))
 
 # Run the script
 prov.capture("[SCRIPT]", annotate.inside.functions=TRUE)
-cat(prov.json(),file="./prov.json",sep="")
+str <- prov.json()
+myjson <- toJSON(str)
+if(!validate(myjson)){
+  cat("Not correct json.",file="./prov.json",sep="")
+  quit(status=-1)
+}
+cat(str,file="./prov.json",sep="")
 
 # Calculate total time of execution
 endTime <- Sys.time()
