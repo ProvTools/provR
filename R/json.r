@@ -57,7 +57,7 @@
     ddg.r.script.path <- .global.get("ddg.r.script.path")
     if (!is.null(ddg.r.script.path)) {
         script <- ddg.r.script.path
-        sourced.scripts <- .ddg.sourced.script.names.json()
+        sourced.scripts <- .json.sourced.script.names()
         script.timestamp <- .format.time(file.info(ddg.r.script.path)$mtime)
     } else {
         script <- ""
@@ -151,10 +151,10 @@
     .global.set("ddg.used", paste(text, jstr, sep = ""))
 }
 
-# .ddg.sourced.script.names.json returns sourced script names, numbers and
+# .json.sourced.script.names returns sourced script names, numbers and
 # timestamps for the JSON file.
 
-.ddg.sourced.script.names.json <- function() {
+.json.sourced.script.names <- function() {
     ss <- .global.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1) {
