@@ -9,7 +9,7 @@
 "p1" : {
 "rdt:name" : "Plot2Test.R",
 "rdt:type" : "Start",
-"rdt:elapsedTime" : "0.21",
+"rdt:elapsedTime" : "0.217",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -20,7 +20,7 @@
 "p2" : {
 "rdt:name" : "f1 <- function() {    nums <- c(1, 3, 6, 4, 9)    pdf(\"nums.",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.234",
+"rdt:elapsedTime" : "0.233",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "3",
 "rdt:startCol" : "1",
@@ -31,7 +31,7 @@
 "p3" : {
 "rdt:name" : "f1()",
 "rdt:type" : "Start",
-"rdt:elapsedTime" : "0.312",
+"rdt:elapsedTime" : "0.316",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -42,7 +42,7 @@
 "p4" : {
 "rdt:name" : "f1",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.312",
+"rdt:elapsedTime" : "0.317",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -53,7 +53,7 @@
 "p5" : {
 "rdt:name" : "nums <- c(1, 3, 6, 4, 9)",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.469",
+"rdt:elapsedTime" : "0.499",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "4",
 "rdt:startCol" : "3",
@@ -64,7 +64,7 @@
 "p6" : {
 "rdt:name" : "pdf(\"nums.pdf\")",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.768",
+"rdt:elapsedTime" : "0.814",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "5",
 "rdt:startCol" : "3",
@@ -75,7 +75,7 @@
 "p7" : {
 "rdt:name" : "plot(nums)",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.775",
+"rdt:elapsedTime" : "0.821",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "6",
 "rdt:startCol" : "3",
@@ -86,7 +86,7 @@
 "p8" : {
 "rdt:name" : "dev.off()",
 "rdt:type" : "Operation",
-"rdt:elapsedTime" : "0.826",
+"rdt:elapsedTime" : "0.837",
 "rdt:scriptNum" : "0",
 "rdt:startLine" : "7",
 "rdt:startCol" : "3",
@@ -97,7 +97,7 @@
 "p9" : {
 "rdt:name" : "f1()",
 "rdt:type" : "Finish",
-"rdt:elapsedTime" : "0.849",
+"rdt:elapsedTime" : "0.892",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -108,7 +108,7 @@
 "p10" : {
 "rdt:name" : "Plot2Test.R",
 "rdt:type" : "Finish",
-"rdt:elapsedTime" : "0.85",
+"rdt:elapsedTime" : "0.892",
 "rdt:scriptNum" : "NA",
 "rdt:startLine" : "NA",
 "rdt:startCol" : "NA",
@@ -128,7 +128,7 @@
 "rdt:scriptTimeStamp" : "2017-11-02T13.54.03GMT",
 "rdt:workingDirectory" : "[DIR]",
 "rdt:ddgDirectory" : "",
-"rdt:ddgTimeStamp" : "2017-11-13T22.01.13GMT",
+"rdt:ddgTimeStamp" : "2017-11-13T23.37.52GMT",
 "rdt:provRVersion" : "0.1.0",
 "rdt:installedPackages" : [
 	{"package" : "base", "version" : "3.4.1"},
@@ -147,7 +147,7 @@
 "rdt:name" : "f1",
 "rdt:value" : "#ddg.function",
 "rdt:valType" : {"container":"vector", "dimension":[1], "type":["character"]},
-"rdt:type" : "Data",
+"rdt:type" : "Function",
 "rdt:scope" : "R_GlobalEnv",
 "rdt:fromEnv" : "FALSE",
 "rdt:MD5hash" : "",
@@ -160,7 +160,7 @@
 "rdt:value" : "1,3,6,4,9",
 "rdt:valType" : {"container":"vector", "dimension":[1], "type":["character"]},
 "rdt:type" : "CSV",
-"rdt:scope" : "0x72a433cc50",
+"rdt:scope" : "0x6538a05758",
 "rdt:fromEnv" : "FALSE",
 "rdt:MD5hash" : "",
 "rdt:timestamp" : "",
@@ -198,8 +198,8 @@
 "rdt:type" : "File",
 "rdt:scope" : "undefined",
 "rdt:fromEnv" : "FALSE",
-"rdt:MD5hash" : "6c50cbb2ef97f1dc843948c62a1055ff",
-"rdt:timestamp" : "2017-11-13T22.01.14GMT",
+"rdt:MD5hash" : "de3d71b29331884e9eafd419ee860c91",
+"rdt:timestamp" : "2017-11-13T23.37.53GMT",
 "rdt:location" : "[DIR]/dev.off.5.pdf"
 } ,
 

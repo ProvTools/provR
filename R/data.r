@@ -300,7 +300,7 @@
     else if (.ddg.is.object(value))
       .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
     else if (.ddg.is.function(value))
-      .ddg.data.node("Data", name, "#ddg.function", scope, from.env)
+      .ddg.data.node("Function", name, "#ddg.function", scope, from.env)
     else if (error)
       stop("Unable to create data (snapshot) node. Non-Object value to", fname, ".")
     else {
