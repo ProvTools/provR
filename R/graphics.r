@@ -135,7 +135,7 @@
             # Add an input edge from the current device
             dev.node.name <- paste0("dev.", dev.number)
             # If the device was opened but never written to there will be no node.
-            if (.ddg.data.node.exists(dev.node.name)) {
+            if (.data.node.exists(dev.node.name)) {
                 .ddg.data2proc(dev.node.name, NULL, proc.node.name)
             }
             .global.set("possible.graphics.files.open", NULL)
@@ -151,7 +151,7 @@
         # Add an input edge from the current device
         dev.node.name <- paste0("dev.", dev.cur())
         # If the device was opened but never written to there will be no node.
-        if (.ddg.data.node.exists(dev.node.name)) {
+        if (.data.node.exists(dev.node.name)) {
             .ddg.data2proc(dev.node.name, NULL, proc.node.name)
         }
     }

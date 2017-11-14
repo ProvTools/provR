@@ -20,14 +20,14 @@
 #
 # Contact: Matthew Lau <matthewklau@fas.harvard.edu>
 
-# .ddg.data.node.exists searches the data node table for a matching data node and
+# .data.node.exists searches the data node table for a matching data node and
 # returns TRUE if a match is found. Otherwise it searches the initial environment
 # table and, if a match is found, creates a data node and returns TRUE. Otherwise
 # it returns FALSE.
 
 # dname - data node name.  dscope - data node scope.
 
-.ddg.data.node.exists <- function(dname, dscope = NULL) {
+.data.node.exists <- function(dname, dscope = NULL) {
     if (is.null(dscope))
         dscope <- .ddg.get.scope(dname)
     # Search data nodes table.

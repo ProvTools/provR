@@ -206,7 +206,7 @@ ddg.MAX_HIST_LINES <- 2^14
     for (var in vars.used) {
         # Make sure there is a node we could connect to.
         scope <- .ddg.get.scope(var, for.caller)
-        if (.ddg.data.node.exists(var, scope)) {
+        if (.data.node.exists(var, scope)) {
             nRow <- which(vars.set$variable == var)
             # check if the node is written in the console block.
             if (length(nRow) > 0) {
@@ -782,7 +782,7 @@ ddg.MAX_HIST_LINES <- 2^14
             .ddg.proc2proc()
             for (var in vars.used) {
                 param.scope <- .ddg.get.scope(var, for.caller = TRUE, calls = stack)
-                if (.ddg.data.node.exists(var, param.scope)) {
+                if (.data.node.exists(var, param.scope)) {
                   .ddg.data2proc(as.character(var), param.scope, binding.node.name)
                   if (.global.get("ddg.debug.lib"))
                     print(paste("param:", var))
@@ -807,7 +807,7 @@ ddg.MAX_HIST_LINES <- 2^14
     .proc.node("Operation", pname, pname, auto.created = auto.created)
     # Link to the definition of the function if the function is defined in this
     # script.
-    if (.ddg.data.node.exists(pname, environmentName(.GlobalEnv))) {
+    if (.data.node.exists(pname, environmentName(.GlobalEnv))) {
         .ddg.data2proc(pname, environmentName(.GlobalEnv), pname)
     }
     if (length(full.call) > 1) {
@@ -817,7 +817,7 @@ ddg.MAX_HIST_LINES <- 2^14
             # case.
             if (!is.null(formal) && formal != "") {
                 formal.scope <- .ddg.get.scope(formal, calls = stack)
-                if (.ddg.data.node.exists(formal, formal.scope)) {
+                if (.data.node.exists(formal, formal.scope)) {
                   .ddg.data2proc(formal, formal.scope, pname)
                 }
             }

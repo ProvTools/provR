@@ -92,7 +92,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
             # entire function and param is an actual funciton parameter (the second case).
             scope <- .ddg.get.scope(param, calls = stack)
             if (.ddg.is.local(param, function.scope)) {
-                if (.ddg.data.node.exists(param, scope)) {
+                if (.data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
                   if (.global.get("ddg.debug.lib"))
                     print(paste("param:", param))
@@ -100,17 +100,17 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
                   error.msg <- paste("No data node found for local", param)
                   .ddg.insert.error.message(error.msg)
                 }
-            } else if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
+            } else if (scope != "undefined" && .data.node.exists(param, scope)) {
                 .ddg.data2proc(param, scope, pname)
                 if (.global.get("ddg.debug.lib"))
                   print(paste("param:", param))
             } else {
                 scope <- .ddg.get.scope(param, for.caller = TRUE, calls = stack)
-                if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
+                if (scope != "undefined" && .data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
                   if (.global.get("ddg.debug.lib"))
                     print(paste("param:", param))
-                } else if (.ddg.data.node.exists(param, "undefined")) {
+                } else if (.data.node.exists(param, "undefined")) {
                   # This could be the case if the parameter is the name of a file rather than a
                   # variable in the program.
                   .ddg.data2proc(param, "undefined", pname)
@@ -293,7 +293,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         for (var in vars.used) {
             # Make sure there is a node we could connect to.
             scope <- .ddg.get.scope(var)
-            if (.ddg.data.node.exists(var, scope)) {
+            if (.data.node.exists(var, scope)) {
                 .ddg.data2proc(var, scope, ret.stmt@abbrev)
             }
         }

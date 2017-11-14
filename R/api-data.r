@@ -126,17 +126,17 @@ ddg.data.in <- function(dname, pname = NULL) {
     if (!is.character(arg)) {
         argname <- deparse(arg)
         dscope <- .ddg.get.scope(argname)
-        if (.ddg.data.node.exists(argname, dscope)) {
+        if (.data.node.exists(argname, dscope)) {
             dname <- argname
         } else {
             dscope <- .ddg.get.scope(argname, for.caller = TRUE)
-            if (.ddg.data.node.exists(argname, dscope)) {
+            if (.data.node.exists(argname, dscope)) {
                 dname <- argname
             } else {
                 # This case is for file names.  The table records the file name, using the scope
                 # 'undefined'.
                 dscope <- "undefined"
-                if (!is.character(dname) || !.ddg.data.node.exists(dname, dscope)) {
+                if (!is.character(dname) || !.data.node.exists(dname, dscope)) {
                   error.msg <- paste("No data node found for", arg)
                   .ddg.insert.error.message(error.msg)
                   return()
