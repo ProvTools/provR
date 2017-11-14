@@ -322,9 +322,10 @@
         # (because that last command has now become a collapsible
         # node). Matching a last command means that the last command
         # is set, is not NULL, and is equal to the current command.
-        last.proc.node.created <-
-            if (.global.is.set (".ddg.last.proc.node.created")).global.get(".ddg.last.proc.node.created")
-            else ""
+        if (.global.is.set (".ddg.last.proc.node.created"))
+          last.proc.node.created <- .global.get(".ddg.last.proc.node.created")
+        else
+          last.proc.node.created <- ""
         create.procedure <- create && (!cur.cmd.closed || !named.node.set) && !start.finish.created  && !grepl("^ddg.source", cmd@text)
         # We want to create a procedure node for this command.
         if (create.procedure) {
