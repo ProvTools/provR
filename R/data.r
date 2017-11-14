@@ -214,9 +214,9 @@
     .global.inc("ddg.dnum")
     ddg.dnum <- .global.get("ddg.dnum")
     # Initialize dscriptpath
-    if (!is.null(.global.get("ddg.r.script.path"))) {
+    if (!is.null(.global.get("ddg.r.script.path")))
         dscriptpath <- .global.get("ddg.r.script.path")
-    }
+
     # If the table is full, make it bigger.
     ddg.data.nodes <- .global.get("ddg.data.nodes")
     if (nrow(ddg.data.nodes) < ddg.dnum) {
@@ -230,8 +230,11 @@
         ddg.data.nodes <- .global.get("ddg.data.nodes")
     }
     if (length(dvalue) > 1 || !is.atomic(dvalue))
-        dvalue2 <- "complex" else if (!is.null(dvalue))
-        dvalue2 <- dvalue else dvalue2 <- ""
+      dvalue2 <- "complex"
+    else if (!is.null(dvalue))
+      dvalue2 <- dvalue
+    else
+      dvalue2 <- ""
     # get value type
     val.type <- .ddg.get.val.type.string(value)
 
