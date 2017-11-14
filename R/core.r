@@ -71,90 +71,6 @@ ddg.MAX_HIST_LINES <- 2^14
     return(0)
 }
 
-# Returns a string representation of the type information of the given value.
-.ddg.get.val.type.string <- function(value) {
-    val.type <- .ddg.get.val.type(value)
-    if (is.null(val.type))
-        return("null")
-    # list, object, environment, function, language
-    if (length(val.type) == 1)
-        return(paste("\"", val.type, "\"", sep = ""))
-    # vector, matrix, array, data frame type information recorded in a list of 3
-    # vectors (container,dimension,type)
-    container <- val.type[[1]]
-    dimension <- val.type[[2]]
-    type <- val.type[[3]]
-    # vector: a 1-dimensional array (uniform typing)
-    if (identical(container, "vector"))
-        return(paste("{\"container\":\"vector\", \"dimension\":[", dimension, "], \"type\":[\"",
-            type, "\"]}", sep = ""))
-    # matrix: a 2-dimensional array (uniform typing)
-    if (identical(container, "matrix")) {
-        dimension <- paste(dimension, collapse = ",")
-        return(paste("{\"container\":\"matrix\", \"dimension\":[", dimension, "], \"type\":[\"",
-            type, "\"]}", sep = ""))
-    }
-    # array: n-dimensional (uniform typing)
-    if (identical(container, "array")) {
-        dimension <- paste(dimension, collapse = ",")
-        return(paste("{\"container\":\"array\", \"dimension\":[", dimension, "], \"type\":[\"",
-            type, "\"]}", sep = ""))
-    }
-    # data frame: is a type of list
-    dimension <- paste(dimension, collapse = ",")
-    type <- paste(type, collapse = "\",\"")
-    return(paste("{\"container\":\"data_frame\", \"dimension\":[", dimension, "], \"type\":[\"",
-        type, "\"]}", sep = ""))
-}
-
-
-# Returns the type information of the value of the given variable.  Does not
-# contain information on dimensions.
-
-.ddg.get.val.type.from.var <- function(var) {
-    val.type <- .ddg.get.val.type(get(var))
-    # remove dimension information, if any
-    if (length(val.type) > 1)
-        val.type[2] <- NULL
-    return(val.type)
-}
-
-
-# Returns the type information of the given value, broken into its parts and
-# returned in a vecctor or a list.
-
-.ddg.get.val.type <- function(value) {
-    # vector: a 1-dimensional array (uniform typing)
-    if (is.vector(value))
-        return(list("vector", length(value), class(value)))
-    # matrix: a 2-dimensional array (uniform typing)
-    if (is.matrix(value))
-        return(list("matrix", dim(value), class(value[1])))
-    # array: n-dimensional (uniform typing)
-    if (is.array(value))
-        return(list("array", dim(value), class(value[1])))
-    # data frame: is a type of list
-    if (is.data.frame(value)) {
-        types <- unname(sapply(value, class))
-        return(unname(list("data_frame", dim(value), types)))
-    }
-    # a list
-    if (is.list(value))
-        return("list")
-    # an object
-    if (is.object(value))
-        return("object")
-    # envrionment, function, language
-    if (is.environment(value))
-        return("environment")
-    if (is.function(value))
-        return("function")
-    if (is.language(value))
-        return("language")
-    # none of the above - null is a character, not NULL or NA
-    return(NULL)
-}
-
 # .ddg.is.nonlocal.assign returns TRUE if the object passed is an expression
 # object containing a non-local assignment.
 # expr - input expression.
@@ -274,10 +190,6 @@ ddg.MAX_HIST_LINES <- 2^14
     }
     return(vars.set)
 }
-
-
-
-
 
 # .ddg.create.data.use.edges.for.console.cmd creates a data flow edge from the
 # node for each variable used in cmd.expr to the procedural node labeled cmd, as
@@ -712,17 +624,6 @@ ddg.MAX_HIST_LINES <- 2^14
     }
     .ddg.data.node("Exception", msg.type, msg, scope)
     .ddg.lastproc2data(msg.type, dscope = scope)
-}
-
-# .ddg.delete.temp deletes any temporary files created during the processing of a
-# script. These include the temporary history file.
-
-.ddg.delete.temp <- function() {
-    # Delete the temporary history file if we made it.
-    if (.global.is.set("ddg.history.file"))
-        unlink(.global.get("ddg.history.file"))
-    # Clear the environment.
-    .ddg.env <- new.env(parent = emptyenv())
 }
 
 # .ddg.create.output.nodes creates output nodes for ddg.function and
@@ -1236,48 +1137,6 @@ ddg.MAX_HIST_LINES <- 2^14
     }
     writeLines(annotated, output.path)
     r.script.path
-}
-
-# .ddg.save.debug.files saves debug files to the debug directory.
-
-.ddg.save.debug.files <- function() {
-    # Save initial environment table to file.
-    fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/initial-environment.csv", sep = "")
-    ddg.initial.env <- .global.get("ddg.initial.env")
-    write.csv(ddg.initial.env, fileout, row.names = FALSE)
-    # Save procedure nodes table to file.
-    fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/procedure-nodes.csv", sep = "")
-    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
-    ddg.proc.nodes <- ddg.proc.nodes[ddg.proc.nodes$ddg.num > 0, ]
-    write.csv(ddg.proc.nodes, fileout, row.names = FALSE)
-    # Save data nodes table to file.
-    fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/data-nodes.csv", sep = "")
-    ddg.data.nodes <- .global.get("ddg.data.nodes")
-    ddg.data.nodes2 <- ddg.data.nodes[ddg.data.nodes$ddg.num > 0, ]
-    write.csv(ddg.data.nodes2, fileout, row.names = FALSE)
-    # Save edges table to file.
-    fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/edges.csv", sep = "")
-    ddg.edges <- .global.get("ddg.edges")
-    ddg.edges2 <- ddg.edges[ddg.edges$ddg.num > 0, ]
-    write.csv(ddg.edges2, fileout, row.names = FALSE)
-    # Save function return table to file.
-    fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/function-returns.csv", sep = "")
-    ddg.returns <- .global.get(".ddg.ret.values")
-    ddg.returns2 <- ddg.returns[ddg.returns$ret.node.id > 0, ]
-    write.csv(ddg.returns2, fileout, row.names = FALSE)
-    # Save if script is sourced.
-    if (.global.get(".ddg.is.sourced")) {
-        # Save sourced script table to file.
-        fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/sourced-scripts.csv", sep = "")
-        ddg.sourced.scripts <- .global.get(".ddg.sourced.scripts")
-        ddg.sourced.scripts2 <- ddg.sourced.scripts[ddg.sourced.scripts$snum >= 0,
-            ]
-        write.csv(ddg.sourced.scripts2, fileout, row.names = FALSE)
-        # Save data object table to file.
-        fileout <- paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/data-objects.csv", sep = "")
-        ddg.data.objects <- .ddg.data.objects()
-        write.csv(ddg.data.objects, fileout, row.names = FALSE)
-    }
 }
 
 #--------------------USER FUNCTIONS-----------------------#
