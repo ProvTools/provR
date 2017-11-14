@@ -27,11 +27,8 @@
 # Note: this setting has no effect on some systems.
 ddg.MAX_HIST_LINES <- 2^14
 
-
-
 # .ddg.sourced.script.names returns a string containing the names of sourced
 # scripts, if any. If no scripts were sourced it returns an empty string.
-
 .ddg.sourced.script.names <- function() {
     ss <- .global.get(".ddg.sourced.scripts")
     # First row is main script.
@@ -51,51 +48,6 @@ ddg.MAX_HIST_LINES <- 2^14
     installed <- packages[packages[, 2] == "*", ]
     installed <- installed[, c(1, 3)]
     return(installed)
-}
-
-# .ddg.is.simple returns TRUE if the value passed in is a simple data value which
-# should be saved locally as opposed to stored in a separate file. The assumption
-# is that the value passed in has already been declared not to be a graphic.
-
-# value - input value.
-
-.ddg.is.simple <- function(value) {
-    # Note that is.vector returns TRUE for lists, so we need to check lists
-    # separately.  Since every value in a list can have a different type, if it is a
-    # list, we will assume the value is complex. We consider NULL values to be
-    # simple.
-    return((!.ddg.is.graphic(value) && !is.list(value) && is.vector(value) && length(value) ==
-        1) || is.null(value))
-}
-
-# .ddg.is.csv returns TRUE if the value passed in should be saved as a csv file,
-# i.e. if it is a vector, matrix, or data frame.  Note that is.vector returns
-# TRUE for lists.
-
-# value - input value.
-
-.ddg.is.csv <- function(value) {
-    return(!.ddg.is.simple(value) && ((is.vector(value) && !is.list(value)) || is.matrix(value) ||
-        is.data.frame(value)))
-}
-
-
-# .ddg.is.object returns TRUE if the value is determined to be an object by our
-# standards.
-
-# value - input value.
-
-.ddg.is.object <- function(value) {
-    return(is.object(value) || is.environment(value))
-}
-
-# .ddg.is.function returns TRUE if the value is determined to be a function or we
-# want to save it as a function.
-
-# value - input value.
-
-.ddg.is.function <- function(value) {
-    return(is.function(value))
 }
 
 # .ddg.dev.change determines whether or not a new graphic device has become

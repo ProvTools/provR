@@ -274,6 +274,28 @@
     }
 }
 
+# .ddg.is.simple returns TRUE if the value passed in is a simple data value which
+# should be saved locally as opposed to stored in a separate file. The assumption
+# is that the value passed in has already been declared not to be a graphic.
+# value - input value.
+.ddg.is.simple <- function(value) {
+    # Note that is.vector returns TRUE for lists, so we need to check lists
+    # separately.  Since every value in a list can have a different type, if it is a
+    # list, we will assume the value is complex. We consider NULL values to be
+    # simple.
+    return((!.ddg.is.graphic(value) && !is.list(value) && is.vector(value) && length(value) ==
+        1) || is.null(value))
+}
+
+# .ddg.is.csv returns TRUE if the value passed in should be saved as a csv file,
+# i.e. if it is a vector, matrix, or data frame.  Note that is.vector returns
+# TRUE for lists.
+# value - input value.
+.ddg.is.csv <- function(value) {
+    return(!.ddg.is.simple(value) && ((is.vector(value) && !is.list(value)) || is.matrix(value) ||
+        is.data.frame(value)))
+}
+
 # .ddg.save.data takes as input the name and value of a data node that needs to
 # be created. It determines how the data should be output (or saved) and saves it
 # in that format.
@@ -297,9 +319,9 @@
       .ddg.data.node("CSV", name, value, scope, from.env)
     else if (is.list(value) || is.array(value))
       .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
-    else if (.ddg.is.object(value))
+    else if (is.object(value) || is.environment(value))
       .snapshot.node(name, "txt", value, dscope = scope, from.env = from.env)
-    else if (.ddg.is.function(value))
+    else if (is.function(value))
       .ddg.data.node("Function", name, "#ddg.function", scope, from.env)
     else if (error)
       stop("Unable to create data (snapshot) node. Non-Object value to", fname, ".")
