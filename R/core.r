@@ -27,17 +27,7 @@
 # Note: this setting has no effect on some systems.
 ddg.MAX_HIST_LINES <- 2^14
 
-# .ddg.init.environ() sets up the filesystem and R environments for use.
-.ddg.init.environ <- function() {
-    dir.create(.global.get("ddg.path"), showWarnings = FALSE)
-    dir.create(paste(.global.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
-    dir.create(paste(.global.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
-    dir.create(paste(.global.get("ddg.path"), "/scripts", sep = ""), showWarnings = FALSE)
-    if (interactive() && .global.get(".ddg.enable.console")) {
-        .global.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
-        Sys.setenv(R_HISTSIZE = ddg.MAX_HIST_LINES)
-    }
-}
+
 
 # .ddg.sourced.script.names returns a string containing the names of sourced
 # scripts, if any. If no scripts were sourced it returns an empty string.

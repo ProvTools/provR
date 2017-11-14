@@ -42,6 +42,18 @@
     .global.set("ddg.initial.env", ddg.initial.env)
 }
 
+# .ddg.init.environ() sets up the filesystem and R environments for use.
+.ddg.init.environ <- function() {
+    dir.create(.global.get("ddg.path"), showWarnings = FALSE)
+    dir.create(paste(.global.get("ddg.path"), "/data", sep = ""), showWarnings = FALSE)
+    dir.create(paste(.global.get("ddg.path"), "/debug", sep = ""), showWarnings = FALSE)
+    dir.create(paste(.global.get("ddg.path"), "/scripts", sep = ""), showWarnings = FALSE)
+    if (interactive() && .global.get(".ddg.enable.console")) {
+        .global.set("ddg.original.hist.size", Sys.getenv("R_HISTSIZE"))
+        Sys.setenv(R_HISTSIZE = ddg.MAX_HIST_LINES)
+    }
+}
+
 # .ddg.init.tables creates data frames to store the initial environment,
 # procedure nodes, data nodes, edges, function return values, and checkpoints. It
 # also initializes selected constants and variables.  Tables are saved as
