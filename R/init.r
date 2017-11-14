@@ -24,7 +24,7 @@
 # place the variables in our own environment.  These functions make that
 # environment easier to use.
 .onLoad <- function(libname, pkgname) {
-    .ddg.init.tables()
+    .init.globals()
 }
 
 # .ddg.get.initial.env creates a table of non-ddg objects present in the R
@@ -54,12 +54,12 @@
     }
 }
 
-# .ddg.init.tables creates data frames to store the initial environment,
+# .init.globals creates data frames to store the initial environment,
 # procedure nodes, data nodes, edges, function return values, and checkpoints. It
 # also initializes selected constants and variables.  Tables are saved as
 # tab-delimited files in ddg.save.
 
-.ddg.init.tables <- function() {
+.init.globals <- function() {
     size <- 100
     .ddg.get.initial.env()
     .global.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
@@ -173,7 +173,7 @@
 # generates timestamp for ddg directory
 prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
     annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10) {
-    .ddg.init.tables()
+    .init.globals()
     # Setting the path for the ddg
     if (is.null(ddgdir)) {
         # Default is the file where the script is located
