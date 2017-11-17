@@ -597,9 +597,6 @@ ddg.MAX_HIST_LINES <- 2^14
     if (file.exists(file.loc)) {
         # Create file node in DDG.
         dpfile.out <- .ddg.file.node(dtype, fname, dname, dscope)
-        if (.global.get("ddg.save.to.disk")) {
-            file.copy(file.loc, dpfile.out, overwrite = TRUE)
-        }
     } else {
         error.msg <- paste("File to copy does not exist:", fname)
         .ddg.insert.error.message(error.msg)
