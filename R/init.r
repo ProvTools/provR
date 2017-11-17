@@ -27,10 +27,15 @@
     .init.globals()
 }
 
-# .ddg.get.initial.env creates a table of non-ddg objects present in the R
-# environment before the script is executed.
+# .init.globals creates data frames to store the initial environment,
+# procedure nodes, data nodes, edges, function return values, and checkpoints. It
+# also initializes selected constants and variables.  Tables are saved as
+# tab-delimited files in ddg.save.
+.init.globals <- function() {
+    size <- 100
 
-.ddg.get.initial.env <- function() {
+    # creates a table of non-ddg objects present in the R environment before
+    # the script is executed.
     e <- globalenv()
     e.ls <- ls(e, all.names = TRUE)
     not.ddg.func <- function(name) {
@@ -40,16 +45,7 @@
     ddg.initial.env <- data.frame(x)
     colnames(ddg.initial.env) <- "ddg.name"
     .global.set("ddg.initial.env", ddg.initial.env)
-}
 
-# .init.globals creates data frames to store the initial environment,
-# procedure nodes, data nodes, edges, function return values, and checkpoints. It
-# also initializes selected constants and variables.  Tables are saved as
-# tab-delimited files in ddg.save.
-
-.init.globals <- function() {
-    size <- 100
-    .ddg.get.initial.env()
     .global.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
         ddg.name = character(size), ddg.value = character(size), ddg.ret.linked = logical(size),
         ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
