@@ -533,7 +533,6 @@ ddg.MAX_HIST_LINES <- 2^14
 
 # .ddg.save.annotated.script saves a copy of the annotated script to the debug
 # directory.
-
 .ddg.save.annotated.script <- function(cmds, script.name) {
     for (i in 1:length(cmds)) {
         expr <- cmds[[i]]@annotated
@@ -543,7 +542,7 @@ ddg.MAX_HIST_LINES <- 2^14
                 script <- line else script <- append(script, line)
         }
     }
-    fileout <- file(paste(paste(.global.get("ddg.path"), "/debug", sep = ""), "/annotated-", script.name, sep = ""))
+    fileout <- file(paste("./annotated-", script.name, sep = ""))
     write(script, fileout)
     close(fileout)
 }
