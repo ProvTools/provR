@@ -152,7 +152,7 @@
 # of the object that will be turned into a snapshot, not the size of the
 # resulting snapshot.  Addition : overwrite (optional) - default TRUE, if FALSE,
 # generates timestamp for ddg directory
-prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
+prov.init <- function(r.script.path = NULL, overwrite = TRUE, enable.console = TRUE,
     annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10) {
     .init.globals()
     .global.set("ddg.r.script.path", if (is.null(r.script.path)) NULL else normalizePath(r.script.path, winslash = "/"))

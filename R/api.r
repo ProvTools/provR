@@ -35,7 +35,7 @@ prov.capture <- function(r.script.path = NULL,
     enable.console = TRUE, annotate.inside.functions = FALSE, first.loop = 1, max.loops = 1,
     max.snapshot.size = 10, debug = FALSE) {
     # Initiate ddg.
-    prov.init(r.script.path, NULL, FALSE, enable.console, annotate.inside.functions,
+    prov.init(r.script.path, FALSE, enable.console, annotate.inside.functions,
         first.loop, max.loops, max.snapshot.size)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
@@ -43,7 +43,7 @@ prov.capture <- function(r.script.path = NULL,
     # If an R error is generated, get the error message and close the DDG.
     tryCatch(
       if (!is.null(r.script.path))
-        prov.source(.global.get("ddg.r.script.path"), ddgdir = NULL, ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
+        prov.source(.global.get("ddg.r.script.path"), ignore.ddg.calls = FALSE, ignore.init = TRUE, force.console = FALSE)
     )
     invisible()
 }
@@ -113,7 +113,7 @@ ddg.annotate.off <- function(fnames = NULL) {
 # character string.  ignore.ddg.calls (optional) - if TRUE, ignore DDG function
 # calls.  ignore.init (optional) - if TRUE, ignore ddg.init and ddg.run.
 # force.console (optional) - if TRUE, turn console mode on.
-prov.source <- function(file, ddgdir = NULL, local = FALSE, echo = verbose, print.eval = echo,
+prov.source <- function(file, local = FALSE, echo = verbose, print.eval = echo,
     verbose = getOption("verbose"), max.deparse.length = 150, chdir = FALSE, encoding = getOption("encoding"),
     ignore.ddg.calls = TRUE, ignore.init = ignore.ddg.calls, force.console = ignore.init) {
     # Store script number & name.
