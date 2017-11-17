@@ -35,7 +35,7 @@ prov.capture <- function(r.script.path = NULL,
     enable.console = TRUE, annotate.inside.functions = FALSE, first.loop = 1, max.loops = 1,
     max.snapshot.size = 10, debug = FALSE) {
     # Initiate ddg.
-    prov.init(r.script.path, FALSE, enable.console, annotate.inside.functions,
+    prov.init(r.script.path, enable.console, annotate.inside.functions,
         first.loop, max.loops, max.snapshot.size)
     # Set .ddg.is.sourced to TRUE if script provided.
     if (!is.null(r.script.path))
