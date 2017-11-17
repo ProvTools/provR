@@ -96,8 +96,6 @@
     .global.set("prev.device", 0)
     # Store path of current script.
     .global.set("ddg.r.script.path", NULL)
-    # Store path of current ddg.
-    .global.set("ddg.path", NULL)
     # No ddg initialized.
     .global.set(".ddg.initialized", FALSE)
     # No history file.
@@ -157,27 +155,7 @@
 prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, enable.console = TRUE,
     annotate.inside.functions = TRUE, first.loop = 1, max.loops = 1, max.snapshot.size = 10) {
     .init.globals()
-    # Setting the path for the ddg
-    if (is.null(ddgdir)) {
-        # Default is the file where the script is located
-        if (!is.null(r.script.path)) {
-            ddg.path <- paste(dirname(r.script.path), "/", basename(tools::file_path_sans_ext(r.script.path)),
-                "_ddg", sep = "")
-        } else {
-            ddg.path <- paste(getwd(), "/", "ddg", sep = "")
-        }
-    } else ddg.path <- normalizePath(ddgdir, winslash = "/", mustWork = FALSE)
-
-    # Reset r.script.path if RMarkdown file
-    if (!is.null(r.script.path) && tools::file_ext(r.script.path) == "Rmd") {
-        output.path <- paste(paste(.global.get("ddg.path"), "/scripts", sep = ""), "/", basename(tools::file_path_sans_ext(r.script.path)),
-            ".R", sep = "")
-        .ddg.markdown(r.script.path, output.path)
-        .global.set("ddg.r.script.path", output.path)
-    } else {
-        .global.set("ddg.r.script.path", if (is.null(r.script.path))
-            NULL else normalizePath(r.script.path, winslash = "/"))
-    }
+    .global.set("ddg.r.script.path", if (is.null(r.script.path)) NULL else normalizePath(r.script.path, winslash = "/"))
     # Set environment constants.
     .global.set(".ddg.enable.console", enable.console)
     .global.set(".ddg.func.depth", 0)

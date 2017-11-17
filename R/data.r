@@ -254,7 +254,6 @@
     if (dtype == "File") {
         dhash <- md5sum(dname)
         ddg.data.nodes$ddg.hash[ddg.dnum] <- dhash
-        longpath <- paste0(getwd(), substring(.global.get("ddg.path"), 2))
     }
     ddg.data.nodes$ddg.current[ddg.dnum] <- TRUE
     .global.set("ddg.data.nodes", ddg.data.nodes)
