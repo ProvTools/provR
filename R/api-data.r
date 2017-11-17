@@ -263,11 +263,10 @@ ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
         scope <- .ddg.get.scope(dname)
     }
     # Create output file node called filename and copy file.
-    saved.file <- .ddg.file.node("File", filename, dname, scope)
+    .ddg.file.node("File", filename, dname, scope)
     .ddg.lookup.function.name(pname)
     # Create data flow edge from operation node to file node.
     .ddg.proc2data(pname, dname, scope)
-    return(saved.file)
 }
 
 # ddg.graphic.out creates a data node of type Snapshot called dname by capturing

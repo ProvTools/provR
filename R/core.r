@@ -576,9 +576,6 @@ ddg.MAX_HIST_LINES <- 2^14
     # Record in data node table
     .ddg.record.data(dtype, dname, dpfile, dpfile, dscope, from.env = from.env, dtime,
         file.loc)
-    # Get path plus file name to where the file will be copied
-    dpath <- paste(paste(.global.get("ddg.path"), "/data", sep = ""), "/", dfile, sep = "")
-    return(dpath)
 }
 
 # .ddg.insert.error.message issues a warning and inserts an exception node after
