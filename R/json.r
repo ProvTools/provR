@@ -69,7 +69,6 @@
     environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n", sep = "")
     environ <- paste(environ, .json.nv("rdt:scriptTimeStamp", script.timestamp), sep = "")
     environ <- paste(environ, .json.nv("rdt:workingDirectory", getwd()), sep = "")
-    environ <- paste(environ, .json.nv("rdt:ddgDirectory", .global.get("ddg.path")), sep = "")
     environ <- paste(environ, .json.nv("rdt:ddgTimeStamp", .global.get("ddg.start.time")), sep = "")
     environ <- paste(environ, .json.nv("rdt:provRVersion", packageVersion("provR")), sep = "")
     environ <- paste(environ, .json.installedpackages(), sep = "")
