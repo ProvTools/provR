@@ -105,7 +105,7 @@ ddg.file <- function(filename, dname = NULL) {
         return(invisible())
     scope <- if (!is.null(dname))
         .ddg.get.scope(dname) else NULL
-    invisible(.ddg.file.copy("File", filename, dname, scope))
+    invisible(.ddg.file.node("File", filename, dname, scope))
 }
 
 # ddg.data.in creates a data flow edge from data node dname to procedure node
@@ -263,7 +263,7 @@ ddg.file.out <- function(filename, dname = NULL, pname = NULL) {
         scope <- .ddg.get.scope(dname)
     }
     # Create output file node called filename and copy file.
-    saved.file <- .ddg.file.copy("File", filename, dname, scope)
+    saved.file <- .ddg.file.node("File", filename, dname, scope)
     .ddg.lookup.function.name(pname)
     # Create data flow edge from operation node to file node.
     .ddg.proc2data(pname, dname, scope)

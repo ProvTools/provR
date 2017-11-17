@@ -583,29 +583,6 @@ ddg.MAX_HIST_LINES <- 2^14
     return(dpath)
 }
 
-# .ddg.file.copy creates a data node of type File. File nodes are used for files
-# written by the main script. A copy of the file is written to the DDG directory.
-
-# dtype - type of data node.  fname - path and name of original file.  dname -
-# name of data node.  dscope - scope of data node.
-
-.ddg.file.copy <- function(dtype, fname, dname, dscope) {
-    # Calculate location of original file.
-    file.loc <- normalizePath(fname, winslash = "/", mustWork = FALSE)
-    # Copy file.
-    if (file.exists(file.loc)) {
-        # Create file node in DDG.
-        dpfile.out <- .ddg.file.node(dtype, fname, dname, dscope)
-    } else {
-        error.msg <- paste("File to copy does not exist:", fname)
-        .ddg.insert.error.message(error.msg)
-        return(NULL)
-    }
-    if (.global.get("ddg.debug.lib"))
-        print(paste("file.copy: ", dtype, " ", file.loc))
-    return(dpfile.out)
-}
-
 # .ddg.insert.error.message issues a warning and inserts an exception node after
 # the last procedure step. The name of the node is 'error.msg' and the value is
 # the error message passed to this function.
@@ -711,11 +688,11 @@ ddg.MAX_HIST_LINES <- 2^14
 
             if (value == "") {
                 # Filename passed as value.
-                .ddg.file.copy("File", name, name, scope)
+                .ddg.file.node("File", name, name, scope)
                 .ddg.proc2data(pname, name, scope)
             } else {
                 # Filename passed as name.
-                .ddg.file.copy("File", value, name, scope)
+                .ddg.file.node("File", value, name, scope)
                 .ddg.proc2data(pname, name, scope)
             }
         })
