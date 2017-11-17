@@ -32,8 +32,6 @@
 # also initializes selected constants and variables.  Tables are saved as
 # tab-delimited files in ddg.save.
 .init.globals <- function() {
-    size <- 100
-
     # creates a table of non-ddg objects present in the R environment before
     # the script is executed.
     e <- globalenv()
@@ -46,6 +44,7 @@
     colnames(ddg.initial.env) <- "ddg.name"
     .global.set("ddg.initial.env", ddg.initial.env)
 
+    size <- 100
     .global.set("ddg.proc.nodes", data.frame(ddg.type = character(size), ddg.num = numeric(size),
         ddg.name = character(size), ddg.value = character(size), ddg.ret.linked = logical(size),
         ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
@@ -236,7 +235,7 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
 .global.set(".ddg.file.read.functions.df", .ddg.create.file.read.functions.df())
 
 # Initialize the information about functions that read from files
-.ddg.create.file.write.functions.df <- function() {
+.init.file.write.functions.df <- function() {
     # Functions that read files
     function.names <- c("write.csv", "write.csv2", "write.table", "ggsave")
     # The argument that represents the file name
@@ -246,10 +245,10 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     return(data.frame(function.names, param.names, param.pos, stringsAsFactors = FALSE))
 }
 
-.global.set(".ddg.file.write.functions.df", .ddg.create.file.write.functions.df())
+.global.set(".ddg.file.write.functions.df", .init.file.write.functions.df())
 
 # Initialize the information about functions that initialize graphics devices
-.ddg.create.graphics.functions.df <- function() {
+.init.graphics.functions.df <- function() {
     # Functions that read files
     function.names <- c("pdf", "postscript", "bmp", "jpeg", "png", "tiff", "X11")
     # The argument that represents the file name
@@ -260,7 +259,7 @@ prov.init <- function(r.script.path = NULL, ddgdir = NULL, overwrite = TRUE, ena
     return(data.frame(function.names, param.names, param.pos, stringsAsFactors = FALSE))
 }
 
-.global.set(".ddg.graphics.functions.df", .ddg.create.graphics.functions.df())
+.global.set(".ddg.graphics.functions.df", .init.graphics.functions.df())
 
 # Initialize the information about functions that update graphics
 .global.set(".ddg.graphics.update.functions", ls(which(search() == "package:graphics")))
