@@ -559,8 +559,6 @@ ddg.MAX_HIST_LINES <- 2^14
     # Get original file location.
     file.name <- basename(fname)
     file.loc <- normalizePath(fname, winslash = "/", mustWork = FALSE)
-    loc.value <- if (dtype == "File")
-        paste(" Location=\"", file.loc, "\"", sep = "") else ""
     # Add number to file name.
     dfile <- paste(.global.get("ddg.dnum") + 1, "-", file.name, sep = "")
     # Calculate the path to the file relative to the ddg directory.  This is the
