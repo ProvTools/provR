@@ -54,7 +54,7 @@
     from.env = FALSE) {
     orig.data <- data
     # Determine if we should save the entire data
-    max.snapshot.size <- .ddg.get("ddg.max.snapshot.size")
+    max.snapshot.size <- .global.get("ddg.max.snapshot.size")
     if (max.snapshot.size == 0) {
         return(.ddg.data.node("Data", dname, "", dscope, from.env = from.env))
     }
@@ -105,6 +105,6 @@
     # Record in data node table
     .ddg.record.data(dtype, dname, "complex value", orig.data,
         dscope, from.env = from.env, dtime)
-    if (.ddg.get("ddg.debug.lib"))
+    if (.global.get("ddg.debug.lib"))
         print(paste("snapshot.node: ", dname))
 }

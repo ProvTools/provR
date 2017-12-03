@@ -35,12 +35,12 @@
 
 ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception = NULL,
     outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(invisible())
-    .ddg.inc(".ddg.func.depth")
+    .global.inc(".ddg.func.depth")
     pname <- NULL
     .ddg.lookup.function.name(pname)
-    if (interactive() && .ddg.get(".ddg.enable.console"))
+    if (interactive() && .global.get(".ddg.enable.console"))
         .ddg.console.node()
     # Look up input parameters from calling environment.
     call <- sys.call(-1)
@@ -73,7 +73,7 @@ ddg.function <- function(outs.graphic = NULL, outs.data = NULL, outs.exception =
 ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NULL,
     outs.exception = NULL, outs.url = NULL, outs.file = NULL, graphic.fext = "jpeg") {
 
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     .proc.node("Operation", pname, pname)
@@ -92,29 +92,29 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
             # entire function and param is an actual funciton parameter (the second case).
             scope <- .ddg.get.scope(param, calls = stack)
             if (.ddg.is.local(param, function.scope)) {
-                if (.ddg.data.node.exists(param, scope)) {
+                if (.data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
-                  if (.ddg.get("ddg.debug.lib"))
+                  if (.global.get("ddg.debug.lib"))
                     print(paste("param:", param))
                 } else {
                   error.msg <- paste("No data node found for local", param)
                   .ddg.insert.error.message(error.msg)
                 }
-            } else if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
+            } else if (scope != "undefined" && .data.node.exists(param, scope)) {
                 .ddg.data2proc(param, scope, pname)
-                if (.ddg.get("ddg.debug.lib"))
+                if (.global.get("ddg.debug.lib"))
                   print(paste("param:", param))
             } else {
                 scope <- .ddg.get.scope(param, for.caller = TRUE, calls = stack)
-                if (scope != "undefined" && .ddg.data.node.exists(param, scope)) {
+                if (scope != "undefined" && .data.node.exists(param, scope)) {
                   .ddg.data2proc(param, scope, pname)
-                  if (.ddg.get("ddg.debug.lib"))
+                  if (.global.get("ddg.debug.lib"))
                     print(paste("param:", param))
-                } else if (.ddg.data.node.exists(param, "undefined")) {
+                } else if (.data.node.exists(param, "undefined")) {
                   # This could be the case if the parameter is the name of a file rather than a
                   # variable in the program.
                   .ddg.data2proc(param, "undefined", pname)
-                  if (.ddg.get("ddg.debug.lib"))
+                  if (.global.get("ddg.debug.lib"))
                     print(paste("param:", param))
                 } else {
                   error.msg <- paste("No data node found for", param)
@@ -136,7 +136,7 @@ ddg.procedure <- function(pname, ins = NULL, outs.graphic = NULL, outs.data = NU
 # as a name. It can be omitted if ddg.start is called by a function, in which
 # case the name of the function will be used.
 ddg.start <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     # check for NULL.
@@ -163,7 +163,7 @@ ddg.start <- function(pname = NULL) {
 # a name. It can be omitted if ddg.finish is called by a function, in which case
 # the name of the function will be used.
 ddg.finish <- function(pname = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(invisible())
     .ddg.lookup.function.name(pname)
     # check for NULL.
@@ -177,7 +177,7 @@ ddg.finish <- function(pname = NULL) {
     .ddg.proc2proc()
     # ddg.finish is added to the end of blocks.  We want the block to return the
     # value of the last R statement.
-    return(.ddg.get(".ddg.last.R.value"))
+    return(.global.get(".ddg.last.R.value"))
 }
 
 # ddg.ret.value creates a data node for a function's return value. If the
@@ -190,7 +190,7 @@ ddg.finish <- function(pname = NULL) {
 # are created for the assignment.
 # expr - the value returned by the function.
 ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized")))
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized")))
         return(expr)
     dev.file <- NULL
     parsed.stmt <- NULL
@@ -198,7 +198,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     if (!is.null(cmd.func)) {
         parsed.stmt <- cmd.func()
         if (parsed.stmt@has.dev.off) {
-            if (.ddg.is.call.to(parsed.stmt@parsed[[1]], "dev.off") || !.ddg.get("ddg.loop.annotate")) {
+            if (.ddg.is.call.to(parsed.stmt@parsed[[1]], "dev.off") || !.global.get("ddg.loop.annotate")) {
                 dev.file <- .ddg.capture.graphics(NULL)
                 dev.node.name <- paste0("dev.", dev.cur())
             }
@@ -223,14 +223,14 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     # think that causes some examples to work with debugging on but not off.
     # checking.  (6/26/2015 - Barb).  Yes, ReturnTest.R fails on the recursive f5
     # function
-    ddg.ret.values <- .ddg.get(".ddg.ret.values")
-    ddg.num.returns <- .ddg.get(".ddg.num.returns")
+    ddg.ret.values <- .global.get(".ddg.ret.values")
+    ddg.num.returns <- .global.get(".ddg.num.returns")
     if (nrow(ddg.ret.values) == ddg.num.returns) {
         size = 100
         new.rows <- data.frame(ddg.call = character(size), line = integer(size),
             ret.used = logical(size), ret.node.id = integer(size), stringsAsFactors = FALSE)
         .ddg.add.rows(".ddg.ret.values", new.rows)
-        ddg.ret.values <- .ddg.get(".ddg.ret.values")
+        ddg.ret.values <- .global.get(".ddg.ret.values")
     }
     # If this is not a recursive call to ddg.ret.value and ddg.function was not
     # called, create the function nodes that it would have created.
@@ -239,7 +239,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         full.call <- match.call(sys.function(caller.frame), call = call)
         .ddg.create.function.nodes(pname, call, full.call, auto.created = TRUE, env = sys.frame(.ddg.get.frame.number(sys.calls())))
     } else {
-        .ddg.dec(".ddg.func.depth")
+        .global.dec(".ddg.func.depth")
     }
     if (is.null(cmd.func)) {
         ret.stmt <- .construct.DDGStatement(parse(text = orig.return), pos = NA,
@@ -279,12 +279,12 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
     ddg.num.returns <- ddg.num.returns + 1
     ddg.ret.values$ddg.call[ddg.num.returns] <- call.text
     ddg.ret.values$ret.used[ddg.num.returns] <- FALSE
-    ddg.ret.values$ret.node.id[ddg.num.returns] <- .ddg.get("ddg.dnum")
-    ddg.cur.cmd.stack <- .ddg.get(".ddg.cur.cmd.stack")
+    ddg.ret.values$ret.node.id[ddg.num.returns] <- .global.get("ddg.dnum")
+    ddg.cur.cmd.stack <- .global.get(".ddg.cur.cmd.stack")
     ddg.ret.values$line[ddg.num.returns] <- if (length(ddg.cur.cmd.stack) == 0)
         NA else ddg.cur.cmd.stack[length(ddg.cur.cmd.stack) - 1][[1]]@pos@startLine
-    .ddg.set(".ddg.ret.values", ddg.ret.values)
-    .ddg.set(".ddg.num.returns", ddg.num.returns)
+    .global.set(".ddg.ret.values", ddg.ret.values)
+    .global.set(".ddg.num.returns", ddg.num.returns)
     # If it does not have return, then its parameter was a call to ddg.eval and this
     # stuff has been done already.
     if (.has.call.to(parsed.stmt, "return")) {
@@ -293,7 +293,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         for (var in vars.used) {
             # Make sure there is a node we could connect to.
             scope <- .ddg.get.scope(var)
-            if (.ddg.data.node.exists(var, scope)) {
+            if (.data.node.exists(var, scope)) {
                 .ddg.data2proc(var, scope, ret.stmt@abbrev)
             }
         }
@@ -317,7 +317,7 @@ ddg.ret.value <- function(expr = NULL, cmd.func = NULL) {
         .ddg.create.file.read.nodes.and.edges(ret.stmt, env)
         .ddg.create.file.write.nodes.and.edges(ret.stmt, env)
         if (ret.stmt@createsGraphics) {
-            .ddg.set.graphics.files(ret.stmt, env)
+            .global.set.graphics.files(ret.stmt, env)
         }
     }
     # Create the finish node for the function
@@ -347,7 +347,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
     } else if (is.numeric(cmd.func)) {
         # Statement inside control block.
         num <- cmd.func
-        statements <- .ddg.get("ddg.statements")
+        statements <- .global.get("ddg.statements")
         cmd <- statements[[num]]
         parsed.statement <- cmd@parsed
         # Statement inside function.
@@ -355,14 +355,14 @@ ddg.eval <- function(statement, cmd.func = NULL) {
         cmd <- cmd.func()
         parsed.statement <- cmd@parsed
     }
-    if (.ddg.get("ddg.debug.lib"))
+    if (.global.get("ddg.debug.lib"))
         print(paste("ddg.eval: statement =", statement))
     frame.num <- .ddg.get.frame.number(sys.calls())
     env <- sys.frame(frame.num)
-    if (!(.ddg.is.set(".ddg.initialized") && .ddg.get(".ddg.initialized"))) {
+    if (!(.global.is.set(".ddg.initialized") && .global.get(".ddg.initialized"))) {
         return(eval(parsed.statement, env))
     }
-    if (interactive() && .ddg.get(".ddg.enable.console") && !(.ddg.is.set("from.source") && .ddg.get("from.source"))) {
+    if (interactive() && .global.get(".ddg.enable.console") && !(.global.is.set("from.source") && .global.get("from.source"))) {
         .ddg.console.node()
     }
 
@@ -378,7 +378,7 @@ ddg.eval <- function(statement, cmd.func = NULL) {
     ret.value <- .ddg.parse.commands(parsed.statement, environ = env, run.commands = TRUE,
         node.name = statement, called.from.ddg.eval = TRUE, cmds = list(cmd))
 
-    if (.ddg.get(".ddg.func.depth")) {
+    if (.global.get(".ddg.func.depth")) {
         if (!is.null(cmd)) {
             .ddg.link.function.returns(cmd)
         }

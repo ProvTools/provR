@@ -54,10 +54,10 @@
     environ <- paste(environ, .json.nv("rdt:operatingSystem", .Platform$OS.type), sep = "")
     environ <- paste(environ, .json.nv("rdt:language", "R"), sep = "")
     environ <- paste(environ, .json.nv("rdt:rVersion", R.Version()$version), sep = "")
-    ddg.r.script.path <- .ddg.get("ddg.r.script.path")
+    ddg.r.script.path <- .global.get("ddg.r.script.path")
     if (!is.null(ddg.r.script.path)) {
         script <- ddg.r.script.path
-        sourced.scripts <- .ddg.sourced.script.names.json()
+        sourced.scripts <- .json.sourced.script.names()
         script.timestamp <- .format.time(file.info(ddg.r.script.path)$mtime)
     } else {
         script <- ""
@@ -69,8 +69,7 @@
     environ <- paste(environ, "\"rdt:sourcedScripts\" : ", sourced.scripts, ",\n", sep = "")
     environ <- paste(environ, .json.nv("rdt:scriptTimeStamp", script.timestamp), sep = "")
     environ <- paste(environ, .json.nv("rdt:workingDirectory", getwd()), sep = "")
-    environ <- paste(environ, .json.nv("rdt:ddgDirectory", .ddg.get("ddg.path")), sep = "")
-    environ <- paste(environ, .json.nv("rdt:ddgTimeStamp", .ddg.get("ddg.start.time")), sep = "")
+    environ <- paste(environ, .json.nv("rdt:ddgTimeStamp", .global.get("ddg.start.time")), sep = "")
     environ <- paste(environ, .json.nv("rdt:provRVersion", packageVersion("provR")), sep = "")
     environ <- paste(environ, .json.installedpackages(), sep = "")
     environ <- paste(environ, "\n}", sep = "")
@@ -92,7 +91,11 @@
             snum, "\",\n\"rdt:startLine\" : \"NA\"", ",\n\"rdt:startCol\" : \"NA\"",
             ",\n\"rdt:endLine\" : \"NA\"", ",\n\"rdt:endCol\" : \"NA\"", "\n}", sep = "")
     }
-    .ddg.append.activity(jstr)
+    text <- .global.get("ddg.activity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.activity", paste(text, jstr, sep = ""))
 }
 
 # .json.data.node adds a data node to the ddg.json string.
@@ -104,7 +107,11 @@
         "\",\n\"rdt:scope\" : \"", dscope, "\",\n\"rdt:fromEnv\" : \"", from.env,
         "\",\n\"rdt:MD5hash\" : \"", dhash, "\",\n\"rdt:timestamp\" : \"", dtime,
         "\",\n\"rdt:location\" : \"", dloc, "\"\n}", sep = "")
-    .ddg.append.entity(jstr)
+    text <- .global.get("ddg.entity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.entity", paste(text, jstr, sep = ""))
 }
 
 # .json.control.edge adds a control flow edge to the ddg.json string.
@@ -112,7 +119,11 @@
 .json.control.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:informant\" : \"", node1, "\",\n\"prov:informed\" : \"",
         node2, "\"\n}", sep = "")
-    .ddg.append.wasInformedBy(jstr)
+    text <- .global.get("ddg.wasInformedBy")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.wasInformedBy", paste(text, jstr, sep = ""))
 }
 
 # .json.data.out.edge adds an output data flow edge to the ddg.json string.
@@ -120,7 +131,11 @@
 .json.data.out.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:entity\" : \"", node2, "\",\n\"prov:activity\" : \"",
         node1, "\"\n}", sep = "")
-    .ddg.append.wasGeneratedBy(jstr)
+    text <- .global.get("ddg.wasGeneratedBy")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.wasGeneratedBy", paste(text, jstr, sep = ""))
 }
 
 # .json.data.in.edge adds an input data flow edge to the ddg.json string.
@@ -128,14 +143,18 @@
 .json.data.in.edge <- function(id, node1, node2) {
     jstr <- paste("\n\"e", id, "\" : {\n\"prov:activity\" : \"", node2, "\",\n\"prov:entity\" : \"",
         node1, "\"\n}", sep = "")
-    .ddg.append.used(jstr)
+    text <- .global.get("ddg.used")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.used", paste(text, jstr, sep = ""))
 }
 
-# .ddg.sourced.script.names.json returns sourced script names, numbers and
+# .json.sourced.script.names returns sourced script names, numbers and
 # timestamps for the JSON file.
 
-.ddg.sourced.script.names.json <- function() {
-    ss <- .ddg.get(".ddg.sourced.scripts")
+.json.sourced.script.names <- function() {
+    ss <- .global.get(".ddg.sourced.scripts")
     # First row is main script.
     if (nrow(ss) == 1) {
         output <- "\"\"\n"
@@ -158,13 +177,19 @@
 
 .json.current <- function() {
     prefix <- .json.prefix()
+
     environ <- .json.environ()
-    .ddg.append.activity(environ)
-    activity <- .ddg.get("ddg.activity")
-    entity <- .ddg.get("ddg.entity")
-    wasInformedBy <- .ddg.get("ddg.wasInformedBy")
-    wasGeneratedBy <- .ddg.get("ddg.wasGeneratedBy")
-    used <- .ddg.get("ddg.used")
+    text <- .global.get("ddg.activity")
+    if (text != "") {
+        text <- paste(text, ",\n")
+    }
+    .global.set("ddg.activity", paste(text, environ, sep = ""))
+
+    activity <- .global.get("ddg.activity")
+    entity <- .global.get("ddg.entity")
+    wasInformedBy <- .global.get("ddg.wasInformedBy")
+    wasGeneratedBy <- .global.get("ddg.wasGeneratedBy")
+    used <- .global.get("ddg.used")
     ddg.json <- paste("{\n\n", prefix, "\"activity\":{\n", activity, "},\n", "\"entity\":{\n",
         entity, "},\n", "\"wasInformedBy\":{\n", wasInformedBy, "},\n", "\"wasGeneratedBy\":{\n",
         wasGeneratedBy, "},\n", "\"used\":{\n", used, "}\n", "}", sep = "")

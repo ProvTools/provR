@@ -34,8 +34,8 @@
 
 .elapsed.time <- function() {
     time <- proc.time()
-    if (.ddg.is.set(".ddg.proc.start.time"))
-      start <- .ddg.get(".ddg.proc.start.time")
+    if (.global.is.set(".ddg.proc.start.time"))
+      start <- .global.get(".ddg.proc.start.time")
     else
       start <- 0
     elapsed <- time[1] + time[2] - start
@@ -53,9 +53,9 @@
 
 .write.timestamp.to.history <- function(var = ".ddg.history.timestamp") {
     if (Sys.getenv("RSTUDIO") != "" && Sys.info()["sysname"] == "Windows") {
-        .ddg.set(var, paste("##------", date(), "------##"))
+        .global.set(var, paste("##------", date(), "------##"))
         timestamp(quiet = TRUE)
     } else {
-        .ddg.set(var, timestamp(prefix = "##-ddg-- ", quiet = TRUE))
+        .global.set(var, timestamp(prefix = "##-ddg-- ", quiet = TRUE))
     }
 }

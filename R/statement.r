@@ -95,10 +95,10 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     .Object@text <- paste(deparse(.Object@parsed[[1]]), collapse = "")
     # If this is a call to ddg.eval, we only want the argument to ddg.eval (which is
     # a string) to appear in the node label
-    .Object@abbrev <- if (grepl("^ddg.eval", .Object@text)) {
-        .abbrev.cmd(.Object@parsed[[1]][[2]])
+    if (grepl("^ddg.eval", .Object@text)) {
+        .Object@abbrev <- .abbrev.cmd(.Object@parsed[[1]][[2]])
     } else {
-        .abbrev.cmd(.Object@text)
+        .Object@abbrev <- .abbrev.cmd(.Object@text)
     }
     vars.used <- .find.var.uses(.Object@parsed[[1]])
     # Remove index variable in for statement (handled separately in ddg.forloop).
@@ -117,23 +117,24 @@ setMethod("initialize", "DDGStatement", function(.Object, parsed, pos, script.na
     .Object@createsGraphics <- .creates.graphics(.Object@parsed[[1]])
     .Object@updatesGraphics <- .updates.graphics(.Object@parsed[[1]])
     .Object@has.dev.off <- .has.call.to(.Object@parsed[[1]], "dev.off")
-    .Object@pos <- if (is.object(pos)) {
-        pos
+    if (is.object(pos)) {
+        .Object@pos <- pos
     } else {
-        null.pos()
+        .Object@pos <- null.pos()
     }
-    .Object@script.num <- if (is.na(script.num))
-        -1 else script.num
+    .Object@script.num <- -1
+    if (!is.na(script.num))
+      .Object@script.num <- script.num
     # The contained field is a list of DDGStatements for all statements inside the
     # function or control statement.  If we are collecting provenance inside
     # functions or control statements, we will execute annotated versions of these
     # statements.  If this is a call to ddg.eval, we only want to execute the
     # argument to ddg.eval
     .Object@contained <- .parse.contained(.Object, script.name, parseData)
-    .Object@annotated <- if (grepl("^ddg.eval", .Object@text)) {
-        parse(text = .Object@parsed[[1]][[2]])
+    if (grepl("^ddg.eval", .Object@text)) {
+        .Object@annotated <- parse(text = .Object@parsed[[1]][[2]])
     } else {
-        .add.annotations(.Object)
+        .Object@annotated <- .add.annotations(.Object)
     }
     return(.Object)
 })
@@ -764,10 +765,10 @@ null.pos <- function() {
 
 .create.block.ddg.eval.call <- function(statement, parsed.stmt) {
     # Get the next DDGStatement number and store parsed.stmt at this location.
-    .ddg.inc("ddg.statement.num")
-    num <- .ddg.get("ddg.statement.num")
-    ddg.statements <- c(.ddg.get("ddg.statements"), parsed.stmt)
-    .ddg.set("ddg.statements", ddg.statements)
+    .global.inc("ddg.statement.num")
+    num <- .global.get("ddg.statement.num")
+    ddg.statements <- c(.global.get("ddg.statements"), parsed.stmt)
+    .global.set("ddg.statements", ddg.statements)
     return(call("ddg.eval", paste(deparse(statement), collapse = ""), num))
 }
 
@@ -944,10 +945,10 @@ null.pos <- function() {
         # Get parsed command
         parsed.command <- command@parsed[[1]]
         # Add new loop & get loop number.
-        ddg.loops <- c(.ddg.get("ddg.loops"), 0)
-        .ddg.set("ddg.loops", ddg.loops)
-        .ddg.inc("ddg.loop.num")
-        ddg.loop.num <- .ddg.get("ddg.loop.num")
+        ddg.loops <- c(.global.get("ddg.loops"), 0)
+        .global.set("ddg.loops", ddg.loops)
+        .global.inc("ddg.loop.num")
+        ddg.loop.num <- .global.get("ddg.loop.num")
         # Get statements in block.
         if (loop.type == "for") {
             block <- parsed.command[[4]]
@@ -1068,7 +1069,7 @@ null.pos <- function() {
 # Returns true if the statement contains a call to a function that read from a
 # file parsed.statement - a parse tree
 .reads.file <- function(parsed.statement) {
-    .ddg.file.read.functions.df <- .ddg.get(".ddg.file.read.functions.df")
+    .ddg.file.read.functions.df <- .global.get(".ddg.file.read.functions.df")
     reading.functions <- .ddg.file.read.functions.df$function.names
     return(TRUE %in% (lapply(reading.functions, function(fun.name) {
         return(.has.call.to(parsed.statement, fun.name))
@@ -1078,7 +1079,7 @@ null.pos <- function() {
 # Returns true if the statement contains a call to a function that writes to a
 # file parsed.statement - a parse tree
 .writes.file <- function(parsed.statement) {
-    .ddg.file.write.functions.df <- .ddg.get(".ddg.file.write.functions.df")
+    .ddg.file.write.functions.df <- .global.get(".ddg.file.write.functions.df")
     writing.functions <- .ddg.file.write.functions.df$function.names
     return(TRUE %in% (lapply(writing.functions, function(fun.name) {
         return(.has.call.to(parsed.statement, fun.name))
@@ -1088,7 +1089,7 @@ null.pos <- function() {
 # Returns true if the statement contains a call to a function that creates a
 # graphics object parsed.statement - a parse tree
 .creates.graphics <- function(parsed.statement) {
-    .ddg.graphics.functions.df <- .ddg.get(".ddg.graphics.functions.df")
+    .ddg.graphics.functions.df <- .global.get(".ddg.graphics.functions.df")
     graphics.functions <- .ddg.graphics.functions.df$function.names
     if (TRUE %in% (lapply(graphics.functions, function(fun.name) {
         return(.has.call.to(parsed.statement, fun.name))
@@ -1101,7 +1102,7 @@ null.pos <- function() {
 # Returns true if the statement contains a call to a function that updates a
 # graphics object parsed.statement - a parse tree
 .updates.graphics <- function(parsed.statement) {
-    graphics.update.functions <- .ddg.get(".ddg.graphics.update.functions")
+    graphics.update.functions <- .global.get(".ddg.graphics.update.functions")
     if (TRUE %in% (lapply(graphics.update.functions, function(fun.name) {
         return(.has.call.to(parsed.statement, fun.name))
     }))) {
