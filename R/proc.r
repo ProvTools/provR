@@ -194,48 +194,67 @@
 # when a return is found ptime - elapsed time snum - number of sourced script
 # (main script = 0) pos - starting and ending lines and columns in source code
 # (if available)
-.record.proc <- function(ptype, pname, pvalue, auto.created = FALSE, ptime, snum = NA,
-    pos = NA) {
-    # Increment procedure node counter.
-    .global.inc("ddg.pnum")
-    ddg.pnum <- .global.get("ddg.pnum")
-    # If the table is full, make it bigger.
-    ddg.proc.nodes <- .global.get("ddg.proc.nodes")
-    if (nrow(ddg.proc.nodes) < ddg.pnum) {
-        size = 100
-        new.rows <- data.frame(ddg.type = character(size), ddg.num = numeric(size),
-            ddg.name = character(size), ddg.value = character(size), ddg.ret.linked = logical(size),
-            ddg.auto.created = logical(size), ddg.time = numeric(size), ddg.snum = numeric(size),
-            ddg.startLine = numeric(size), ddg.startCol = numeric(size), ddg.endLine = numeric(size),
-            ddg.endCol = numeric(size), stringsAsFactors = FALSE)
-        .ddg.add.rows("ddg.proc.nodes", new.rows)
-        ddg.proc.nodes <- .global.get("ddg.proc.nodes")
-    }
+.record.proc <- function(ptype, pname, pvalue, auto.created=FALSE, ptime, pfunctions=NULL, snum=NA, pos=NA) {
+  # Increment procedure node counter.
+  .ddg.inc("ddg.pnum")
+  ddg.pnum <- .ddg.pnum()
 
-    ddg.proc.nodes$ddg.type[ddg.pnum] <- ptype
-    ddg.proc.nodes$ddg.num[ddg.pnum] <- ddg.pnum
-    ddg.proc.nodes$ddg.name[ddg.pnum] <- pname
-    ddg.proc.nodes$ddg.value[ddg.pnum] <- pvalue
-    ddg.proc.nodes$ddg.auto.created[ddg.pnum] <- auto.created
-    ddg.proc.nodes$ddg.time[ddg.pnum] <- ptime
-    ddg.proc.nodes$ddg.snum[ddg.pnum] <- snum
+  # If the table is full, make it bigger.
+  ddg.proc.nodes <- .ddg.proc.nodes()
+  if (nrow(ddg.proc.nodes) < ddg.pnum) {
+    size = 100
+    new.rows <- data.frame(ddg.type = character(size),
+        ddg.num = numeric(size),
+        ddg.name = character(size),
+        ddg.value = character(size),
+        ddg.return.linked = logical(size),
+        ddg.auto.created = logical(size),
+        ddg.time = numeric(size),
+        ddg.snum = numeric(size),
+        ddg.startLine = numeric(size),
+        ddg.startCol = numeric(size),
+        ddg.endLine = numeric(size),
+        ddg.endCol = numeric(size),
+        stringsAsFactors=FALSE)
+    .ddg.add.rows("ddg.proc.nodes", new.rows)
+    ddg.proc.nodes <- .ddg.proc.nodes()
+  }
 
-    if (is.object(pos) && length(pos@startLine == 1)) {
-        ddg.proc.nodes$ddg.startLine[ddg.pnum] <- pos@startLine
-        ddg.proc.nodes$ddg.startCol[ddg.pnum] <- pos@startCol
-        ddg.proc.nodes$ddg.endLine[ddg.pnum] <- pos@endLine
-        ddg.proc.nodes$ddg.endCol[ddg.pnum] <- pos@endCol
-    } else {
-        ddg.proc.nodes$ddg.startLine[ddg.pnum] <- NA
-        ddg.proc.nodes$ddg.startCol[ddg.pnum] <- NA
-        ddg.proc.nodes$ddg.endLine[ddg.pnum] <- NA
-        ddg.proc.nodes$ddg.endCol[ddg.pnum] <- NA
-    }
-    .global.set("ddg.proc.nodes", ddg.proc.nodes)
-    pname <- gsub("\\\"", "\\\\\"", pname)
-    # Output procedure node.
-    .json.procedure.node(ddg.pnum, pname, ptype, ptime, snum, pos)
-    if (.global.get("ddg.debug.lib")) {
-        print(paste("Adding procedure node", ddg.pnum, "named", pname))
-    }
+  ddg.proc.nodes$ddg.type[ddg.pnum] <- ptype
+  ddg.proc.nodes$ddg.num[ddg.pnum] <- ddg.pnum
+  ddg.proc.nodes$ddg.name[ddg.pnum] <- pname
+  ddg.proc.nodes$ddg.value[ddg.pnum] <- pvalue
+  ddg.proc.nodes$ddg.auto.created[ddg.pnum] <- auto.created
+  ddg.proc.nodes$ddg.time[ddg.pnum] <- ptime
+
+  ddg.proc.nodes$ddg.snum[ddg.pnum] <- snum
+  if (is.object(pos) && length(pos@startLine == 1)) {
+    ddg.proc.nodes$ddg.startLine[ddg.pnum] <- pos@startLine
+    ddg.proc.nodes$ddg.startCol[ddg.pnum] <- pos@startCol
+    ddg.proc.nodes$ddg.endLine[ddg.pnum] <- pos@endLine
+    ddg.proc.nodes$ddg.endCol[ddg.pnum] <- pos@endCol
+  }
+  else {
+    ddg.proc.nodes$ddg.startLine[ddg.pnum] <- NA
+    ddg.proc.nodes$ddg.startCol[ddg.pnum] <- NA
+    ddg.proc.nodes$ddg.endLine[ddg.pnum] <- NA
+    ddg.proc.nodes$ddg.endCol[ddg.pnum] <- NA
+  }
+  
+  .ddg.set("ddg.proc.nodes", ddg.proc.nodes)
+  
+  # append to function call information to function nodes
+  if( ! (is.null(pfunctions) || is.na(pfunctions)) )
+  {
+    pfunctions <- cbind( "ddg.pnum" = rep(ddg.pnum, nrow(pfunctions)) , pfunctions )
+    
+    ddg.function.nodes <- rbind( .ddg.function.nodes() , pfunctions )
+    row.names(ddg.function.nodes) <- c( 1 : nrow(ddg.function.nodes) )
+    
+    .ddg.set( "ddg.function.nodes" , ddg.function.nodes )
+  }
+  
+  if (.ddg.debug.lib()) {
+    print (paste("Adding procedure node", ddg.pnum, "named", pname))
+  }
 }
