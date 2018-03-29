@@ -1,7 +1,7 @@
 Package: provR
 Title: Provenance Capture Package
-Version: 0.1.0
-Date: 2017-08-01
+Version: 0.1.1
+Date: 2017-03-29
 Authors@R: c( person("Emery", "Boose", role = c("aut", "cre"),
                       email = "boose@fas.harvard.edu"),
               person("Aaron", "Ellison", role = "aut",
