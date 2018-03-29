@@ -25,14 +25,6 @@
 # @version February 2018
 
 
-# writes json out to file
-ddg.json.write <- function() 
-{
-	fileout <- paste(.ddg.path(), "/ddg.json", sep="")
-	json <- ddg.json()
-	write(json, fileout)
-}
-
 # forms the prov-json string
 ddg.json <- function()
 {
