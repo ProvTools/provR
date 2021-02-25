@@ -35,7 +35,7 @@ Once installed a libraried, you can now easily collect provenance from
 any script:
 
 ```R
-library(ProvR)
+library(provR)
 prov.capture("example.R")
 ```
 
